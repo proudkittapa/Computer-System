@@ -2,12 +2,17 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
 	"strings"
 )
+
+type result struct {
+	Name string `json:"name"`
+}
 
 func main() {
 	li, err := net.Listen("tcp", ":8080")
@@ -28,26 +33,13 @@ func main() {
 
 func handle(conn net.Conn) {
 	defer conn.Close()
-	// var request = make([]byte, 100)
-	// for {
-	// 	_, err := conn.Read(request)
-
-	// 	if err != nil {
-	// 		log.Println("failed to read request contents")
-	// 		return
-	// 	}
-	// 	log.Println(&conn, string(request))
-	// 	request = make([]byte, 100)
-	// 	if _, err = conn.Write([]byte("Recieved\n")); err != nil {
-	// 		log.Printf("failed to respond to client: %v\n", err)
-	// 	}
-	// }
 	req(conn)
 }
 
 func req(conn net.Conn) {
 	i := 0
 	scanner := bufio.NewScanner(conn)
+
 	for scanner.Scan() {
 		ln := scanner.Text()
 		fmt.Println(ln)
@@ -60,6 +52,7 @@ func req(conn net.Conn) {
 		}
 		i++
 	}
+
 }
 func mux(conn net.Conn, ln string) {
 	m := strings.Fields(ln)[0] //method
@@ -73,134 +66,22 @@ func mux(conn net.Conn, ln string) {
 	if m == "GET" && u == "/products" {
 		product(conn)
 	}
-	if m == "POST" && u == "/product/:id" {
 
+	if m == "GET" && u[:10] == "/products/" {
+		id := u[10:]
+		// id := u
+		productID(conn, id)
+	}
+	if m == "POST" && u[:10] == "/products/" {
+		id := u[10:]
+		// id := u
+		productPost(conn, id)
 	}
 
 }
 
 func index(conn net.Conn) {
-	/*body := `<!DOCTYPE html>
-	<html lang="en">
 
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-		<!-- title -->
-		<title>Pin to Pre | Website for pre order</title>
-		<link href="about_us.css" rel="stylesheet" type="text/css" />
-	</head>
-
-
-	<body>
-
-		<div class=".container" >
-			<!------------navigation bar(menu bar)------------>
-			<div class="menu-bar">
-				<div class="logo">
-					<img src="images/PinToPre.png" width="125px">
-		  </div>
-				<nav>
-				  <ul>
-					<li>
-					<a href="index.html">Home</a><i class="fa fa-home" aria-hidden="true"></i> </li>
-					<li><a href="pre_order.html">Pre order</a><i class="fa fa-gratipay" aria-hidden="true"></i></li>
-					<li><a href="pre_form.html">Promotion</a><i class="fa fa-tag" aria-hidden="true"></i></li>
-					<li><a href="account.html">Account</a><i class="fa fa-user-circle" aria-hidden="true"></i></li>
-					<li class="active" ><a href="about_us.html">About us</a><i class="fa fa-phone" aria-hidden="true"></i></li>
-				  </ul>
-				</nav>
-			</div>
-			<!------------about us paragraph------------>
-			<div class="row">
-				<div class="box-about">
-				  <h1>About Us</h1><br>
-				  <p>This text is styled with some of the text formatting properties. The heading uses the text-align, text-transform, and color properties.
-				  The paragraph is indented, aligned, and the space between characters is specified. The underline is removed from this colored
-				  <a target="_blank" href="tryit.asp?filename=trycss_text">"Try it Yourself"</a> link.</p>
-				</div>
-				<div class="header">
-				<h1>need more information or anything u want to add eg.quote</h1>
-				<p>pls write for me</p></div>
-				<br><br>
-			</div>
-	  </div>
-
-			<!------------Members------------>
-
-		  <div class="container">
-		   <div class="wrapper">
-			  <h1>Team</h1>
-				<div class="team">
-
-					  <div class="card">
-						<div class="team_img">
-						  <img src="images/PinToPre.png" alt="team_member_img">
-						</div>
-						<h5>TitleTitle TitleTitleTitle</h5>
-						<div>Subtitle Subtitle Subtitle Subtitle Subtitle Subtitle</div>
-					  <div>Footer</div>
-
-					  </div>
-
-
-					  <div class="card">
-						<div class="team_img">
-						  <img src="images/PinToPre.png" alt="team_member_img">
-						</div>
-						<h5>Title</h5>
-						<a>Subtitle</a>
-						<div>Footer</div>
-					  </div>
-
-
-					  <div class="card">
-						<div class="team_img">
-						  <img src="images/PinToPre.png" alt="team_member_img">
-						</div>
-						<h5>Title</h5>
-						<div>Subtitle</div>
-						<div>Footer</div>
-					  </div>
-
-
-				</div>
-			</div><br>
-	</div>
-		<!------------------------Thank you bottom------------------------>
-
-			<div class="row">
-				<div class="header">
-					<h1>Thank you</h1>
-					<p>for visiting our pages</p>
-					<a href="pre_order.html" class="btn">more pre-order click!</a>
-				</div>
-				<br>
-			</div>
-
-
-
-
-
-
-
-		<!-- Optional JavaScript -->
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-
-	  </body>
-	</html>
-
-	`
-	*/
-	// body, err := template.ParseFiles("account.html")
-	// if err != nil {
-	// 	panic(err)
-	// }
 	body, err := ioutil.ReadFile("about_us.html")
 	if err != nil {
 		fmt.Println("File reading error", err)
@@ -221,4 +102,35 @@ func product(conn net.Conn) {
 	fmt.Fprint(conn, "Content-Type: text/html\r\n")
 	fmt.Fprint(conn, "\r\n")
 	fmt.Fprint(conn, string(body))
+}
+
+func productID(conn net.Conn, id string) {
+	body := id
+	fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
+	fmt.Fprintf(conn, "Conten-Length: %d\r\n", len(body))
+	fmt.Fprint(conn, "Content-Type: text/html\r\n")
+	fmt.Fprint(conn, "\r\n")
+	fmt.Fprint(conn, string(body))
+}
+
+func productPost(conn net.Conn, id string) {
+	// body := id
+	data, err := bufio.NewReader(conn).ReadBytes(0)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("read %v bytes from the server\n", len(data))
+	fmt.Println("data: ", string(data))
+	var obj result
+	err = json.Unmarshal(data, &obj)
+	if err != nil {
+		fmt.Println(err)
+	}
+	// conn.Close()
+	//fmt.Println(msg)
+	// fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
+	// fmt.Fprintf(conn, "Conten-Length: %d\r\n", jsonValue)
+	// fmt.Fprint(conn, "Content-Type: text/json\r\n")
+	// fmt.Fprint(conn, "\r\n")
+	// fmt.Fprint(conn, jsonValue)
 }
