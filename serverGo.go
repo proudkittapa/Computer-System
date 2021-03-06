@@ -28,20 +28,20 @@ func main() {
 
 func handle(conn net.Conn) {
 	defer conn.Close()
-	var request = make([]byte, 100)
-	for {
-		_, err := conn.Read(request)
+	// var request = make([]byte, 100)
+	// for {
+	// 	_, err := conn.Read(request)
 
-		if err != nil {
-			log.Println("failed to read request contents")
-			return
-		}
-		log.Println(&conn, string(request))
-		request = make([]byte, 100)
-		if _, err = conn.Write([]byte("Recieved\n")); err != nil {
-			log.Printf("failed to respond to client: %v\n", err)
-		}
-	}
+	// 	if err != nil {
+	// 		log.Println("failed to read request contents")
+	// 		return
+	// 	}
+	// 	log.Println(&conn, string(request))
+	// 	request = make([]byte, 100)
+	// 	if _, err = conn.Write([]byte("Recieved\n")); err != nil {
+	// 		log.Printf("failed to respond to client: %v\n", err)
+	// 	}
+	// }
 	req(conn)
 }
 
