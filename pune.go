@@ -27,8 +27,7 @@ func main() {
 	li, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln(err.Error())
-		count++
-		fmt.Println("count error:", count)
+		// fmt.Println("count error:", count)
 	}
 	defer li.Close()
 	for {
@@ -40,16 +39,21 @@ func main() {
 		}
 		go handle(conn)
 	}
+	
 }
 
 func handle(conn net.Conn) {
-	fmt.Println(conn)
+	count++
+	fmt.Println(conn, count)
+	if _, err := conn.Write([]byte("Recieved\n")); err != nil {
+		log.Printf("failed to respond to client: %v\n", err)
+	}
 	// defer conn.Close()
 	req(conn)
 }
 
 func req(conn net.Conn) {
-	data := result{}
+	var data result
 	defer conn.Close()
 	buffer := make([]byte, 1024)
 	message := ""
@@ -82,7 +86,9 @@ func req(conn net.Conn) {
 			// match, _ := regexp.MatchString("{([^)]+)}", message)
 			// fmt.Println(r.FindString(message))
 			match := r.FindString(message)
-			fmt.Println("match", match)
+			fmt.Println(match)
+			// match = "`\n"+match+"\n`"
+			fmt.Printf("%T\n", match)
 			json.Unmarshal([]byte(match), &data)
 			fmt.Println("data", data)
 			fmt.Println("Name", data.Name)
@@ -142,20 +148,6 @@ func mux(conn net.Conn, ln string) {
 			productID(conn, id)
 		}	
 	}
-	/*
-		if m == "POST" && u[:10] == "/products/" {
-			id = u[10:]
-
-			body := "asdasd"
-			fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
-			fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
-			fmt.Fprint(conn, "Content-Type: application/json\r\n")
-			fmt.Fprint(conn, "\r\n")
-			fmt.Fprint(conn, string(body))
-
-			// productPost(conn, id)
-		}
-	*/
 
 }
 
