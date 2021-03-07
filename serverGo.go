@@ -1,17 +1,23 @@
 package main
 
 import (
+	// "bufio"
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net"
+	"regexp"
 	"strings"
+	// "time"
+	// "bytes"
 )
 
 type result struct {
-	Name string `json:"name"`
+	Name     string `json:"name"`
+	Quantity int    `json:"quantity"`
 }
 
 func main() {
@@ -32,17 +38,53 @@ func main() {
 }
 
 func handle(conn net.Conn) {
-	defer conn.Close()
-	req(conn)
+	// defer conn.Close()
+	go req(conn)
 }
 
 func req(conn net.Conn) {
+	// defer conn.Close()
+	// body := "asdasdasdads"
+	// fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
+	// fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
+	// fmt.Fprint(conn, "Content-Type: text/html\r\n")
+	// fmt.Fprint(conn, "\r\n")
+	// fmt.Fprint(conn, string(body))
+	// defer conn.Close()
+	// dst := os.Stdout
+	// bytes, err := io.Copy(dst, conn)
+	// if err != nil {
+	//     panic(err)
+	// }
+
+	// run loop forever (or until ctrl-c)
+	// for {
+	// 	// will listen for message to process ending in newline (\n)
+	// 	message, _ := bufio.NewReader(conn).ReadString('\n')
+	// 	// output message received
+	// 	fmt.Print("Message Received:", string(message))
+	// 	// sample process for string received
+	// 	newmessage := strings.ToUpper(message)
+	// 	// send new string back to client
+	// 	conn.Write([]byte(newmessage + "\n"))
+	//   }
+
+	// var data result
+
+	// body := "asdasdasdads"
+	// fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
+	// fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
+	// fmt.Fprint(conn, "Content-Type: text/html\r\n")
+	// fmt.Fprint(conn, "\r\n")
+	// fmt.Fprint(conn, string(body))
+	// conn.Close()
 	i := 0
 	scanner := bufio.NewScanner(conn)
+	fmt.Println("scan", scanner)
 
 	for scanner.Scan() {
 		ln := scanner.Text()
-		fmt.Println(ln)
+		fmt.Println("ln", ln)
 		if i == 0 {
 			mux(conn, ln)
 		}
@@ -52,13 +94,15 @@ func req(conn net.Conn) {
 		}
 		i++
 	}
-
 }
 func mux(conn net.Conn, ln string) {
 	m := strings.Fields(ln)[0] //method
 	u := strings.Fields(ln)[1] //url
-	fmt.Println("***METHOD", m)
-	fmt.Println("***URL", u)
+	if m != "POST" {
+		fmt.Println("***METHOD", m)
+		fmt.Println("***URL", u)
+	}
+	id := ""
 
 	if m == "GET" && u == "/" {
 		index(conn)
@@ -68,20 +112,62 @@ func mux(conn net.Conn, ln string) {
 	}
 
 	if m == "GET" && u[:10] == "/products/" {
-		id := u[10:]
+		id = u[10:]
 		// id := u
 		productID(conn, id)
 	}
 	if m == "POST" && u[:10] == "/products/" {
-		id := u[10:]
+		id = u[10:]
+		fmt.Printf("%v, %T", id)
 		// id := u
-		productPost(conn, id)
+		data := result{}
+		//defer conn.Close()
+		buffer := make([]byte, 1024)
+		for {
+			//fmt.Println(buffer)
+			// status, _ := bufio.NewReader(conn).ReadString('\n')
+			// fmt.Println("status:", status)
+			n, err := conn.Read(buffer)
+			fmt.Println(buffer)
+			message := string(buffer[:n])
+
+			// fmt.Println(n)
+			// fmt.Println(message)
+			// totalBytes += n
+			if err != nil {
+				if err != io.EOF {
+					log.Printf("Read error: %s", err)
+				}
+				break
+			}
+			if strings.ContainsAny(string(message), "}") {
+				r, _ := regexp.Compile("{([^)]+)}")
+				// match, _ := regexp.MatchString("{([^)]+)}", message)
+				// fmt.Println(r.FindString(message))
+				match := r.FindString(message)
+				fmt.Println(match)
+				json.Unmarshal([]byte(match), &data)
+				fmt.Println(data)
+				fmt.Println(data.Name)
+				fmt.Println(data.Quantity)
+				// fmt.Println("break")
+				break
+			}
+		}
+
+		body := "asdasd"
+		fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
+		fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
+		fmt.Fprint(conn, "Content-Type: application/json\r\n")
+		fmt.Fprint(conn, "\r\n")
+		fmt.Fprint(conn, string(body))
+
+		// productPost(conn, id)
 	}
 
 }
 
 func index(conn net.Conn) {
-
 	body, err := ioutil.ReadFile("about_us.html")
 	if err != nil {
 		fmt.Println("File reading error", err)
@@ -89,7 +175,7 @@ func index(conn net.Conn) {
 	}
 	fmt.Println("Contents of file:", string(body))
 	fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
-	fmt.Fprintf(conn, "Conten-Length: %d\r\n", len(body))
+	fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
 	fmt.Fprint(conn, "Content-Type: text/html\r\n")
 	fmt.Fprint(conn, "\r\n")
 	fmt.Fprint(conn, string(body))
@@ -98,7 +184,7 @@ func index(conn net.Conn) {
 func product(conn net.Conn) {
 	body := "products"
 	fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
-	fmt.Fprintf(conn, "Conten-Length: %d\r\n", len(body))
+	fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
 	fmt.Fprint(conn, "Content-Type: text/html\r\n")
 	fmt.Fprint(conn, "\r\n")
 	fmt.Fprint(conn, string(body))
@@ -107,30 +193,54 @@ func product(conn net.Conn) {
 func productID(conn net.Conn, id string) {
 	body := id
 	fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
-	fmt.Fprintf(conn, "Conten-Length: %d\r\n", len(body))
+	fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
 	fmt.Fprint(conn, "Content-Type: text/html\r\n")
 	fmt.Fprint(conn, "\r\n")
 	fmt.Fprint(conn, string(body))
 }
 
 func productPost(conn net.Conn, id string) {
-	// body := id
-	data, err := bufio.NewReader(conn).ReadBytes(0)
-	if err != nil {
-		fmt.Println(err)
+	fmt.Println("herehere")
+	data := result{}
+	defer conn.Close()
+	buffer := make([]byte, 1024)
+	for {
+		//fmt.Println(buffer)
+		// status, _ := bufio.NewReader(conn).ReadString('\n')
+		// fmt.Println("status:", status)
+		n, err := conn.Read(buffer)
+		fmt.Println(buffer)
+		message := string(buffer[:n])
+
+		// fmt.Println(n)
+		// fmt.Println(message)
+		// totalBytes += n
+		if err != nil {
+			if err != io.EOF {
+				log.Printf("Read error: %s", err)
+			}
+			break
+		}
+		if strings.ContainsAny(string(message), "}") {
+			r, _ := regexp.Compile("{([^)]+)}")
+			// match, _ := regexp.MatchString("{([^)]+)}", message)
+			// fmt.Println(r.FindString(message))
+			match := r.FindString(message)
+			fmt.Println(match)
+			json.Unmarshal([]byte(match), &data)
+			fmt.Println(data)
+			fmt.Println(data.Name)
+			fmt.Println(data.Quantity)
+			// fmt.Println("break")
+			break
+		}
 	}
-	fmt.Printf("read %v bytes from the server\n", len(data))
-	fmt.Println("data: ", string(data))
-	var obj result
-	err = json.Unmarshal(data, &obj)
-	if err != nil {
-		fmt.Println(err)
-	}
-	// conn.Close()
-	//fmt.Println(msg)
-	// fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
-	// fmt.Fprintf(conn, "Conten-Length: %d\r\n", jsonValue)
-	// fmt.Fprint(conn, "Content-Type: text/json\r\n")
-	// fmt.Fprint(conn, "\r\n")
-	// fmt.Fprint(conn, jsonValue)
+
+	body := "asdasd"
+	fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
+	fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
+	fmt.Fprint(conn, "Content-Type: application/json\r\n")
+	fmt.Fprint(conn, "\r\n")
+	fmt.Fprint(conn, string(body))
+
 }
