@@ -24,7 +24,7 @@ var count int = 0
 
 func main() {
 
-	li, err := net.Listen("tcp", ":8080")
+	li, err := net.Listen("tcp", ":8081")
 	if err != nil {
 		log.Fatalln(err.Error())
 		// fmt.Println("count error:", count)
@@ -43,26 +43,49 @@ func main() {
 }
 
 func handle(conn net.Conn) {
-	count++
-	fmt.Println(conn, count)
-	if _, err := conn.Write([]byte("Recieved\n")); err != nil {
-		log.Printf("failed to respond to client: %v\n", err)
-	}
-	// defer conn.Close()
+	// count++
+	fmt.Printf("%v, %T\n",conn, conn)
+
+	
+	// fmt.Println("break")
+	defer conn.Close()
 	req(conn)
+	// if _, err := conn.Write([]byte("Recieved\n")); err != nil {
+	// 	log.Printf("failed to respond to client: %v\n", err)
+	// }
+	
+	
 }
 
 func req(conn net.Conn) {
 	var data result
-	defer conn.Close()
+	// defer conn.Close()
 	buffer := make([]byte, 1024)
+	fmt.Printf("buffer %T", buffer)
 	message := ""
 	m := ""
 	for {
+		// fmt.Println("hihihiihihihi")
+
 		n, err := conn.Read(buffer)
+		if err != nil{
+			fmt.Println(err)
+		}
+		fmt.Printf("n value: %v, %T\n",n, n)
+		
+		// fmt.Println("hihihiihihihi")
+
 		message = string(buffer[:n])
 		// fmt.Println(n)
-		// fmt.Println("mess", message)
+		fmt.Println("mess", message)
+		if ! strings.Contains(message, "HTTP"){
+			if _, err := conn.Write([]byte("Recieved\n")); err != nil {
+				log.Printf("failed to respond to client: %v\n", err)
+			}
+			break
+		}
+		
+		
 		if len(message) != 0 {
 			m = message[:4]
 			if m != "POST" {
@@ -95,8 +118,8 @@ func req(conn net.Conn) {
 			fmt.Println("Quantity", data.Quantity)
 
 			fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
-			fmt.Fprintf(conn, "Content-Length: %d\r\n", len(data.Name))
-			fmt.Fprint(conn, "Content-Type: application/json\r\n")
+			fmt.Fprintf(conn, "Content-Length: %d\r\n", len(data.Name)+1)
+			fmt.Fprint(conn, "Content-Type: text/html\r\n")
 			fmt.Fprint(conn, "\r\n")
 			fmt.Fprint(conn, data.Name)
 
@@ -104,8 +127,9 @@ func req(conn net.Conn) {
 			break
 		}
 	}
-
 	if m != "POST" {
+		fmt.Println("hihriehiehr")
+
 		i := 0
 		scanner := bufio.NewScanner(strings.NewReader(message))
 		// fmt.Println("scan", scanner)
@@ -115,6 +139,7 @@ func req(conn net.Conn) {
 			ln := scanner.Text()
 			fmt.Println(ln)
 			if i == 0 {
+				fmt.Println("mux")
 				mux(conn, ln)
 			}
 			if ln == "" {
@@ -143,6 +168,7 @@ func mux(conn net.Conn, ln string) {
 
 	if len(u) >= 10{
 		if m == "GET" && u[:10] == "/products/" {
+			fmt.Println("Heyyyyyy")
 			id = u[10:]
 			// id := u
 			productID(conn, id)
@@ -181,50 +207,4 @@ func productID(conn net.Conn, id string) {
 	fmt.Fprint(conn, "Content-Type: text/html\r\n")
 	fmt.Fprint(conn, "\r\n")
 	fmt.Fprint(conn, string(body))
-}
-
-func productPost(conn net.Conn, id string) {
-	fmt.Println("herehere")
-	data := result{}
-	defer conn.Close()
-	buffer := make([]byte, 1024)
-	for {
-		//fmt.Println(buffer)
-		// status, _ := bufio.NewReader(conn).ReadString('\n')
-		// fmt.Println("status:", status)
-		n, err := conn.Read(buffer)
-		fmt.Println(buffer)
-		message := string(buffer[:n])
-
-		// fmt.Println(n)
-		// fmt.Println(message)
-		// totalBytes += n
-		if err != nil {
-			if err != io.EOF {
-				log.Printf("Read error: %s", err)
-			}
-			break
-		}
-		if strings.ContainsAny(string(message), "}") {
-			r, _ := regexp.Compile("{([^)]+)}")
-			// match, _ := regexp.MatchString("{([^)]+)}", message)
-			// fmt.Println(r.FindString(message))
-			match := r.FindString(message)
-			fmt.Println(match)
-			json.Unmarshal([]byte(match), &data)
-			fmt.Println(data)
-			fmt.Println(data.Name)
-			fmt.Println(data.Quantity)
-			// fmt.Println("break")
-			break
-		}
-	}
-
-	body := "asdasd"
-	fmt.Fprint(conn, "HTTP/1.1 200 OK\r\n")
-	fmt.Fprintf(conn, "Content-Length: %d\r\n", len(body))
-	fmt.Fprint(conn, "Content-Type: application/json\r\n")
-	fmt.Fprint(conn, "\r\n")
-	fmt.Fprint(conn, string(body))
-
 }
