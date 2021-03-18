@@ -3,12 +3,11 @@ package main
 import (
 	"bufio"
 	"database/sql"
-	"strconv"
-
 	"encoding/json"
 	"fmt"
 	"log"
 	"net"
+	"strconv"
 	"strings"
 
 	// "time"
@@ -100,7 +99,7 @@ func req(conn net.Conn) {
 			if (len(p) > 2) && (p[2] != "") {
 				result := getJson(message)
 				fmt.Println(result)
-				productWithID(conn, method, p[2])
+				productWithID(conn, method, p[2], result)
 			} else {
 				products(conn, method)
 			}
@@ -148,7 +147,7 @@ func products(conn net.Conn, method string) {
 	}
 }
 
-func productWithID(conn net.Conn, method string, id string) {
+func productWithID(conn net.Conn, method string, id string, result data) {
 	fmt.Println("ID")
 	i, _ := strconv.Atoi(id)
 	if method == "GET" {
@@ -156,8 +155,15 @@ func productWithID(conn net.Conn, method string, id string) {
 		c := "application/json"
 		send(conn, d, c)
 	} else if method == "POST" {
-		postPreorder(i)
-		jsonStr := respond{Msg: "POSTed"}
+		success := postPreorder(i, result.Quantity)
+		msg := ""
+		if success == true {
+			msg = "success"
+		} else {
+			msg = "fail"
+		}
+
+		jsonStr := respond{Msg: msg}
 		jsonData, err := json.Marshal(jsonStr)
 		if err != nil {
 			fmt.Println(err)
@@ -275,33 +281,32 @@ func getQuantity(id int) {
 		fmt.Println("name: ", name, " quantity: ", quantity, " price: ", price)
 	}
 }
-func decrement(orderQuantity int, id int) {
+func decrement(orderQuantity int, id int) bool {
 	newQuantity := q - orderQuantity
 	if newQuantity < 0 {
-		return
+		return false
 	}
 	fmt.Println("new quantity: ", newQuantity)
 	db.Query("update products set quantity_in_stock = ? where product_id = ? ", newQuantity, id)
 
-	return
+	return true
 }
 
 func insert(user string, id int, q int) {
 	db.Query("INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
 }
 
-func preorder(user string, productId int, orderQuantity int) {
+func preorder(user string, productId int, orderQuantity int) bool {
 	//start := time.Now()
 	insert(user, productId, orderQuantity)
 	getQuantity(productId)
-	decrement(orderQuantity, productId)
+	success := decrement(orderQuantity, productId)
 	//fmt.Printf("time: %v\n", time.Since(start))
-	return
+	return success
 }
 
-func postPreorder(id int) {
+func postPreorder(id int, q int) bool {
 	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
-	for i := 1; i < 5; i++ {
-		preorder(strconv.Itoa(i), id, 5) //userID, ID, quantity
-	}
+	success := preorder("1", id, q) //userID, ID, quantity
+	return success
 }
