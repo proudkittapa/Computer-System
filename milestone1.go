@@ -55,7 +55,7 @@ func main() {
 			log.Fatalln(err.Error())
 			continue
 		}
-		go handle(conn)
+		handle(conn)
 	}
 
 }
@@ -176,7 +176,7 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 }
 
 func getFile() string {
-	f, err := os.Open("about_us.html")
+	f, err := os.Open("index.html")
 
 	if err != nil {
 		fmt.Println("File reading error", err)
@@ -200,7 +200,7 @@ func getFile() string {
 		bufferLen += count
 		buffer.Write(part[:count])
 	}
-	fmt.Println("home")
+	// fmt.Println("home")
 	return buffer.String()
 	// contentType = "text/html"
 	// headers = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", bufferLen, contentType, buffer)
@@ -215,7 +215,6 @@ func send(conn net.Conn, d string, c string) {
 func createHeader(d string, contentType string) string {
 
 	contentLength := len(d)
-
 	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, d)
 	// fmt.Println(headers)
 	return headers
