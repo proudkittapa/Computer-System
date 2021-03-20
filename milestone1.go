@@ -55,7 +55,7 @@ func main() {
 			log.Fatalln(err.Error())
 			continue
 		}
-		handle(conn)
+		go handle(conn)
 	}
 
 }
@@ -72,7 +72,7 @@ func req(conn net.Conn) {
 	for {
 		n, err := conn.Read(buffer)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("req err", err)
 		}
 		message := string(buffer[:n])
 		fmt.Println(message)
@@ -176,7 +176,7 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 }
 
 func getFile() string {
-	f, err := os.Open("index.html")
+	f, err := os.Open("index2.html")
 
 	if err != nil {
 		fmt.Println("File reading error", err)
@@ -200,7 +200,7 @@ func getFile() string {
 		bufferLen += count
 		buffer.Write(part[:count])
 	}
-	// fmt.Println("home")
+	fmt.Println("home")
 	return buffer.String()
 	// contentType = "text/html"
 	// headers = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", bufferLen, contentType, buffer)
@@ -215,6 +215,7 @@ func send(conn net.Conn, d string, c string) {
 func createHeader(d string, contentType string) string {
 
 	contentLength := len(d)
+
 	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, d)
 	// fmt.Println(headers)
 	return headers
@@ -286,13 +287,13 @@ func decrement(orderQuantity int, id int) bool {
 		return false
 	}
 	fmt.Println("new quantity: ", newQuantity)
-	db.Query("update products set quantity_in_stock = ? where product_id = ? ", newQuantity, id)
+	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", newQuantity, id)
 
 	return true
 }
 
 func insert(user string, id int, q int) {
-	db.Query("INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
+	db.Exec("INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
 }
 
 func preorder(user string, productId int, orderQuantity int) bool {
