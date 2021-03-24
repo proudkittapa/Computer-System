@@ -19,7 +19,7 @@ type Messagee struct {
 }
 
 func send6(conn net.Conn, host string, m string, p string) {
-	//fmt.Println("sent")
+	fmt.Println("sent")
 	userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
