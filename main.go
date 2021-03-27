@@ -285,7 +285,7 @@ func send2(conn net.Conn, h string) {
 //create header function
 func createHeader2(httpStatus string) string {
 	// contentLength := len(d)
-	headers := fmt.Sprintf("HTTP/1.1 %s OK\r\n", httpStatus)
+	headers := fmt.Sprintf("HTTP/1.1 %s\r\n", httpStatus)
 	return headers
 }
 
