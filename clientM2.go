@@ -46,11 +46,12 @@ func recv(conn net.Conn) {
 
 	// conn.Close()
 	fmt.Print(message)
-	if message == "HTTP/1.1 429" {
-		count_Fail++
-	} else {
+//	if message == "HTTP/1.1 429" {
+//		fmt.Println("hihihihi")
+//		count_Fail++
+//	} else {
 		count_Res++
-	}
+//	}
 }
 
 func client6(wg *sync.WaitGroup, m string, p string, userId int) {
