@@ -18,6 +18,7 @@ type Messagee struct {
 	Quantity int
 }
 
+var mutex sync.Mutex
 var users int = 10000
 
 func send6(conn net.Conn, host string, m string, p string) {
