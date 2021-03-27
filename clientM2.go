@@ -17,7 +17,7 @@ type Messagee struct {
 	Name     string
 	Quantity int
 }
-users = 1000
+var users int = 60000
 func send6(conn net.Conn, host string, m string, p string) {
 	fmt.Println("sent")
 	userid++
@@ -73,9 +73,9 @@ func main() {
 	for i := 0; i < users; i++ {
 		wg.Add(1)
 
-		go client6(&wg, "GET", "/")
- //		go client6(&wg, "GET", "/products")
-//		go client6(&wg, "GET", "/products/2")
+//		client6(&wg, "GET", "/")
+//		go client6(&wg, "GET", "/products")
+		client6(&wg, "GET", "/products/1")
 //		go client6(&wg, "POST", "/products/3")
 	}
 	wg.Wait()

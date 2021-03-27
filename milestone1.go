@@ -95,13 +95,16 @@ func req(conn net.Conn) {
 		fmt.Println("length", len(p))
 		if p[1] == "" {
 			home(conn, method)
+			break
 		} else if p[1] == "products" {
 			if (len(p) > 2) && (p[2] != "") {
 				result := getJson(message)
 				fmt.Println(result)
 				productWithID(conn, method, p[2], result)
+				break
 			} else {
-				products(conn, method)
+				products(conn, method)	
+				break
 			}
 
 		}
