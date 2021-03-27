@@ -46,6 +46,8 @@ func recv(conn net.Conn) {
 
 	// conn.Close()
 	fmt.Println(message)
+	fmt.Println(message == "HTTP/1.1 429\r\n")
+	fmt.Println(message == "HTTP/1.1 429")
 	if message == "HTTP/1.1 429\r\n" {
 		count_Fail++
 	} else {
