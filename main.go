@@ -171,17 +171,23 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	if method == "GET" {
 		mutex.Lock()
 		d := cache(i)
-		if d == "error" {
+		for d == "error" {
 			fmt.Println(d)
-			mutex.Unlock()
-			send2(conn, "429")
-			//time.Sleep(3 * time.Second)
-		} else {
-			fmt.Println("dhfajksdhfkalsdf")
-			mutex.Unlock()
-			c := "application/json"
-			send(conn, d, c)
 		}
+		mutex.Unlock()
+		c := "application/json"
+		send(conn, d, c)
+		// if d == "error" {
+		// 	fmt.Println(d)
+		// 	mutex.Unlock()
+		// 	send2(conn, "429")
+		// 	//time.Sleep(3 * time.Second)
+		// } else {
+		// 	fmt.Println("dhfajksdhfkalsdf")
+		// 	mutex.Unlock()
+		// 	c := "application/json"
+		// 	send(conn, d, c)
+		// }
 		// mutex.Unlock()
 		// c := "application/json"
 		// send(conn, d, c)
