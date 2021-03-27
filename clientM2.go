@@ -45,7 +45,7 @@ func recv(conn net.Conn) {
 	}
 
 	// conn.Close()
-	fmt.Print(message)
+	fmt.Println(message)
 	if message == "HTTP/1.1 429" {
 		fmt.Println("hihihihi")
 		count_Fail++
