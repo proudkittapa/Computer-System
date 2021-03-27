@@ -22,14 +22,14 @@ var mutex sync.Mutex
 var users int = 10000
 
 func send6(conn net.Conn, host string, m string, p string) {
-	fmt.Println("sent:", userid)
+	// fmt.Println("sent:", userid)
 	//	fmt.Println("sent")
-	userid++
+	// userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
 		fmt.Fprintf(conn, createH(m, p, userid))
 	} else {
-		fmt.Println("sent POST")
+		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userid))
 	}
 }
@@ -48,7 +48,7 @@ func recv(conn net.Conn) {
 	fmt.Print(message)
 }
 
-func client6(wg *sync.WaitGroup, m string, p string) {
+func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 	// t0 := time.Now()
 	host := "localhost:8080"
 	conn, err := net.Dial("tcp", ":8080")
@@ -56,9 +56,10 @@ func client6(wg *sync.WaitGroup, m string, p string) {
 		count_Fail++
 		log.Fatalln(err)
 	}
-	mutex.Lock()
+	fmt.Println("sent", userId)
+	// mutex.Lock()
 	send6(conn, host, m, p)
-	mutex.Unlock()
+	// mutex.Unlock()
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
@@ -81,7 +82,7 @@ func main() {
 
 		//		client6(&wg, "GET", "/")
 		//		go client6(&wg, "GET", "/products")
-		go client6(&wg, "GET", "/products/1")
+		go client6(&wg, "GET", "/products/1", i)
 		//		go client6(&wg, "POST", "/products/1")
 	}
 	wg.Wait()
