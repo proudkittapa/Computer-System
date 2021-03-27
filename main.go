@@ -171,6 +171,9 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	if method == "GET" {
 		mutex.Lock()
 		d := cache(i)
+		if d == "error" {
+			send2(conn, "429")
+		}
 		mutex.Unlock()
 		c := "application/json"
 		send(conn, d, c)
@@ -275,6 +278,17 @@ func createHeader(d string, contentType string) string {
 	return headers
 }
 
+func send2(conn net.Conn, h string) {
+	fmt.Fprintf(conn, createHeader2(h))
+}
+
+//create header function
+func createHeader2(httpStatus string) string {
+	// contentLength := len(d)
+	headers := fmt.Sprintf("HTTP/1.1 %s OK\r\n", httpStatus)
+	return headers
+}
+
 func checkErr(err error) (a bool) {
 	a = true
 	if err != nil {
@@ -303,6 +317,7 @@ func db_query(id int) string {
 	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 	if checkErr(err) == false {
 		fmt.Println("error in db_query")
+
 		return "error"
 	}
 
@@ -311,7 +326,6 @@ func db_query(id int) string {
 		var quantity int
 		var price int
 		err = rows.Scan(&name, &quantity, &price)
-
 		result := data{Name: name, Quantity: quantity, Price: price}
 		byteArray, err := json.Marshal(result)
 		checkErr(err)
