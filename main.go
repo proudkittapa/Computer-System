@@ -309,6 +309,7 @@ func cache(id int) string {
 		fmt.Println("----------HIT----------")
 		return val
 	} else {
+		fmt.Println("----------MISS----------")
 		return db_query(id)
 	}
 }
@@ -317,8 +318,6 @@ func db_query(id int) string {
 	start := time.Now()
 	// db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
 	// checkErr(err)
-
-	fmt.Println("----------MISS----------")
 
 	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 	if checkErr(err) == false {
