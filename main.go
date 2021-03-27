@@ -171,18 +171,18 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	if method == "GET" {
 		mutex.Lock()
 		d := cache(i)
-		// if d == "error" {
-		// 	mutex.Unlock()
-		// 	send2(conn, "429")
-		// 	//time.Sleep(3 * time.Second)
-		// } else {
-		// 	mutex.Unlock()
-		// 	c := "application/json"
-		// 	send(conn, d, c)
-		// }
-		mutex.Unlock()
-		c := "application/json"
-		send(conn, d, c)
+		if d == "error" {
+			mutex.Unlock()
+			send2(conn, "429")
+			//time.Sleep(3 * time.Second)
+		} else {
+			mutex.Unlock()
+			c := "application/json"
+			send(conn, d, c)
+		}
+		// mutex.Unlock()
+		// c := "application/json"
+		// send(conn, d, c)
 	} else if method == "POST" {
 		fmt.Println("here")
 		fmt.Println(result.Quantity)
@@ -334,9 +334,6 @@ func db_query(id int) string {
 		result := data{Name: name, Quantity: quantity, Price: price}
 		byteArray, err := json.Marshal(result)
 		checkErr(err)
-		if checkErr(err) == false {
-			fmt.Println("error in rows.Next()")
-		}
 
 		mp[id] = string(byteArray)
 
