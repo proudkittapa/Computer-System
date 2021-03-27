@@ -22,6 +22,7 @@ var users int = 10000
 
 func send6(conn net.Conn, host string, m string, p string) {
 	fmt.Println("sent:", userid)
+//	fmt.Println("sent")
 	userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
