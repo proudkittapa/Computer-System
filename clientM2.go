@@ -19,9 +19,6 @@ type Messagee struct {
 }
 <<<<<<< HEAD
 var users int = 60000
-=======
-var users = 10000
->>>>>>> 3feb38056fc518e6945929caa15df07b677c0dd6
 func send6(conn net.Conn, host string, m string, p string) {
 	fmt.Println("sent")
 	userid++
@@ -77,22 +74,10 @@ func main() {
 	for i := 0; i < users; i++ {
 		wg.Add(1)
 
-<<<<<<< HEAD
 //		client6(&wg, "GET", "/")
 //		go client6(&wg, "GET", "/products")
-		client6(&wg, "GET", "/products/1")
-=======
-		go client6(&wg, "GET", "/")
-<<<<<<< HEAD
-		// go client6(&wg, "GET", "/products")
-		// go client6(&wg, "GET", "/products/2")
+		go client6(&wg, "GET", "/products/1")
 		// go client6(&wg, "POST", "/products/3")
-=======
- //		go client6(&wg, "GET", "/products")
-//		go client6(&wg, "GET", "/products/2")
->>>>>>> 3feb38056fc518e6945929caa15df07b677c0dd6
-//		go client6(&wg, "POST", "/products/3")
->>>>>>> 2f9b17cf2208603153e5b249335f1316533f96de
 	}
 	wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
