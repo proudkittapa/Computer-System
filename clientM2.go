@@ -17,7 +17,7 @@ type Messagee struct {
 	Name     string
 	Quantity int
 }
-<<<<<<< HEAD
+
 var users int = 60000
 func send6(conn net.Conn, host string, m string, p string) {
 	fmt.Println("sent")
