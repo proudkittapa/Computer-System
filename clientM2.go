@@ -43,9 +43,14 @@ func recv(conn net.Conn) {
 		log.Println("failed to read contents")
 		return
 	}
-	count_Res++
+
 	// conn.Close()
 	fmt.Print(message)
+	if message == "HTTP/1.1 429" {
+		count_Fail++
+	} else {
+		count_Res++
+	}
 }
 
 func client6(wg *sync.WaitGroup, m string, p string, userId int) {
@@ -57,9 +62,7 @@ func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 		log.Fatalln(err)
 	}
 	fmt.Println("sent", userId)
-	// mutex.Lock()
 	send6(conn, host, m, p)
-	// mutex.Unlock()
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
