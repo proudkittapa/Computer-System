@@ -171,9 +171,9 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	if method == "GET" {
 		mutex.Lock()
 		d := cache(i)
-		for d == "error" {
-			fmt.Println(d)
-		}
+		// for d == "error" {
+		// 	fmt.Println(d)
+		// }
 		mutex.Unlock()
 		c := "application/json"
 		send(conn, d, c)
@@ -328,10 +328,16 @@ func db_query(id int) string {
 	// checkErr(err)
 
 	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-	if checkErr(err) == false {
+	// if checkErr(err) == false {
+	// 	fmt.Println("error in db_query")
+
+	// 	return "error"
+	// }
+
+	for checkErr(err) == false {
 		fmt.Println("error in db_query")
 
-		return "error"
+		// return "error"
 	}
 
 	for rows.Next() {
