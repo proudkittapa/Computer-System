@@ -118,6 +118,23 @@ func db_query(id int) (val string) {
 	return val
 }
 
+func (l *lru_cache) Display() {
+	node := l.head
+	for node != nil {
+		fmt.Printf("%+v ->", node.id)
+		node = node.next
+	}
+	fmt.Println()
+}
+
+func Display(node *node) {
+	for node != nil {
+		fmt.Printf("%v ->", node.id)
+		node = node.next
+	}
+	fmt.Println()
+}
+
 func main() {
 
 	// var c lru_cache
@@ -126,9 +143,19 @@ func main() {
 	c := cache_cons(5)
 	fmt.Println(c.limit)
 	c.cache(1)
+	c.Display()
 	c.cache(2)
+	c.Display()
 	c.cache(3)
+	c.Display()
 	c.cache(4)
+	c.Display()
 	c.cache(1)
+	c.Display()
 	c.cache(1)
+	c.Display()
+	c.cache(5)
+	c.Display()
+	c.cache(6)
+	c.Display()
 }
