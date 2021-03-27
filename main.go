@@ -172,13 +172,15 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 		mutex.Lock()
 		d := cache(i)
 		if d == "error" {
+			mutex.Unlock()
 			send2(conn, "429")
-//			time.Sleep(3 * time.Second)
+			//			time.Sleep(3 * time.Second)
 			return
+		} else {
+			mutex.Unlock()
+			c := "application/json"
+			send(conn, d, c)
 		}
-		mutex.Unlock()
-		c := "application/json"
-		send(conn, d, c)
 	} else if method == "POST" {
 		fmt.Println("here")
 		fmt.Println(result.Quantity)
