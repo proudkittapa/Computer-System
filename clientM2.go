@@ -42,16 +42,15 @@ func recv(conn net.Conn) {
 		count_Fail++
 		log.Println("failed to read contents")
 		return
-	}
-
-	// conn.Close()
-	fmt.Println(message)
-	fmt.Println(message == "HTTP/1.1 429\r\n")
-	fmt.Println(message == "HTTP/1.1 429")
-	if message == "HTTP/1.1 429\r\n" {
-		count_Fail++
 	} else {
-		count_Res++
+
+		// conn.Close()
+		fmt.Println(message)
+		if message == "HTTP/1.1 429\r\n" {
+			count_Fail++
+		} else {
+			count_Res++
+		}
 	}
 }
 
@@ -66,6 +65,7 @@ func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 	fmt.Println("sent", userId)
 	send6(conn, host, m, p, userId)
 	recv(conn)
+
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
 	// <-ch
