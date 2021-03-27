@@ -22,7 +22,7 @@ var users int = 10000
 
 func send6(conn net.Conn, host string, m string, p string) {
 	fmt.Println("sent:", userid)
-//	fmt.Println("sent")
+	//	fmt.Println("sent")
 	userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
@@ -55,7 +55,9 @@ func client6(wg *sync.WaitGroup, m string, p string) {
 		count_Fail++
 		log.Fatalln(err)
 	}
+	mutex.Lock()
 	send6(conn, host, m, p)
+	mutex.Unlock()
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
