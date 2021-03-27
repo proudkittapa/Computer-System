@@ -275,10 +275,13 @@ func createHeader(d string, contentType string) string {
 	return headers
 }
 
-func checkErr(err error) {
+func checkErr(err error) (a bool) {
+	a = true
 	if err != nil {
 		fmt.Println("check err", err)
+		a = false
 	}
+	return
 }
 
 func cache(id int) string {
@@ -298,7 +301,9 @@ func db_query(id int) string {
 	fmt.Println("----------MISS----------")
 
 	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-	checkErr(err)
+	if checkErr(err) == false {
+		fmt.Println("error in db_query")
+	}
 
 	for rows.Next() {
 		var name string
@@ -309,6 +314,9 @@ func db_query(id int) string {
 		result := data{Name: name, Quantity: quantity, Price: price}
 		byteArray, err := json.Marshal(result)
 		checkErr(err)
+		if checkErr(err) == false {
+			fmt.Println("error in rows.Next()")
+		}
 
 		mp[id] = string(byteArray)
 
