@@ -173,6 +173,7 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 		d := cache(i)
 		if d == "error" {
 			send2(conn, "429")
+			time.Sleep(3 * time.Second)
 		}
 		mutex.Unlock()
 		c := "application/json"
