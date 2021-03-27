@@ -336,7 +336,7 @@ func db_query(id int) string {
 
 	for checkErr(err) == false {
 		fmt.Println("error in db_query")
-
+		time.Sleep(100 * time.Millisecond)
 		// return "error"
 	}
 
