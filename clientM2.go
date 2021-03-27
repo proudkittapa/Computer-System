@@ -21,16 +21,16 @@ type Messagee struct {
 var mutex sync.Mutex
 var users int = 10000
 
-func send6(conn net.Conn, host string, m string, p string) {
+func send6(conn net.Conn, host string, m string, p string, userId int) {
 	// fmt.Println("sent:", userid)
 	//	fmt.Println("sent")
 	// userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
-		fmt.Fprintf(conn, createH(m, p, userid))
+		fmt.Fprintf(conn, createH(m, p, userId))
 	} else {
 		// fmt.Println("sent POST")
-		fmt.Fprintf(conn, createHP(userid))
+		fmt.Fprintf(conn, createHP(userId))
 	}
 }
 
@@ -46,12 +46,12 @@ func recv(conn net.Conn) {
 
 	// conn.Close()
 	fmt.Print(message)
-//	if message == "HTTP/1.1 429" {
-//		fmt.Println("hihihihi")
-//		count_Fail++
-//	} else {
+	if message == "HTTP/1.1 429" {
+		fmt.Println("hihihihi")
+		count_Fail++
+	} else {
 		count_Res++
-//	}
+	}
 }
 
 func client6(wg *sync.WaitGroup, m string, p string, userId int) {
@@ -63,14 +63,14 @@ func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 		log.Fatalln(err)
 	}
 	fmt.Println("sent", userId)
-	send6(conn, host, m, p)
+	send6(conn, host, m, p, userId)
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
 	// <-ch
 }
 
-var userid = 0
+// var userid = 0
 var count_Res = 0
 var count_Fail = 0
 
