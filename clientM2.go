@@ -19,7 +19,7 @@ type Messagee struct {
 }
 
 var mutex sync.Mutex
-var users int = 10000
+var users int = 20000
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
 	// fmt.Println("sent:", userid)
@@ -42,15 +42,14 @@ func recv(conn net.Conn) {
 		count_Fail++
 		log.Println("failed to read contents")
 		return
-	} else {
+	}
 
-		// conn.Close()
-		fmt.Println(message)
-		if message == "HTTP/1.1 429\r\n" {
-			count_Fail++
-		} else {
-			count_Res++
-		}
+	// conn.Close()
+	fmt.Println(message)
+	if message == "HTTP/1.1 429\r\n" {
+		count_Fail++
+	} else {
+		count_Res++
 	}
 }
 
