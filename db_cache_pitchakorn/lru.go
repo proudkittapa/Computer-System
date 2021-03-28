@@ -5,8 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+)
+
+var (
+	db *sql.DB
 )
 
 func checkErr(err error) {
@@ -93,8 +98,6 @@ func (l *lru_cache) add(node *node) {
 }
 
 func db_query(id int) (val string) {
-	db, err := sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
-	checkErr(err)
 
 	// fmt.Println("----------MISS----------")
 
@@ -114,6 +117,7 @@ func db_query(id int) (val string) {
 
 		val = string(byteArray)
 		// fmt.Println(val)
+		rows.Close()
 	}
 	return val
 }
@@ -136,26 +140,19 @@ func Display(node *node) {
 }
 
 func main() {
+	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 
-	// var c lru_cache
-	// c := lru_cache{limit: 5, mp: make(map[int]*node, 5)}
-	// c.cache_cons(5)
-	c := cache_cons(5)
-	fmt.Println(c.limit)
-	c.cache(1)
-	c.Display()
-	c.cache(2)
-	c.Display()
-	c.cache(3)
-	c.Display()
-	c.cache(4)
-	c.Display()
-	c.cache(1)
-	c.Display()
-	c.cache(1)
-	c.Display()
-	c.cache(5)
-	c.Display()
-	c.cache(6)
-	c.Display()
+	// defer profile.Start(profile.MemProfile).Stop()
+
+	c := cache_cons(1000)
+
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 2; j++ {
+			start := time.Now()
+			c.cache(i)
+			end := time.Since(start)
+			fmt.Printf("%v\n", end)
+		}
+	}
+
 }
