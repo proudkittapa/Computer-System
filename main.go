@@ -299,14 +299,14 @@ func checkErr(err error) (a bool) {
 }
 
 func cache(id int) string {
-	// if val, ok := mp[id]; ok {
-	// 	fmt.Println("----------HIT----------")
-	// 	return val
-	// } else {
-	// 	fmt.Println("----------MISS----------")
-	// 	return db_query(id)
-	// }
-	return db_query(id)
+	if val, ok := mp[id]; ok {
+		fmt.Println("----------HIT----------")
+		return val
+	} else {
+		fmt.Println("----------MISS----------")
+		return db_query(id)
+	}
+	// return db_query(id)
 }
 
 func db_query(id int) string {
