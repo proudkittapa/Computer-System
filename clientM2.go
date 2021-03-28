@@ -86,7 +86,7 @@ func main() {
 
 		//		client6(&wg, "GET", "/")
 		//		go client6(&wg, "GET", "/products")
-		go client6(&wg, "GET", "/products/1", i)
+		client6(&wg, "GET", "/products/1", i)
 		//		go client6(&wg, "POST", "/products/1")
 	}
 	wg.Wait()
