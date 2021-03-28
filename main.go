@@ -171,26 +171,11 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	if method == "GET" {
 		mutex.Lock()
 		d := cache(i)
-		// for d == "error" {
-		// 	fmt.Println(d)
-		// }
+
 		mutex.Unlock()
 		c := "application/json"
 		send(conn, d, c)
-		// if d == "error" {
-		// 	fmt.Println(d)
-		// 	mutex.Unlock()
-		// 	send2(conn, "429")
-		// 	//time.Sleep(3 * time.Second)
-		// } else {
-		// 	fmt.Println("dhfajksdhfkalsdf")
-		// 	mutex.Unlock()
-		// 	c := "application/json"
-		// 	send(conn, d, c)
-		// }
-		// mutex.Unlock()
-		// c := "application/json"
-		// send(conn, d, c)
+
 	} else if method == "POST" {
 		fmt.Println("here")
 		fmt.Println(result.Quantity)
@@ -328,18 +313,12 @@ func db_query(id int) string {
 	// checkErr(err)
 	for {
 		rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-		// if checkErr(err) == false {
-		// 	fmt.Println("error in db_query")
-
-		// 	return "error"
-		// }
 
 		if checkErr(err) == false {
-			fmt.Println("error in db_query")
+			// fmt.Println("error in db_query")
 			time.Sleep(100 * time.Millisecond)
 			continue
 		}
-		// return "error"
 
 		for rows.Next() {
 			var name string
