@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -47,7 +46,7 @@ func cache_cons(cap int) lru_cache {
 func (list *lru_cache) cache(id int) string {
 	if val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
-		list.move_front(val)
+		list.move(val)
 		// fmt.Println(val.value)
 		return val.value
 	} else {
@@ -60,12 +59,13 @@ func (list *lru_cache) cache(id int) string {
 		node := node{id: id, value: json}
 		list.add(&node)
 		list.mp[id] = &node
-		return ""
+		fmt.Println(node.value)
+		return node.value
 		// return val.value
 	}
 }
 
-func (l *lru_cache) move_front(node *node) {
+func (l *lru_cache) move(node *node) {
 	if node == l.end {
 		return
 	}
@@ -146,13 +146,16 @@ func main() {
 
 	c := cache_cons(1000)
 
-	for i := 0; i < 10; i++ {
-		for j := 0; j < 2; j++ {
-			start := time.Now()
-			c.cache(i)
-			end := time.Since(start)
-			fmt.Printf("%v\n", end)
-		}
-	}
+	// for i := 0; i < 10; i++ {
+	// 	for j := 0; j < 2; j++ {
+	// 		start := time.Now()
+	// 		c.cache(i)
+	// 		end := time.Since(start)
+	// 		fmt.Printf("%v\n", end)
+	// 	}
+	// }
+
+	c.cache(500)
+	c.cache(500)
 
 }
