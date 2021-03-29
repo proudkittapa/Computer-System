@@ -51,8 +51,9 @@ func preorder(user string, productId int, orderQuantity int) {
 	fmt.Println(newQuantity)
 	_, err = tx2.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(productId))
 	if err != nil {
-		panic(err)
+		//panic(err)
 		tx2.Rollback()
+		return
 	}
 	fmt.Println("updated")
 
@@ -67,6 +68,7 @@ func preorder(user string, productId int, orderQuantity int) {
 	//insert
 	tx3, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
+		fmt.Println("e4")
 		panic(err)
 	}
 	tx3.Exec("set transaction isolation level SERIALIZABLE")
@@ -83,9 +85,8 @@ func preorder(user string, productId int, orderQuantity int) {
 }
 func main() {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
-
 	end := make(chan int)
-	for i := 1; i < 100; i++ {
+	for i := 1; i < 20; i++ {
 		go preorder(strconv.Itoa(i), 1, 5)
 	}
 	for i := range end {
