@@ -1,3 +1,4 @@
+/*
 package cacheFile
 
 func getFile(filename string) string {
@@ -44,3 +45,4 @@ func getFile(filename string) string {
 	// headers = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", bufferLen, contentType, buffer)
 
 }
+*/
