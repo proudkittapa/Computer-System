@@ -52,7 +52,7 @@ func (list *lru_cache) cache(id int) string {
 	} else {
 		fmt.Println("-----------MISS-----------")
 		if len(list.mp) >= list.limit {
-			rm := list.remove(list.head)
+			rm := list.remove(list.end)
 			delete(list.mp, rm)
 		}
 		json := db_query(id)
@@ -65,35 +65,38 @@ func (list *lru_cache) cache(id int) string {
 	}
 }
 
-func (l *lru_cache) move(node *node) {
-	if node == l.end {
+func (list *lru_cache) move(node *node) {
+	if node == list.head {
 		return
 	}
-	l.remove(node)
-	l.add(node)
+	list.remove(node)
+	list.add(node)
 }
 
-func (l *lru_cache) remove(node *node) int {
-	if node == l.end {
-		l.end = l.end.prev
-	} else if node == l.head {
-		l.head = l.head.next
+func (list *lru_cache) remove(node *node) int {
+	if node == list.end {
+		fmt.Println("con 1")
+		list.end = list.end.prev
+	} else if node == list.head {
+		fmt.Println("con 2")
+		list.head = list.head.next
 	} else {
+		fmt.Println("con 3")
 		node.prev.next = node.next
 		node.next.prev = node.prev
 	}
 	return node.id
 }
 
-func (l *lru_cache) add(node *node) {
-	if l.end != nil {
-		l.end.next = node
-		node.prev = l.end
-		node.next = nil
+func (list *lru_cache) add(node *node) {
+	if list.head != nil {
+		list.head.prev = node
+		node.next = list.head
+		node.prev = nil
 	}
-	l.end = node
-	if l.head == nil {
-		l.head = node
+	list.head = node
+	if list.end == nil {
+		list.end = node
 	}
 }
 
@@ -147,15 +150,31 @@ func main() {
 	c := cache_cons(1000)
 
 	// for i := 0; i < 10; i++ {
-	// 	for j := 0; j < 2; j++ {
-	// 		start := time.Now()
-	// 		c.cache(i)
-	// 		end := time.Since(start)
-	// 		fmt.Printf("%v\n", end)
-	// 	}
+	//  for j := 0; j < 2; j++ {
+	//      start := time.Now()
+	//      c.cache(i)
+	//      end := time.Since(start)
+	//      fmt.Printf("%v\n", end)
+	//  }
 	// }
 
-	c.cache(500)
-	c.cache(500)
+	c.cache(1)
+	// c.Display()
+	fmt.Println("end: ", c.end)
+	fmt.Println("head: ", c.head)
+	c.cache(2)
+	// c.Display()
+	fmt.Println("end: ", c.end)
+	fmt.Println("head: ", c.head)
+	c.cache(1)
+	// c.Display()
+	fmt.Println("end: ", c.end)
+	fmt.Println("head: ", c.head)
+	c.cache(3)
+	c.cache(4)
+	c.cache(5)
+	c.cache(6)
+	fmt.Println("end: ", c.end)
+	fmt.Println("head: ", c.head)
 
 }
