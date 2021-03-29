@@ -234,16 +234,6 @@ func getFile(filename string) string {
 		}
 	}()
 
-	aboutfile, err := file.stat()
-	if err != nil {
-		fmt.Println("error to get info of file")
-		return
-	}
-
-	filesize := aboutfile.Size()
-	endding := filesize - 1
-	sizelast := 0
-
 	chunksize := 512
 	reader := bufio.NewReader(f)
 	part := make([]byte, chunksize)
