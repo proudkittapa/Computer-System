@@ -1,6 +1,6 @@
-/*
-package cacheFile
 
+package cacheFile
+/*
 func getFile(filename string) string {
 	// call_cache(filename)
 	start := time.Now()
