@@ -105,24 +105,21 @@ func db_query(id int) (val string) {
 
 	// fmt.Println("----------MISS----------")
 
-	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+	var name string
+	var quantity int
+	var price int
+	err := rows.Scan(&name, &quantity, &price)
 	checkErr(err)
 
-	for rows.Next() {
-		var name string
-		var quantity int
-		var price int
-		err = rows.Scan(&name, &quantity, &price)
+	result := data{Name: name, Quantity: quantity, Price: price}
+	byteArray, err := json.Marshal(result)
+	checkErr(err)
+	// fmt.Println(len(byteArray))
 
-		result := data{Name: name, Quantity: quantity, Price: price}
-		byteArray, err := json.Marshal(result)
-		checkErr(err)
-		// fmt.Println(len(byteArray))
+	val = string(byteArray)
+	// fmt.Println(val)
 
-		val = string(byteArray)
-		// fmt.Println(val)
-		rows.Close()
-	}
 	return val
 }
 
