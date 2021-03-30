@@ -68,7 +68,6 @@ func main() {
 
 func handle(conn net.Conn) {
 	defer conn.Close()
-	defer db.Close()
 	req(conn)
 
 }
@@ -313,7 +312,9 @@ func cache(id int) string {
 }
 
 func db_query(id int) string {
-	start := time.Now()
+	// start := time.Now()
+	defer db.Close()
+
 	// db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
 	// checkErr(err)
 	for {
@@ -336,7 +337,7 @@ func db_query(id int) string {
 
 		mp[id] = string(byteArray)
 		val := mp[id]
-		fmt.Printf("time query from db: %v\n", time.Since(start))
+		// fmt.Printf("time query from db: %v\n", time.Since(start))
 		return val
 		/*
 
