@@ -55,6 +55,8 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 	defer li.Close()
+	defer db.Close()
+
 	for {
 		conn, err := li.Accept()
 
@@ -313,7 +315,6 @@ func cache(id int) string {
 
 func db_query(id int) string {
 	// start := time.Now()
-	defer db.Close()
 
 	// db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
 	// checkErr(err)
