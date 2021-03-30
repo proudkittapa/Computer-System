@@ -41,7 +41,7 @@ type respond struct {
 var count int = 0
 
 func main() {
-
+	db, _ = sql.Open("mysql", "root:62011139@tcp(178.128.94.63:3306)/prodj")
 	li, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -103,7 +103,7 @@ func req(conn net.Conn) {
 				productWithID(conn, method, p[2], result)
 				break
 			} else {
-				products(conn, method)	
+				products(conn, method)
 				break
 			}
 
@@ -231,8 +231,8 @@ func checkErr(err error) {
 }
 
 func db_query(id int) (val string) {
-	db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
-	checkErr(err)
+	// db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
+	// checkErr(err)
 
 	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 	checkErr(err)
@@ -309,7 +309,7 @@ func preorder(user string, productId int, orderQuantity int) bool {
 }
 
 func postPreorder(id int, q int) bool {
-	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
+	// db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
 	success := preorder("1", id, q) //userID, ID, quantity
 	return success
 }
