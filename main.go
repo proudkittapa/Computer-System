@@ -44,13 +44,12 @@ type respond struct {
 	Msg string `json:"msg"`
 }
 
-var product display
-
 // var count int = 0
 //178.128.94.63
 
 func main() {
 	db, _ = sql.Open("mysql", "root:62011139@tcp(178.128.94.63:3306)/prodj")
+	db.SetMaxIdleConns(100000)
 	li, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -351,9 +350,9 @@ func display_pro() (val string) {
 		l = append(l, val)
 	}
 
-	product = display{Product: l}
+	result := display{Product: l}
 
-	byteArray, err := json.Marshal(product)
+	byteArray, err := json.Marshal(result)
 	checkErr(err)
 
 	val = string(byteArray)
