@@ -344,7 +344,7 @@ func db_query(id int) string {
 
 func display_pro() (val string) {
 	var l []string
-	for i := 1; i <= 10; i++ {
+	for i := 1; i <= 1; i++ {
 		val := db_query(i)
 		l = append(l, val)
 	}
