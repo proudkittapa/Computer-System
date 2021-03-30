@@ -20,6 +20,7 @@ type Messagee struct {
 
 var mutex sync.Mutex
 var users int = 30000
+var c = 0
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
 	// fmt.Println("sent:", userid)
@@ -51,6 +52,7 @@ func recv(conn net.Conn) {
 	} else {
 		count_Res++
 	}
+
 }
 
 func client6(wg *sync.WaitGroup, m string, p string, userId int) {
@@ -61,10 +63,13 @@ func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 		count_Fail++
 		log.Fatalln(err)
 	}
+	c++
+	fmt.Println("current open con:", c)
 	fmt.Println("sent", userId)
 	send6(conn, host, m, p, userId)
 	recv(conn)
-
+	c--
+	fmt.Println("current close con:", c)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
 	// <-ch
