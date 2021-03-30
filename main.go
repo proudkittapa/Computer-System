@@ -44,6 +44,8 @@ type respond struct {
 	Msg string `json:"msg"`
 }
 
+var product display
+
 // var count int = 0
 //178.128.94.63
 
@@ -349,9 +351,9 @@ func display_pro() (val string) {
 		l = append(l, val)
 	}
 
-	result := display{Product: l}
+	product = display{Product: l}
 
-	byteArray, err := json.Marshal(result)
+	byteArray, err := json.Marshal(product)
 	checkErr(err)
 
 	val = string(byteArray)
