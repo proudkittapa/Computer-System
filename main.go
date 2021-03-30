@@ -68,6 +68,7 @@ func main() {
 
 func handle(conn net.Conn) {
 	defer conn.Close()
+	defer db.Close()
 	req(conn)
 
 }
