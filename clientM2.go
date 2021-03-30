@@ -64,12 +64,12 @@ func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 		log.Fatalln(err)
 	}
 	c++
-	fmt.Println("current open con:", c)
+	fmt.Println("current con:", c)
 	fmt.Println("sent", userId)
 	send6(conn, host, m, p, userId)
 	recv(conn)
 	c--
-	fmt.Println("current close con:", c)
+	fmt.Println("current con:", c)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
 	// <-ch
