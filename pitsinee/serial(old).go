@@ -48,8 +48,8 @@ func decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 
 	_, err := tx.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(id))
 	if err != nil {
-		transactionC <- "rollback"
 		tx.Rollback()
+		transactionC <- "rollback"
 		return
 	}
 	transactionC <- "done"
@@ -62,28 +62,30 @@ func insert(tx *sql.Tx, user string, id int, q int) {
 		tx.Rollback()
 		return
 	}
-	if err := tx.Commit(); err != nil {
-		fmt.Printf("Failed to commit tx3: %v\n", err)
-	}
+
 }
 
 func preorder(end chan int, user string, productId int, orderQuantity int) {
+
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
 		panic(err)
 	}
 	// fmt.Printf("start\n")
-	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	//start := time.Now()
+
 	transactionC := make(chan string)
 	t := make(chan int)
 	go getQuantity(tx, t, productId)
 	go decrement(tx, t, transactionC, orderQuantity, productId)
-	<-transactionC // wait for all go routines
 	if <-transactionC == "rollback" {
 		preorder(end, user, productId, orderQuantity)
+		return
 	}
-	go insert(tx, user, productId, orderQuantity)
+	// go insert(tx, user, productId, orderQuantity)
+	if err := tx.Commit(); err != nil {
+		fmt.Printf("Failed to commit tx: %v\n", err)
+	}
 	//fmt.Printf("time: %v\n", time.Since(start))
 	num, _ := strconv.Atoi(user)
 	end <- num
@@ -92,13 +94,14 @@ func preorder(end chan int, user string, productId int, orderQuantity int) {
 }
 func main() {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
+	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	ctx = context.Background()
 
 	end := make(chan int)
 	for i := 1; i < 10; i++ {
 		go preorder(end, strconv.Itoa(i), 1, 5)
 	}
-	for i := range end {
-		fmt.Println(i)
+	for i := 1; i < 10; i++ {
+		<-end
 	}
 }
