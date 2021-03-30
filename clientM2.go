@@ -19,7 +19,7 @@ type Messagee struct {
 }
 
 var mutex sync.Mutex
-var users int = 10000
+var users int = 1000
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
 	// fmt.Println("sent:", userid)
