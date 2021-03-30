@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -36,7 +37,7 @@ type lru_cache struct {
 	limit int
 	mp    map[int]*node
 	head  *node
-	end   *node
+	last  *node
 }
 
 func cache_cons(cap int) lru_cache {
@@ -52,14 +53,14 @@ func (list *lru_cache) cache(id int) string {
 	} else {
 		fmt.Println("-----------MISS-----------")
 		if len(list.mp) >= list.limit {
-			rm := list.remove(list.end)
+			rm := list.remove(list.last)
 			delete(list.mp, rm)
 		}
 		json := db_query(id)
 		node := node{id: id, value: json}
 		list.add(&node)
 		list.mp[id] = &node
-		fmt.Println(node.value)
+		// fmt.Println(node.value)
 		return node.value
 		// return val.value
 	}
@@ -74,14 +75,14 @@ func (list *lru_cache) move(node *node) {
 }
 
 func (list *lru_cache) remove(node *node) int {
-	if node == list.end {
-		fmt.Println("con 1")
-		list.end = list.end.prev
+	if node == list.last {
+		// fmt.Println("con 1")
+		list.last = list.last.prev
 	} else if node == list.head {
-		fmt.Println("con 2")
+		// fmt.Println("con 2")
 		list.head = list.head.next
 	} else {
-		fmt.Println("con 3")
+		// fmt.Println("con 3")
 		node.prev.next = node.next
 		node.next.prev = node.prev
 	}
@@ -95,8 +96,8 @@ func (list *lru_cache) add(node *node) {
 		node.prev = nil
 	}
 	list.head = node
-	if list.end == nil {
-		list.end = node
+	if list.last == nil {
+		list.last = node
 	}
 }
 
@@ -125,56 +126,58 @@ func db_query(id int) (val string) {
 	return val
 }
 
-func (l *lru_cache) Display() {
-	node := l.head
-	for node != nil {
-		fmt.Printf("%+v ->", node.id)
-		node = node.next
-	}
-	fmt.Println()
-}
+// func (l *lru_cache) Display() {
+// 	node := l.head
+// 	for node != nil {
+// 		fmt.Printf("%+v ->", node.id)
+// 		node = node.next
+// 	}
+// 	fmt.Println()
+// }
 
-func Display(node *node) {
-	for node != nil {
-		fmt.Printf("%v ->", node.id)
-		node = node.next
-	}
-	fmt.Println()
-}
+// func Display(node *node) {
+// 	for node != nil {
+// 		fmt.Printf("%v ->", node.id)
+// 		node = node.next
+// 	}
+// 	fmt.Println()
+// }
 
 func main() {
 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 
 	// defer profile.Start(profile.MemProfile).Stop()
 
-	c := cache_cons(1000)
+	c := cache_cons(10000)
 
-	// for i := 0; i < 10; i++ {
-	//  for j := 0; j < 2; j++ {
-	//      start := time.Now()
-	//      c.cache(i)
-	//      end := time.Since(start)
-	//      fmt.Printf("%v\n", end)
-	//  }
-	// }
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 2; j++ {
+			start := time.Now()
+			c.cache(i)
+			last := time.Since(start)
+			fmt.Printf("%v\n", last)
+		}
+	}
 
-	c.cache(1)
-	// c.Display()
-	fmt.Println("end: ", c.end)
-	fmt.Println("head: ", c.head)
-	c.cache(2)
-	// c.Display()
-	fmt.Println("end: ", c.end)
-	fmt.Println("head: ", c.head)
-	c.cache(1)
-	// c.Display()
-	fmt.Println("end: ", c.end)
-	fmt.Println("head: ", c.head)
-	c.cache(3)
-	c.cache(4)
-	c.cache(5)
-	c.cache(6)
-	fmt.Println("end: ", c.end)
-	fmt.Println("head: ", c.head)
+	fmt.Printf("%T\n", c.mp)
+
+	// c.cache(1)
+	// // c.Display()
+	// fmt.Println("last: ", c.last)
+	// fmt.Println("head: ", c.head)
+	// c.cache(2)
+	// // c.Display()
+	// fmt.Println("last: ", c.last)
+	// fmt.Println("head: ", c.head)
+	// c.cache(1)
+	// // c.Display()
+	// fmt.Println("last: ", c.last)
+	// fmt.Println("head: ", c.head)
+	// c.cache(3)
+	// c.cache(4)
+	// c.cache(5)
+	// c.cache(6)
+	// fmt.Println("last: ", c.last)
+	// fmt.Println("head: ", c.head)
 
 }
