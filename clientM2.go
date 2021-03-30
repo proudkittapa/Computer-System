@@ -19,7 +19,7 @@ type Messagee struct {
 }
 
 var mutex sync.Mutex
-var users int = 100
+var users int = 1000
 var c = 0
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
@@ -92,7 +92,7 @@ func main() {
 		// client6(&wg, "GET", "/", i) //30000
 		go client6(&wg, "GET", "/products", i)
 		// client6(&wg, "GET", "/products/1", i)
-		//		go client6(&wg, "POST", "/products/1")
+		//	go client6(&wg, "POST", "/products/1")
 	}
 	wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
