@@ -49,7 +49,7 @@ type respond struct {
 
 func main() {
 	db, _ = sql.Open("mysql", "root:62011139@tcp(178.128.94.63:3306)/prodj")
-	db.SetMaxIdleConns(100000)
+	db.SetMaxIdleConns(10000000)
 	li, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln(err.Error())
