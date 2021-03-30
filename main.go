@@ -316,30 +316,47 @@ func db_query(id int) string {
 	// db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
 	// checkErr(err)
 	for {
-		rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+		//rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+		rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+		// if checkErr(err) == false {
+		// 	// fmt.Println("error in db_query")
+		// 	time.Sleep(100 * time.Millisecond)
+		// 	continue
+		// }
+		var name string
+		var quantity int
+		var price int
+		err := rows.Scan(&name, &quantity, &price)
+		checkErr(err)
 
-		if checkErr(err) == false {
-			// fmt.Println("error in db_query")
-			time.Sleep(100 * time.Millisecond)
-			continue
-		}
+		result := data{Name: name, Quantity: quantity, Price: price}
+		byteArray, err := json.Marshal(result)
+		checkErr(err)
 
-		for rows.Next() {
-			var name string
-			var quantity int
-			var price int
-			err = rows.Scan(&name, &quantity, &price)
-			result := data{Name: name, Quantity: quantity, Price: price}
-			byteArray, err := json.Marshal(result)
-			checkErr(err)
-
-			mp[id] = string(byteArray)
-
-		}
-		rows.Close()
+		mp[id] = string(byteArray)
 		val := mp[id]
 		fmt.Printf("time query from db: %v\n", time.Since(start))
 		return val
+		/*
+
+			for rows.Next() {
+				var name string
+				var quantity int
+				var price int
+				err = rows.Scan(&name, &quantity, &price)
+				result := data{Name: name, Quantity: quantity, Price: price}
+				byteArray, err := json.Marshal(result)
+				checkErr(err)
+
+				mp[id] = string(byteArray)
+
+			}
+			rows.Close()
+
+			val := mp[id]
+			fmt.Printf("time query from db: %v\n", time.Since(start))
+			return val
+		*/
 	}
 }
 
