@@ -179,7 +179,7 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 }
 
 func getFile() string {
-	f, err := os.Open("index2.html")
+	f, err := os.Open("../pre-order/index.html")
 
 	if err != nil {
 		fmt.Println("File reading error", err)
