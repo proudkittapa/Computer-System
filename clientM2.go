@@ -84,8 +84,8 @@ func main() {
 	for i := 0; i < users; i++ {
 		wg.Add(1)
 
-		//client6(&wg, "GET", "/", i) //30000
-		client6(&wg, "GET", "/products", i)
+		client6(&wg, "GET", "/", i) //30000
+		// client6(&wg, "GET", "/products", i)
 		// client6(&wg, "GET", "/products/1", i)
 		//		go client6(&wg, "POST", "/products/1")
 	}
