@@ -53,11 +53,11 @@ func cache_cons(cap int) lru_cache {
 }
 
 func (list *lru_cache) cache(id int) string {
-	if node, ok := list.mp[id]; ok {
+	if node_val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
-		list.move(node)
+		list.move(node_val)
 		// fmt.Println(val.value)
-		return node.value
+		return node_val.value
 	} else {
 		fmt.Println("-----------MISS-----------")
 		if len(list.mp) >= list.limit {
@@ -134,7 +134,17 @@ func db_query(id int) (val string) {
 	return val
 }
 
-func saveFile(map )
+func saveFile(mp map[int]*node) {
+	var cache_list []kv
+
+	for productID := 1; productID < len(mp); productID++ {
+		temp_kv := kv{Key: productID, Value: mp[productID].value}
+		cache_list = append(cache_list, temp_kv)
+	}
+
+	fmt.Println(cache_list)
+
+}
 
 // func (l *lru_cache) Display() {
 // 	node := l.head
@@ -170,7 +180,9 @@ func main() {
 		}
 	}
 
-	fmt.Printf("%T\n", c.mp)
+	saveFile(c.mp)
+
+	// fmt.Printf("%T\n", c.mp)
 
 	// c.cache(1)
 	// // c.Display()
