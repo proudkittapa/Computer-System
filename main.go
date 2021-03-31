@@ -99,6 +99,8 @@ func req(conn net.Conn) {
 		if p[1] == "" {
 			home(conn, method, "pre-order/index.html", "text/html")
 			break
+		} else if p[1] == "text" {
+			sendText(conn)
 		} else if p[1] == "products" {
 			if (len(p) > 2) && (p[2] != "") {
 				fmt.Println("message", message)
@@ -144,6 +146,12 @@ func homeImg(conn net.Conn, method string, filename string, t string) {
 		d, _ := getImageFromFilePath(filename)
 		sendFile(conn, d, c)
 	}
+}
+
+func sendText(conn net.Conn) {
+	c := "text"
+	d := "send text"
+	send(conn, d, c)
 }
 
 func getImageFromFilePath(filePath string) (image.Image, error) {
