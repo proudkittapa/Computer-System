@@ -90,6 +90,7 @@ func req(conn net.Conn) {
 			fmt.Fprintln(os.Stderr, err)
 		}
 		message := string(buffer[:n])
+		fmt.Println("mess", message)
 		if !strings.Contains(message, "HTTP") {
 			if _, err := conn.Write([]byte("Recieved\n")); err != nil {
 				log.Printf("failed to respond to client: %v\n", err)
@@ -157,10 +158,7 @@ func sendFileToClient(connection net.Conn) {
 	connection.Read(bufferFileSize)
 	fileSize, _ := strconv.ParseInt(strings.Trim(string(bufferFileSize), ":"), 10, 64)
 
-	// connection.Read(bufferFileName)
-	// fileName := strings.Trim(string(bufferFileName), ":")
-
-	newFile, err := os.Create("tempp.jpg")
+	newFile, err := os.Create("temp.jpg")
 
 	if err != nil {
 		panic(err)
