@@ -49,7 +49,7 @@ type chunk struct {
 
 func main() {
 	const BufferSize = 100
-	file, err := os.Open("text.txt")
+	file, err := os.Open("index.html")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -67,6 +67,7 @@ func main() {
 	}
 
 	filesize := int(fileinfo.Size())
+	fmt.Println(filesize)
 	// Number of go routines we need to spawn.
 	concurrency := filesize / BufferSize
 	// buffer sizes that each of the go routine below should use. ReadAt
