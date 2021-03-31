@@ -13,16 +13,6 @@
 // 	}
 // }()
 
-// aboutfile, err := file.stat()
-// if err != nil {
-// 	fmt.Println("error to get info of file")
-// 	return
-// }
-
-// filesize := aboutfile.Size()
-// endding := filesize - 1
-// sizelast := 0
-
 // chunksize := 512
 // reader := bufio.NewReader(f)
 // part := make([]byte, chunksize)
@@ -59,7 +49,7 @@ type chunk struct {
 
 func main() {
 	const BufferSize = 100
-	file, err := os.Open("index.html")
+	file, err := os.Open("text.txt")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -102,7 +92,7 @@ func main() {
 
 	var wg sync.WaitGroup
 	wg.Add(concurrency)
-	store := make([][]byte, concurrency)
+	store := make([]string, concurrency)
 
 	for i := 0; i < concurrency; i++ {
 		go func(chunksizes []chunk, i int) {
@@ -116,7 +106,7 @@ func main() {
 				fmt.Println(err)
 				return
 			}
-			store[i] = buffer
+			store[i] = string(buffer)
 			// fmt.Println("bytes read, string(bytestream): ", bytesread)
 			// fmt.Println("bytestream to string: ", string(buffer))
 		}(chunksizes, i)
@@ -125,8 +115,7 @@ func main() {
 	wg.Wait()
 	var text string
 	for i := 0; i < concurrency; i++ {
-		text += store[i].String()
+		text += store[i]
 	}
 	fmt.Println(text)
 }
-
