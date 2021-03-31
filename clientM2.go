@@ -22,7 +22,7 @@ type Messagee struct {
 	Quantity int
 }
 
-var img_name string = "IMG_4.jpg"
+var img_name string = "IMG_3.jpg"
 
 type PayInfo struct {
 	Name      string
