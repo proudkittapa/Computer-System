@@ -96,12 +96,12 @@ func main() {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	ctx = context.Background()
-
+	n := 10
 	end := make(chan int)
-	for i := 1; i < 10; i++ {
-		go preorder(end, strconv.Itoa(i), 1, 5)
+	for i := 1; i < n; i++ {
+		go preorder(end, strconv.Itoa(i), 1, n)
 	}
-	for i := 1; i < 10; i++ {
+	for i := 1; i < n; i++ {
 		<-end
 	}
 }
