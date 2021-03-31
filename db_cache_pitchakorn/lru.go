@@ -44,11 +44,11 @@ func cache_cons(cap int) lru_cache {
 }
 
 func (list *lru_cache) cache(id int) string {
-	if val, ok := list.mp[id]; ok {
+	if node, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
-		list.move(val)
+		list.move(node)
 		// fmt.Println(val.value)
-		return val.value
+		return node.value
 	} else {
 		fmt.Println("-----------MISS-----------")
 		if len(list.mp) >= list.limit {
