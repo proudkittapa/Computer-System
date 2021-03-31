@@ -21,7 +21,7 @@ func main() {
 const BUFFERSIZE = 1024
 
 func sendFileToServer(connection net.Conn) {
-	file, err := os.Open("IMG_3.jpg")
+	file, err := os.Open("IMG_4.jpg")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -31,11 +31,14 @@ func sendFileToServer(connection net.Conn) {
 		fmt.Println(err)
 		return
 	}
-	fileSize := fillString(strconv.FormatInt(fileInfo.Size(), 10), 10)
-	fileName := fillString(fileInfo.Name(), 64)
-	fmt.Println("Sending filename and filesize!")
+	// fileSize := fillString(strconv.FormatInt(fileInfo.Size(), 10), 10)
+	fileSize := strconv.FormatInt(fileInfo.Size(), 10)
+	// fileName := fillString(fileInfo.Name(), 64)
+	// var size int64 = fileInfo.Size()
+	// fileSize := make([]byte, size)
+	fmt.Println("Sending filesize!")
 	connection.Write([]byte(fileSize))
-	connection.Write([]byte(fileName))
+	// connection.Write([]byte(fileName))
 	sendBuffer := make([]byte, BUFFERSIZE)
 	fmt.Println("Start sending file!")
 	for {
@@ -49,17 +52,17 @@ func sendFileToServer(connection net.Conn) {
 	return
 }
 
-func fillString(retunString string, toLength int) string {
-	for {
-		lengtString := len(retunString)
-		if lengtString < toLength {
-			retunString = retunString + ":"
-			continue
-		}
-		break
-	}
-	return retunString
-}
+// func fillString(retunString string, toLength int) string {
+// 	for {
+// 		lengtString := len(retunString)
+// 		if lengtString < toLength {
+// 			retunString = retunString + ":"
+// 			continue
+// 		}
+// 		break
+// 	}
+// 	return retunString
+// }
 
 func receive(connection net.Conn) {
 	defer connection.Close()
