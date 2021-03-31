@@ -43,6 +43,10 @@ func send6(conn net.Conn, host string, m string, p string, userId int) {
 	if m == "GET" {
 		// fmt.Println("sent GET")
 		fmt.Fprintf(conn, createH(m, p, userId))
+	} else if m == "POST" && p == "/payment" {
+		// fmt.Println("sent POST, img")
+		fmt.Fprintf(conn, createHPimg(conn, userId))
+		send_file(conn)
 	} else {
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userId))
@@ -165,7 +169,7 @@ func createHPimg(conn net.Conn, u int) string {
 
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
 		method, path, host, contentLength, contentType, string(jsonData), userID)
-	send_file(conn)
+
 	return headers
 }
 
