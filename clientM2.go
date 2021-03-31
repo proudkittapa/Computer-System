@@ -58,7 +58,7 @@ func recv(conn net.Conn) {
 func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 	// t0 := time.Now()
 	host := "209.97.165.170:8080"
-	conn, err := net.Dial("tcp", ":8080")
+	conn, err := net.Dial("tcp", "209.97.165.170:8080")
 	if err != nil {
 		count_Fail++
 		log.Fatalln(err)
