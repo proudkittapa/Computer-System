@@ -135,7 +135,7 @@ func createH(methodd string, pathh string, u int) string {
 func createHP(u int) string {
 	userID := u
 	method := "POST"
-	path := "/products/" + str(rand.Intn(100))
+	path := "/products/" + string(rand.Intn(100))
 	host := "209.97.165.170:8080"
 	contentLength := 20
 	contentType := "application/json"
