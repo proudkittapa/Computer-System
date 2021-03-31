@@ -27,6 +27,8 @@ type display struct {
 	Product []string `json:"Product"`
 }
 
+const BUFFERSIZE = 1024
+
 var mp map[int]string = make(map[int]string)
 var cacheObject cacheFile.Cache = cacheFile.NewCache()
 
