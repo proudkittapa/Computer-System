@@ -33,7 +33,7 @@ type PayInfo struct {
 }
 
 var mutex sync.Mutex
-var users int = 35000
+var users int = 10
 var c = 0
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
