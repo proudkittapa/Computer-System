@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -143,7 +144,9 @@ func saveFile(mp map[int]*node) {
 	}
 
 	tempCache := jsonCache{Cache: cache_list}
+
 	jsonCacheList, _ := json.Marshal(tempCache)
+	_ = ioutil.WriteFile("cacheSave.json", jsonCacheList, 0644)
 
 	fmt.Println(string(jsonCacheList))
 	// fmt.Println(cache_list)
