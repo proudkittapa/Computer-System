@@ -18,7 +18,7 @@ func main() {
 	receive(connection)
 }
 
-// const BUFFERSIZE = 1024
+const BUFFERSIZE = 1024
 
 func sendFileToServer(connection net.Conn) {
 	file, err := os.Open("IMG_3.jpg")
