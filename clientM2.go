@@ -57,7 +57,7 @@ func recv(conn net.Conn) {
 
 func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 	// t0 := time.Now()
-	host := "localhost:8080"
+	host := "209.97.165.170:8080"
 	conn, err := net.Dial("tcp", ":8080")
 	if err != nil {
 		count_Fail++
@@ -110,7 +110,7 @@ func createH(methodd string, pathh string, u int) string {
 	userID := u
 	method := methodd
 	path := pathh
-	host := "127.0.0.1:8080"
+	host := "209.97.165.170:8080"
 	contentLength := 0
 	contentType := "text"
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n userID:%d",
@@ -122,7 +122,7 @@ func createHP(u int) string {
 	userID := u
 	method := "POST"
 	path := "/products/1"
-	host := "127.0.0.1:8080"
+	host := "209.97.165.170:8080"
 	contentLength := 20
 	contentType := "application/json"
 	jsonStr := Messagee{Name: "mos", Quantity: 2}
