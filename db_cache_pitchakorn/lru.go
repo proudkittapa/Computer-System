@@ -142,7 +142,10 @@ func saveFile(mp map[int]*node) {
 		cache_list = append(cache_list, temp_kv)
 	}
 
-	fmt.Println(cache_list)
+	jsonCacheList, err := json.Marshal(cache_list)
+	fmt.Println(jsonCacheList)
+
+	// fmt.Println(cache_list)
 
 }
 
