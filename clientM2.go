@@ -7,8 +7,11 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net"
+	"os"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -16,6 +19,16 @@ import (
 type Messagee struct {
 	Name     string
 	Quantity int
+}
+
+var img_name string = "IMG_4.jpg"
+
+type PayInfo struct {
+	Name      string
+	ProductID int
+	Date      string
+	Time      string
+	imageName string
 }
 
 var mutex sync.Mutex
@@ -133,4 +146,70 @@ func createHP(u int) string {
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
 		method, path, host, contentLength, contentType, string(jsonData), userID)
 	return headers
+}
+
+func createHPimg(conn net.Conn, u int) string {
+	userID := u
+	method := "POST"
+	path := "/payment"
+	host := "127.0.0.1:8080"
+
+	contentType := "image/jpg"
+	jsonStr := PayInfo{Name: "Kanga", ProductID: 1123, Date: "20/02/21", Time: "12.00", imageName: img_name}
+	jsonData, err := json.Marshal(jsonStr)
+	if err != nil {
+		fmt.Println(err)
+	}
+	contentLength := len(string(jsonData))
+
+	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
+		method, path, host, contentLength, contentType, string(jsonData), userID)
+	send_file(conn)
+	return headers
+}
+
+const BUFFERSIZE = 1024
+
+func send_file(conn net.Conn) {
+	file, err := os.Open(img_name)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fileInfo, err := file.Stat()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fileSize := fillString(strconv.FormatInt(fileInfo.Size(), 10), 10)
+	// fileSize := strconv.FormatInt(fileInfo.Size(), 10)
+	// fileName := fillString(fileInfo.Name(), 64)
+	// var size int64 = fileInfo.Size()
+	// fileSize := make([]byte, size)
+	fmt.Println("Send filesize!")
+	conn.Write([]byte(fileSize))
+	// connection.Write([]byte(fileName))
+	sendBuffer := make([]byte, BUFFERSIZE)
+	fmt.Println("Start sending file!")
+	for {
+		_, err = file.Read(sendBuffer)
+		if err == io.EOF {
+			break
+		}
+		conn.Write(sendBuffer)
+	}
+	fmt.Println("File has been sent")
+	return
+}
+
+func fillString(retunString string, toLength int) string {
+	for {
+		lengtString := len(retunString)
+		if lengtString < toLength {
+			retunString = retunString + ":"
+			continue
+		}
+		break
+	}
+	return retunString
 }

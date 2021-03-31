@@ -14,13 +14,18 @@ import (
 )
 
 type Messagee struct {
+	Name     string
+	Quantity int
+}
+type PayInfo struct {
 	Name      string
 	ProductID int
 	Date      string
 	Time      string
 	imageName string
 }
-img_name = "IMG_4.jpg"
+
+var img_name string = "IMG_4.jpg"
 
 func send6(conn net.Conn, host string, m string, p string) {
 	fmt.Println("sent")
@@ -28,9 +33,9 @@ func send6(conn net.Conn, host string, m string, p string) {
 	if m == "GET" {
 		// fmt.Println("sent GET")
 		fmt.Fprintf(conn, createHG(p, userid))
-	} else if m == "POSE" && p == "/payment"{
+	} else if m == "POST" && p == "/payment" {
 		// fmt.Println("sent POST, img")
-		fmt.Fprintf(createHPimg(conn, userid))
+		fmt.Fprintf(conn, createHPimg(conn, userid))
 	} else {
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userid))
@@ -128,7 +133,7 @@ func createHPimg(conn net.Conn, u int) string {
 	host := "127.0.0.1:8080"
 
 	contentType := "image/jpg"
-	jsonStr := Messagee{Name: "Kanga", ProductID: 1123, Date: "20/02/21", Time: "12.00", imageName: img_name}
+	jsonStr := PayInfo{Name: "Kanga", ProductID: 1123, Date: "20/02/21", Time: "12.00", imageName: img_name}
 	jsonData, err := json.Marshal(jsonStr)
 	if err != nil {
 		fmt.Println(err)
@@ -160,7 +165,7 @@ func send_file(conn net.Conn) {
 	// var size int64 = fileInfo.Size()
 	// fileSize := make([]byte, size)
 	fmt.Println("Send filesize!")
-	connection.Write([]byte(fileSize))
+	conn.Write([]byte(fileSize))
 	// connection.Write([]byte(fileName))
 	sendBuffer := make([]byte, BUFFERSIZE)
 	fmt.Println("Start sending file!")
@@ -169,7 +174,7 @@ func send_file(conn net.Conn) {
 		if err == io.EOF {
 			break
 		}
-		connection.Write(sendBuffer)
+		conn.Write(sendBuffer)
 	}
 	fmt.Println("File has been sent")
 	return

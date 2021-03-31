@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"image"
+	"io"
 	"log"
 	"net"
 	"os"
@@ -104,6 +105,9 @@ func req(conn net.Conn) {
 		} else if p[1] == "text" {
 			sendText(conn)
 			break
+		} else if p[1] == "payment" {
+			sendFile(conn)
+			break
 		} else if p[1] == "products" {
 			if (len(p) > 2) && (p[2] != "") {
 				fmt.Println("message", message)
@@ -141,6 +145,36 @@ func getJson(message string) data {
 		fmt.Println("data", result)
 	}
 	return result
+}
+func sendFileToClient(connection net.Conn) {
+	// defer connection.Close()
+	fmt.Println("Connected to server, start receiving file size")
+	// bufferFileName := make([]byte, 64)
+	bufferFileSize := make([]byte, 10)
+
+	connection.Read(bufferFileSize)
+	fileSize, _ := strconv.ParseInt(strings.Trim(string(bufferFileSize), ":"), 10, 64)
+
+	// connection.Read(bufferFileName)
+	// fileName := strings.Trim(string(bufferFileName), ":")
+
+	newFile, err := os.Create("tempp.jpg")
+
+	if err != nil {
+		panic(err)
+	}
+	defer newFile.Close()
+	var receivedBytes int64
+	for {
+		if (fileSize - receivedBytes) < BUFFERSIZE {
+			io.CopyN(newFile, connection, (fileSize - receivedBytes))
+			connection.Read(make([]byte, (receivedBytes+BUFFERSIZE)-fileSize))
+			break
+		}
+		io.CopyN(newFile, connection, BUFFERSIZE)
+		receivedBytes += BUFFERSIZE
+	}
+	fmt.Println("Received file completely!")
 }
 
 func homeImg(conn net.Conn, method string, filename string, t string) {
