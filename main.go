@@ -18,6 +18,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/pkg/profile"
 )
 
 type display struct {
@@ -48,7 +49,7 @@ type respond struct {
 //178.128.94.63
 
 func main() {
-
+	defer profile.Start().Stop()
 	li, err := net.Listen("tcp", ":8080")
 	db, _ = sql.Open("mysql", "root:62011139@tcp(178.128.94.63:3306)/prodj")
 	// db.SetMaxIdleConns(200000)
