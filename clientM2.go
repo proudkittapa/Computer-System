@@ -19,7 +19,7 @@ type Messagee struct {
 }
 
 var mutex sync.Mutex
-var users int = 30000
+var users int = 35000
 var c = 0
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
@@ -58,7 +58,7 @@ func recv(conn net.Conn) {
 func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 	// t0 := time.Now()
 	host := "209.97.165.170:8080"
-	conn, err := net.Dial("tcp", ":8080")
+	conn, err := net.Dial("tcp", "209.97.165.170:8080")
 	if err != nil {
 		count_Fail++
 		log.Fatalln(err)
