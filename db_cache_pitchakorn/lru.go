@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -39,16 +40,25 @@ type lru_cache struct {
 	last  *node
 }
 
+type kv struct {
+	Key   int    `json:"key"`
+	Value string `json:"value"`
+}
+
+type jsonCache struct {
+	Cache []kv `json:"cache"`
+}
+
 func cache_cons(cap int) lru_cache {
 	return lru_cache{limit: cap, mp: make(map[int]*node, cap)}
 }
 
 func (list *lru_cache) cache(id int) string {
-	if val, ok := list.mp[id]; ok {
+	if node_val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
-		list.move(val)
+		list.move(node_val)
 		// fmt.Println(val.value)
-		return val.value
+		return node_val.value
 	} else {
 		fmt.Println("-----------MISS-----------")
 		if len(list.mp) >= list.limit {
@@ -125,7 +135,22 @@ func db_query(id int) (val string) {
 	return val
 }
 
-func save_file() {
+func saveFile(mp map[int]*node) {
+	var cache_list []kv
+
+	for productID := 1; productID < len(mp); productID++ {
+		temp_kv := kv{Key: productID, Value: mp[productID].value}
+		cache_list = append(cache_list, temp_kv)
+	}
+
+	tempCache := jsonCache{Cache: cache_list}
+
+	jsonCacheList, _ := json.Marshal(tempCache)
+	_ = ioutil.WriteFile("cacheSave.json", jsonCacheList, 0644)
+
+	fmt.Println(string(jsonCacheList))
+	// fmt.Println(cache_list)
+	// fmt.Println(tempCache)
 
 }
 
@@ -162,6 +187,8 @@ func main() {
 			fmt.Println(c.cache(i))
 		}
 	}
+
+	saveFile(c.mp)
 
 	// fmt.Printf("%T\n", c.mp)
 
