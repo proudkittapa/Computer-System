@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -105,22 +104,29 @@ func db_query(id int) (val string) {
 
 	// fmt.Println("----------MISS----------")
 
-	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-	var name string
-	var quantity int
-	var price int
-	err := rows.Scan(&name, &quantity, &price)
-	checkErr(err)
+	rows, _ := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 
-	result := data{Name: name, Quantity: quantity, Price: price}
-	byteArray, err := json.Marshal(result)
-	checkErr(err)
-	// fmt.Println(len(byteArray))
+	for rows.Next() {
+		var name string
+		var quantity int
+		var price int
+		err := rows.Scan(&name, &quantity, &price)
+		checkErr(err)
 
-	val = string(byteArray)
-	// fmt.Println(val)
+		result := data{Name: name, Quantity: quantity, Price: price}
+		byteArray, err := json.Marshal(result)
+		checkErr(err)
+		// fmt.Println(len(byteArray))
+
+		val = string(byteArray)
+		// fmt.Println(val)
+	}
 
 	return val
+}
+
+func save_file() {
+
 }
 
 // func (l *lru_cache) Display() {
@@ -145,18 +151,19 @@ func main() {
 
 	// defer profile.Start(profile.MemProfile).Stop()
 
-	c := cache_cons(10000)
+	c := cache_cons(10)
 
 	for i := 0; i < 10; i++ {
 		for j := 0; j < 2; j++ {
-			start := time.Now()
+			// start := time.Now()
 			c.cache(i)
-			last := time.Since(start)
-			fmt.Printf("%v\n", last)
+			// last := time.Since(start)
+			// fmt.Printf("%v\n", last)
+			fmt.Println(c.cache(i))
 		}
 	}
 
-	fmt.Printf("%T\n", c.mp)
+	// fmt.Printf("%T\n", c.mp)
 
 	// c.cache(1)
 	// // c.Display()
