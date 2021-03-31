@@ -106,7 +106,7 @@ func req(conn net.Conn) {
 			sendText(conn)
 			break
 		} else if p[1] == "payment" {
-			sendFile(conn)
+			sendFileToClient(conn)
 			break
 		} else if p[1] == "products" {
 			if (len(p) > 2) && (p[2] != "") {
