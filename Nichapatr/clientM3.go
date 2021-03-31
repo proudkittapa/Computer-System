@@ -11,6 +11,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -109,7 +110,7 @@ func createHP(conn net.Conn, u int) string {
 	host := "127.0.0.1:8080"
 
 	contentType := "image/jpg"
-	jsonStr := Messagee{Name: "Kanga", ProductID: 1123, Date: "20/02/21", Time: "12.00", imageName: "IMG_3.jpg"}
+	jsonStr := Messagee{Name: "Kanga", ProductID: 1123, Date: "20/02/21", Time: "12.00", imageName: "IMG_4.jpg"}
 	jsonData, err := json.Marshal(jsonStr)
 	if err != nil {
 		fmt.Println(err)
@@ -122,26 +123,28 @@ func createHP(conn net.Conn, u int) string {
 	return headers
 }
 
-func send_file(conn net.Conn) {
-	file, err := os.Open("IMG_3.jpg")
+const BUFFERSIZE = 1024
 
+func send_file(conn net.Conn) {
+	file, err := os.Open("IMG_4.jpg")
 	if err != nil {
 		fmt.Println(err)
-		os.Exit(1)
+		return
 	}
-
-	defer file.Close()
-
-	fileInfo, _ := file.Stat()
-	var size int64 = fileInfo.Size()
-	sendBuffer := make([]byte, size)
+	fileInfo, err := file.Stat()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fileSize := fillString(strconv.FormatInt(fileInfo.Size(), 10), 10)
+	// fileName := fillString(fileInfo.Name(), 64)
+	// var size int64 = fileInfo.Size()
+	// fileSize := make([]byte, size)
+	fmt.Println("Sending filename and filesize!")
+	conn.Write([]byte(fileSize))
+	// connection.Write([]byte(fileName))
+	sendBuffer := make([]byte, BUFFERSIZE)
 	fmt.Println("Start sending file!")
-
-	// read file into sendBuffer(bytes)
-	// buffer := bufio.NewReader(file)
-	// _, err = buffer.Read(sendBuffer)
-	// conn.Write(sendBuffer)
-
 	for {
 		_, err = file.Read(sendBuffer)
 		if err == io.EOF {
@@ -149,6 +152,18 @@ func send_file(conn net.Conn) {
 		}
 		conn.Write(sendBuffer)
 	}
-	fmt.Println("File has been sent, closing connection!")
+	fmt.Println("File has been sent")
 	return
+}
+
+func fillString(retunString string, toLength int) string {
+	for {
+		lengtString := len(retunString)
+		if lengtString < toLength {
+			retunString = retunString + ":"
+			continue
+		}
+		break
+	}
+	return retunString
 }
