@@ -39,6 +39,15 @@ type lru_cache struct {
 	last  *node
 }
 
+type kv struct {
+	Key   int    `json:"key"`
+	Value string `json:"value"`
+}
+
+type jsonCache struct {
+	Cache []kv `json:"cache"`
+}
+
 func cache_cons(cap int) lru_cache {
 	return lru_cache{limit: cap, mp: make(map[int]*node, cap)}
 }
@@ -125,9 +134,7 @@ func db_query(id int) (val string) {
 	return val
 }
 
-func save_file() {
-
-}
+func saveFile(map )
 
 // func (l *lru_cache) Display() {
 // 	node := l.head
@@ -163,7 +170,7 @@ func main() {
 		}
 	}
 
-	// fmt.Printf("%T\n", c.mp)
+	fmt.Printf("%T\n", c.mp)
 
 	// c.cache(1)
 	// // c.Display()
