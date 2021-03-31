@@ -101,6 +101,7 @@ func req(conn net.Conn) {
 			break
 		} else if p[1] == "text" {
 			sendText(conn)
+			break
 		} else if p[1] == "products" {
 			if (len(p) > 2) && (p[2] != "") {
 				fmt.Println("message", message)
