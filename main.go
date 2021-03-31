@@ -157,6 +157,7 @@ func sendFileToClient(connection net.Conn) {
 
 	connection.Read(bufferFileSize)
 	fileSize, _ := strconv.ParseInt(strings.Trim(string(bufferFileSize), ":"), 10, 64)
+	fmt.Println("fileSize", fileSize)
 
 	newFile, err := os.Create("temp.jpg")
 
