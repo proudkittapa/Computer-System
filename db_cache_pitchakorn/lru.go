@@ -159,10 +159,11 @@ func readFile() {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
 	checkErr(err)
 
-	var temp jsonCache
-	err = json.Unmarshal(fromFile, &temp)
+	var tempStruct jsonCache
+	err = json.Unmarshal(fromFile, &tempStruct)
 
-	fmt.Println(temp)
+	fmt.Println(tempStruct.Cache)
+	fmt.Printf("%T\n", tempStruct.Cache)
 }
 
 // func (l *lru_cache) Display() {
