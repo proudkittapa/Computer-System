@@ -155,6 +155,16 @@ func saveFile(mp map[int]*node) {
 
 }
 
+func readFile() {
+	fromFile, err := ioutil.ReadFile("cacheSave.json")
+	checkErr(err)
+
+	var temp jsonCache
+	err = json.Unmarshal(fromFile, &temp)
+
+	fmt.Println(temp)
+}
+
 // func (l *lru_cache) Display() {
 // 	node := l.head
 // 	for node != nil {
@@ -190,6 +200,7 @@ func main() {
 	}
 
 	// saveFile(c.mp)
+	readFile()
 
 	// fmt.Printf("%T\n", c.mp)
 
