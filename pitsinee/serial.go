@@ -73,6 +73,8 @@ func preorder(end chan int, user string, productId int, orderQuantity int) {
 	if err != nil {
 		panic(err)
 	}
+	//xType := fmt.Sprintf("%T", tx)
+	//fmt.Println(xType) // "[]int"
 	go getQuantity(t, tx, productId)
 	go decrement(t, tx, transactionC, orderQuantity, productId)
 	if <-transactionC == "rollback" {
@@ -93,8 +95,8 @@ func main() {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	n := 10
 	end := make(chan int, n-1)
-	for i := 1; i < n; i++ {
-		go preorder(end, strconv.Itoa(i), 1, 10)
+	for i := 1; i <= n; i++ {
+		go preorder(end, strconv.Itoa(i), 1, 1)
 	}
 	for i := 1; i < n; i++ {
 		<-end
