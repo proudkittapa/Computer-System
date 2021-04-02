@@ -109,7 +109,7 @@ func req(conn net.Conn) {
 			sendText(conn)
 			break
 		} else if p[1] == "payment" {
-			sendFileToClient(conn)
+			receiveFile(conn)
 			break
 		} else if p[1] == "products" {
 			if (len(p) > 2) && (p[2] != "") {
@@ -149,7 +149,7 @@ func getJson(message string) data {
 	}
 	return result
 }
-func sendFileToClient(connection net.Conn) {
+func receiveFile(connection net.Conn) {
 	// defer connection.Close()
 	fmt.Println("Connected to server, start receiving file size")
 	// bufferFileName := make([]byte, 64)
@@ -176,7 +176,8 @@ func sendFileToClient(connection net.Conn) {
 		io.CopyN(newFile, connection, BUFFERSIZE)
 		receivedBytes += BUFFERSIZE
 	}
-	fmt.Println("Received file completely!")
+	send(connection, "Received file completely!", "text")
+	// fmt.Println("Received file completely!")
 }
 
 func homeImg(conn net.Conn, method string, filename string, t string) {
