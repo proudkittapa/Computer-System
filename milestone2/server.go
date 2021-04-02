@@ -60,7 +60,7 @@ func main() {
 			log.Fatalln(err.Error())
 			continue
 		}
-		go shandle(conn)
+		go handle(conn)
 	}
 }
 
