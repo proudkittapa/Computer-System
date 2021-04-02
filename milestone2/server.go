@@ -291,7 +291,7 @@ func cache(id int) string {
 }
 
 func db_query(id int) string {
-	start := time.Now()
+	// start := time.Now()
 	// db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
 	// checkErr(err)
 
