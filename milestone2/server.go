@@ -315,7 +315,7 @@ func db_query(id int) string {
 	}
 	rows.Close()
 	val := mp[id]
-	fmt.Printf("time query from db: %v\n", time.Since(start))
+	// fmt.Printf("time query from db: %v\n", time.Since(start))
 	return val
 }
 
