@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strconv"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -148,10 +149,21 @@ func saveFile(mp map[int]*node) {
 	jsonCacheList, _ := json.Marshal(tempCache)
 	_ = ioutil.WriteFile("cacheSave.json", jsonCacheList, 0644)
 
-	fmt.Println(string(jsonCacheList))
+	// fmt.Println(string(jsonCacheList))
 	// fmt.Println(cache_list)
 	// fmt.Println(tempCache)
 
+}
+
+func readFile() {
+	fromFile, err := ioutil.ReadFile("cacheSave.json")
+	checkErr(err)
+
+	var tempStruct jsonCache
+	err = json.Unmarshal(fromFile, &tempStruct)
+
+	fmt.Println(tempStruct.Cache)
+	fmt.Printf("%T\n", tempStruct.Cache)
 }
 
 // func (l *lru_cache) Display() {
@@ -180,15 +192,16 @@ func main() {
 
 	for i := 0; i < 10; i++ {
 		for j := 0; j < 2; j++ {
-			// start := time.Now()
+			start := time.Now()
 			c.cache(i)
-			// last := time.Since(start)
-			// fmt.Printf("%v\n", last)
-			fmt.Println(c.cache(i))
+			end := time.Since(start)
+			fmt.Printf("%v\n", end)
+			// fmt.Println(c.cache(i))
 		}
 	}
 
-	saveFile(c.mp)
+	// saveFile(c.mp)
+	readFile()
 
 	// fmt.Printf("%T\n", c.mp)
 
