@@ -162,8 +162,13 @@ func readFile() {
 	var tempStruct jsonCache
 	err = json.Unmarshal(fromFile, &tempStruct)
 
-	fmt.Println(tempStruct.Cache)
-	fmt.Printf("%T\n", tempStruct.Cache)
+	t := tempStruct.Cache
+	// for i := 0; i < len(t); i++ {
+
+	// }
+
+	fmt.Println(t[0])
+	fmt.Printf("%T\n", t[0])
 }
 
 // func (l *lru_cache) Display() {
