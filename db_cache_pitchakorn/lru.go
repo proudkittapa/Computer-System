@@ -163,12 +163,13 @@ func readFile() {
 	err = json.Unmarshal(fromFile, &tempStruct)
 
 	t := tempStruct.Cache
+
 	// for i := 0; i < len(t); i++ {
 
 	// }
 
-	fmt.Println(t[0])
-	fmt.Printf("%T\n", t[0])
+	fmt.Println(t[0].Value)
+	fmt.Printf("%T\n", t[0].Value)
 }
 
 // func (l *lru_cache) Display() {
@@ -202,6 +203,7 @@ func main() {
 			end := time.Since(start)
 			fmt.Printf("%v\n", end)
 			// fmt.Println(c.cache(i))
+			// fmt.Printf("%T\n", c.cache(i))
 		}
 	}
 
