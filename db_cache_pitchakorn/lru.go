@@ -157,7 +157,7 @@ func saveFile(mp map[int]*node, lru lru_cache) {
 
 }
 
-func readFile() {
+func readFile() lru_cache {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
 	checkErr(err)
 
@@ -172,6 +172,7 @@ func readFile() {
 			node := node{id: j, value: t[i].Value}
 			c.add(&node)
 			c.mp[j] = &node
+			// fmt.Println(c)
 		}
 	}
 
@@ -181,6 +182,8 @@ func readFile() {
 	fmt.Printf("%T\n", c)
 	// fmt.Println(t[0].Value)
 	// fmt.Printf("%T\n", t[0].Value)
+
+	return c
 }
 
 // func (l *lru_cache) Display() {
