@@ -18,12 +18,16 @@ type Messagee struct {
 	Quantity int
 }
 
-func send6(conn net.Conn, host string, m string, p string) {
+//209.97.165.170
+var host = "209.97.165.170:8080"
+var users = 30000
+
+func send6(conn net.Conn, host string, m string, p string, userId int) {
 	//fmt.Println("sent")
 	userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
-		fmt.Fprintf(conn, createH(m, p, userid))
+		fmt.Fprintf(conn, createH(m, p, userId))
 	} else {
 		fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userid))
@@ -44,15 +48,16 @@ func recv(conn net.Conn) {
 	fmt.Print(message)
 }
 
-func client6(wg *sync.WaitGroup, m string, p string) {
+func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 	// t0 := time.Now()
-	host := "localhost:8080"
-	conn, err := net.Dial("tcp", ":8080")
+
+	conn, err := net.Dial("tcp", host)
 	if err != nil {
 		count_Fail++
 		log.Fatalln(err)
 	}
-	send6(conn, host, m, p)
+	fmt.Println("sent", userId)
+	send6(conn, host, m, p, userId)
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
@@ -70,13 +75,13 @@ func main() {
 	// flag.Parse()
 	var wg sync.WaitGroup
 	start := time.Now()
-	for i := 0; i < 10; i++ {
+	for i := 0; i < users; i++ {
 		wg.Add(1)
 
-		// go client6(&wg, "GET", "/")
-		//go client6(&wg, "GET", "/products")
-		// go client6(&wg, "GET", "/products/2")
-		go client6(&wg, "POST", "/products/5")
+		// go client6(&wg, "GET", "/", i)
+		//go client6(&wg, "GET", "/products", i)
+		// go client6(&wg, "GET", "/products/1", i)
+		go client6(&wg, "POST", "/products/1", i)
 	}
 	wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
@@ -93,7 +98,7 @@ func createH(methodd string, pathh string, u int) string {
 	userID := u
 	method := methodd
 	path := pathh
-	host := "127.0.0.1:8080"
+	// host := "127.0.0.1:8080"
 	contentLength := 0
 	contentType := "text"
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n userID:%d",
@@ -105,7 +110,7 @@ func createHP(u int) string {
 	userID := u
 	method := "POST"
 	path := "/products/1"
-	host := "127.0.0.1:8080"
+	// host := "127.0.0.1:8080"
 	contentLength := 20
 	contentType := "application/json"
 	jsonStr := Messagee{Name: "mos", Quantity: 2}
@@ -117,4 +122,3 @@ func createHP(u int) string {
 		method, path, host, contentLength, contentType, string(jsonData), userID)
 	return headers
 }
-
