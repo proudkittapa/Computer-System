@@ -164,14 +164,23 @@ func readFile() {
 	var tempStruct jsonCache
 	err = json.Unmarshal(fromFile, &tempStruct)
 
+	c := cache_cons(tempStruct.Limit)
+
 	t := tempStruct.Cache
-
 	for i := 0; i < len(t); i++ {
-
+		for j := 1; j <= len(t); j++ {
+			node := node{id: j, value: t[i].Value}
+			c.add(&node)
+			c.mp[j] = &node
+		}
 	}
 
-	fmt.Println(t[0].Value)
-	fmt.Printf("%T\n", t[0].Value)
+	// fmt.Println(tempStruct)
+
+	fmt.Println(c)
+	fmt.Printf("%T\n", c)
+	// fmt.Println(t[0].Value)
+	// fmt.Printf("%T\n", t[0].Value)
 }
 
 // func (l *lru_cache) Display() {
@@ -213,7 +222,7 @@ func main() {
 
 	// saveFile(c.mp, c)
 	// fmt.Println(c.limit)
-	// readFile()
+	readFile()
 
 	// fmt.Printf("%T\n", c.mp)
 
