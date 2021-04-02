@@ -160,7 +160,7 @@ func sendFileToClient(connection net.Conn) {
 	fileSize, _ := strconv.ParseInt(strings.Trim(string(bufferFileSize), ":"), 10, 64)
 	fmt.Println("fileSize", fileSize)
 
-	newFile, err := os.Create("temp.jpg")
+	newFile, err := os.Create("new.jpg")
 
 	if err != nil {
 		panic(err)
