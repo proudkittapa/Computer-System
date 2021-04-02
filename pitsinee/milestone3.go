@@ -87,7 +87,9 @@ func preorder(end chan int, user string, productId int, orderQuantity int) {
 	}
 	fmt.Println("success")
 	fmt.Println("-----------------------------------")
-	fmt.Printf("time: %v\n", time.Since(start))
+	//time2 := time.Since(start).UnixNano() / int64(time.Millisecond)
+	fmt.Println("time: \n", time.Since(start))
+	//fmt.Printf("time: ?\n", time)
 	num, _ := strconv.Atoi(user)
 	end <- num
 	return
@@ -97,7 +99,7 @@ func main() {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	ctx = context.Background()
-	n := 50
+	n := 5
 	end := make(chan int)
 	for i := 1; i <= n; i++ {
 		go preorder(end, strconv.Itoa(i), 1, 5)
