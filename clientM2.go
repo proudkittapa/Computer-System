@@ -36,6 +36,9 @@ var mutex sync.Mutex
 var users int = 1
 var c = 0
 
+//209.97.165.170
+var host = "localhost:8080"
+
 func send6(conn net.Conn, host string, m string, p string, userId int) {
 	// fmt.Println("sent:", userid)
 	//	fmt.Println("sent")
@@ -75,8 +78,8 @@ func recv(conn net.Conn) {
 
 func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 	// t0 := time.Now()
-	host := "209.97.165.170:8080"
-	conn, err := net.Dial("tcp", "209.97.165.170:8080")
+
+	conn, err := net.Dial("tcp", host)
 	if err != nil {
 		count_Fail++
 		log.Fatalln(err)
@@ -128,7 +131,7 @@ func createH(methodd string, pathh string, u int) string {
 	userID := u
 	method := methodd
 	path := pathh
-	host := "209.97.165.170:8080"
+	// host := "209.97.165.170:8080"
 	contentLength := 0
 	contentType := "text"
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n userID:%d",
@@ -140,7 +143,7 @@ func createHP(u int) string {
 	userID := u
 	method := "POST"
 	path := "/products/" + string(rand.Intn(100))
-	host := "209.97.165.170:8080"
+	// host := "209.97.165.170:8080"
 	contentLength := 20
 	contentType := "application/json"
 	jsonStr := Messagee{Name: "mos", Quantity: 2}
@@ -157,7 +160,7 @@ func createHPimg(conn net.Conn, u int) string {
 	userID := u
 	method := "POST"
 	path := "/payment"
-	host := "127.0.0.1:8080"
+	// host := "127.0.0.1:8080"
 
 	contentType := "image/jpg"
 	jsonStr := PayInfo{Name: "Kanga", ProductID: 1123, Date: "20/02/21", Time: "12.00", imageName: img_name}
