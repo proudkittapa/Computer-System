@@ -202,8 +202,10 @@ func main() {
 			c.cache(i)
 			end := time.Since(start)
 			fmt.Printf("%v\n", end)
-			// fmt.Println(c.cache(i))
-			// fmt.Printf("%T\n", c.cache(i))
+
+			t := c.cache(i)
+			fmt.Println(t)
+			fmt.Printf("%T\n", t)
 		}
 	}
 
