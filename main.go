@@ -156,7 +156,7 @@ func receiveFile(connection net.Conn) {
 	bufferFileSize := make([]byte, 10)
 
 	connection.Read(bufferFileSize)
-	// fmt.Println("connection", connection)
+	fmt.Println("connection", connection)
 	fileSize, _ := strconv.ParseInt(strings.Trim(string(bufferFileSize), ":"), 10, 64)
 	fmt.Println("fileSize", fileSize)
 
