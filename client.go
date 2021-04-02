@@ -50,7 +50,7 @@ func send6(conn net.Conn, host string, m string, p string, userId int) {
 		// fmt.Println("sent POST, img")
 		mutex.Lock()
 		fmt.Fprintf(conn, createHPimg(conn, userId))
-		mutex.Unlock()x
+		mutex.Unlock()
 		// time.Sleep(1 * time.Millisecond)
 		send_file(conn)
 	} else {
