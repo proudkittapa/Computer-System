@@ -1,10 +1,12 @@
-package main
+package db_cache_map
 
 import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"strconv"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -46,6 +48,7 @@ type kv struct {
 
 type jsonCache struct {
 	Cache []kv `json:"cache"`
+	Limit int  `json:"limit"`
 }
 
 func cache_cons(cap int) lru_cache {
@@ -134,7 +137,7 @@ func db_query(id int) (val string) {
 	return val
 }
 
-func saveFile(mp map[int]*node) {
+func saveFile(mp map[int]*node, lru lru_cache) {
 	var cache_list []kv
 
 	for productID := 1; productID < len(mp); productID++ {
@@ -142,13 +145,45 @@ func saveFile(mp map[int]*node) {
 		cache_list = append(cache_list, temp_kv)
 	}
 
-	tempCache := jsonCache{Cache: cache_list}
-	jsonCacheList, _ := json.Marshal(tempCache)
+	tempCache := jsonCache{Cache: cache_list, Limit: lru.limit}
+	fmt.Println(lru.limit)
 
-	fmt.Println(string(jsonCacheList))
+	jsonCacheList, _ := json.Marshal(tempCache)
+	_ = ioutil.WriteFile("cacheSave.json", jsonCacheList, 0644)
+
+	// fmt.Println(string(jsonCacheList))
 	// fmt.Println(cache_list)
 	// fmt.Println(tempCache)
 
+}
+
+func readFile() lru_cache {
+	fromFile, err := ioutil.ReadFile("cacheSave.json")
+	checkErr(err)
+
+	var tempStruct jsonCache
+	err = json.Unmarshal(fromFile, &tempStruct)
+
+	c := cache_cons(tempStruct.Limit)
+
+	t := tempStruct.Cache
+	for i := 0; i < len(t); i++ {
+		for j := 1; j <= len(t); j++ {
+			node := node{id: j, value: t[i].Value}
+			c.add(&node)
+			c.mp[j] = &node
+			// fmt.Println(c)
+		}
+	}
+
+	// fmt.Println(tempStruct)
+
+	fmt.Println(c)
+	fmt.Printf("%T\n", c)
+	// fmt.Println(t[0].Value)
+	// fmt.Printf("%T\n", t[0].Value)
+
+	return c
 }
 
 // func (l *lru_cache) Display() {
@@ -177,15 +212,20 @@ func main() {
 
 	for i := 0; i < 10; i++ {
 		for j := 0; j < 2; j++ {
-			// start := time.Now()
+			start := time.Now()
 			c.cache(i)
-			// last := time.Since(start)
-			// fmt.Printf("%v\n", last)
-			fmt.Println(c.cache(i))
+			end := time.Since(start)
+			fmt.Printf("%v\n", end)
+
+			// t := c.cache(i)
+			// fmt.Println(t)
+			// fmt.Printf("%T\n", t)
 		}
 	}
 
-	saveFile(c.mp)
+	// saveFile(c.mp, c)
+	// fmt.Println(c.limit)
+	readFile()
 
 	// fmt.Printf("%T\n", c.mp)
 
