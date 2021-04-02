@@ -100,7 +100,7 @@ func req(conn net.Conn) {
 				productWithID(conn, method, p[2], result)
 				break
 			} else {
-				fmt.Println("HI")
+				// fmt.Println("HI")
 				products(conn, method)
 				break
 			}
