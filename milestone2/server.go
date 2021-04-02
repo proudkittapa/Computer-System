@@ -47,7 +47,7 @@ type respond struct {
 // var count int = 0
 
 func main() {
-	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
+	db, _ = sql.Open("mysql", "root:62011139@tcp(178.128.94.63:3306)/prodj")
 	li, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -421,4 +421,3 @@ func postPreorder(id int, quantity int) bool {
 
 	return success
 }
-
