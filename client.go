@@ -48,8 +48,10 @@ func send6(conn net.Conn, host string, m string, p string, userId int) {
 		fmt.Fprintf(conn, createH(m, p, userId))
 	} else if m == "POST" && p == "/payment" {
 		// fmt.Println("sent POST, img")
+		mutex.Lock()
 		fmt.Fprintf(conn, createHPimg(conn, userId))
-		time.Sleep(1 * time.Millisecond)
+		mutex.Unlock()x
+		// time.Sleep(1 * time.Millisecond)
 		send_file(conn)
 	} else {
 		// fmt.Println("sent POST")
