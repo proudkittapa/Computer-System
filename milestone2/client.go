@@ -20,7 +20,7 @@ type Messagee struct {
 
 //209.97.165.170
 var host = "209.97.165.170:8080"
-var users = 30000
+var users = 10000
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
 	//fmt.Println("sent")
@@ -81,7 +81,7 @@ func main() {
 		// go client6(&wg, "GET", "/", i)
 		//go client6(&wg, "GET", "/products", i)
 		// go client6(&wg, "GET", "/products/1", i)
-		go client6(&wg, "POST", "/products/1", i)
+		client6(&wg, "POST", "/products/1", i)
 	}
 	wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
