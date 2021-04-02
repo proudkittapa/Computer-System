@@ -107,12 +107,12 @@ func req(conn net.Conn) {
 		} else if p[1] == "style.css" {
 			home(conn, method, "pre-order/style.css", "text/css")
 			break
-		} else if p[1] == "images" {
+		} /*else if p[1] == "images" {
 			f := p[2]
 			nf := "pre-order/images/" + f
 			homeImg(conn, method, nf, "image/apng")
 			break
-		}
+		}*/
 	}
 
 }
