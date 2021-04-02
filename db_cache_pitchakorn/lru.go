@@ -48,6 +48,7 @@ type kv struct {
 
 type jsonCache struct {
 	Cache []kv `json:"cache"`
+	Limit int  `json:"limit"`
 }
 
 func cache_cons(cap int) lru_cache {
@@ -136,7 +137,7 @@ func db_query(id int) (val string) {
 	return val
 }
 
-func saveFile(mp map[int]*node) {
+func saveFile(mp map[int]*node, lru lru_cache) {
 	var cache_list []kv
 
 	for productID := 1; productID < len(mp); productID++ {
@@ -144,7 +145,8 @@ func saveFile(mp map[int]*node) {
 		cache_list = append(cache_list, temp_kv)
 	}
 
-	tempCache := jsonCache{Cache: cache_list}
+	tempCache := jsonCache{Cache: cache_list, Limit: lru.limit}
+	fmt.Println(lru.limit)
 
 	jsonCacheList, _ := json.Marshal(tempCache)
 	_ = ioutil.WriteFile("cacheSave.json", jsonCacheList, 0644)
@@ -164,9 +166,9 @@ func readFile() {
 
 	t := tempStruct.Cache
 
-	// for i := 0; i < len(t); i++ {
+	for i := 0; i < len(t); i++ {
 
-	// }
+	}
 
 	fmt.Println(t[0].Value)
 	fmt.Printf("%T\n", t[0].Value)
@@ -203,14 +205,15 @@ func main() {
 			end := time.Since(start)
 			fmt.Printf("%v\n", end)
 
-			t := c.cache(i)
-			fmt.Println(t)
-			fmt.Printf("%T\n", t)
+			// t := c.cache(i)
+			// fmt.Println(t)
+			// fmt.Printf("%T\n", t)
 		}
 	}
 
-	// saveFile(c.mp)
-	readFile()
+	// saveFile(c.mp, c)
+	// fmt.Println(c.limit)
+	// readFile()
 
 	// fmt.Printf("%T\n", c.mp)
 
