@@ -78,9 +78,9 @@ func main() {
 	for i := 0; i < users; i++ {
 		wg.Add(1)
 
-		//client6(&wg, "GET", "/", i)
+		client6(&wg, "GET", "/", i)
 		//client6(&wg, "GET", "/products", i)
-		client6(&wg, "GET", "/products/1", i)
+		// client6(&wg, "GET", "/products/1", i)
 		// client6(&wg, "POST", "/products/1", i)
 	}
 	wg.Wait()
