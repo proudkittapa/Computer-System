@@ -227,7 +227,6 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	if method == "GET" {
 		mutex.Lock()
 		d := lru.Cache(i)
-
 		mutex.Unlock()
 		c := "application/json"
 		send(conn, d, c)
@@ -242,6 +241,7 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 		} else {
 			msg = "fail"
 		}
+		fmt.Println("sucess?")
 		jsonStr := respond{Msg: msg}
 		jsonData, err := json.Marshal(jsonStr)
 		if err != nil {
@@ -251,7 +251,6 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 		c := "application/json"
 		send(conn, d, c)
 	}
-
 }
 
 func call_cache(filename string) string {
