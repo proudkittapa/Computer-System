@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -116,7 +114,7 @@ func req(conn net.Conn) {
 			if (len(p) > 2) && (p[2] != "") {
 				fmt.Println("message", message)
 				result := getJson(message)
-				// fmt.Println(result)
+				fmt.Println("P2", p[2])
 				productWithID(conn, method, p[2], result)
 				break
 			} else {
@@ -208,7 +206,7 @@ func getImageFromFilePath(filePath string) (image.Image, error) {
 func home(conn net.Conn, method string, filename string, t string) {
 	if method == "GET" {
 		c := t
-		d := call_cache(filename)
+		d := cacheFile.Call_cache(filename)
 		send(conn, d, c)
 	}
 }
@@ -227,7 +225,6 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	if method == "GET" {
 		mutex.Lock()
 		d := lru.Cache(i)
-
 		mutex.Unlock()
 		c := "application/json"
 		send(conn, d, c)
@@ -235,7 +232,8 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	} else if method == "POST" {
 		fmt.Println("here")
 		fmt.Println(result.Quantity)
-		success := postPreorder(i, result.Quantity)
+		success := cacheFile.PostPreorder(i, result.Quantity)
+		fmt.Println("sjdkfa;sd")
 		msg := ""
 		if success == true {
 			msg = "success"
@@ -251,63 +249,6 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 		c := "application/json"
 		send(conn, d, c)
 	}
-
-}
-
-func call_cache(filename string) string {
-	start := time.Now()
-	d, err := cacheObject.Check(filename)
-	if err != nil {
-		fmt.Println(err)
-		a := getFile(filename)
-		cacheObject.Add(filename, a)
-		d, _ = cacheObject.Check(filename)
-		cacheObject.Display()
-
-		fmt.Println("Time calling cache miss: ", time.Since(start))
-		return d
-	} else {
-		cacheObject.Display()
-
-		fmt.Println("Time calling cache hit: ", time.Since(start))
-		return d
-	}
-
-}
-
-func getFile(filename string) string {
-	// call_cache(filename)
-	start := time.Now()
-	f, err := os.Open(filename)
-	if err != nil {
-		fmt.Println("File reading error", err)
-
-	}
-	defer func() {
-		if err := f.Close(); err != nil {
-			panic(err)
-		}
-	}()
-
-	chunksize := 512
-	reader := bufio.NewReader(f)
-	part := make([]byte, chunksize)
-	buffer := bytes.NewBuffer(make([]byte, 0))
-	var bufferLen int
-	for {
-		count, err := reader.Read(part)
-		if err != nil {
-			break
-		}
-		bufferLen += count
-		buffer.Write(part[:count])
-	}
-	// fmt.Println("home")
-	fmt.Println("Time get file: ", time.Since(start))
-	return buffer.String()
-	// contentType = "text/html"
-	// headers = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", bufferLen, contentType, buffer)
-
 }
 
 func sendFile(conn net.Conn, d image.Image, c string) {
@@ -354,67 +295,6 @@ func checkErr(err error) (a bool) {
 	return
 }
 
-// func cache(id int) string {
-// 	if val, ok := mp[id]; ok {
-// 		fmt.Println("----------HIT----------")
-// 		return val
-// 	} else {
-// 		fmt.Println("----------MISS----------")
-// 		return db_query(id)
-// 	}
-// 	// return db_query(id)
-// }
-
-// func db_query(id int) string {
-// 	// start := time.Now()
-
-// 	// db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
-// 	// checkErr(err)
-// 	for {
-// 		//rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-// 		rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-// 		// if checkErr(err) == false {
-// 		// 	// fmt.Println("error in db_query")
-// 		// 	time.Sleep(100 * time.Millisecond)
-// 		// 	continue
-// 		// }
-// 		var name string
-// 		var quantity int
-// 		var price int
-// 		err := rows.Scan(&name, &quantity, &price)
-// 		checkErr(err)
-
-// 		result := data{Name: name, Quantity: quantity, Price: price}
-// 		byteArray, err := json.Marshal(result)
-// 		checkErr(err)
-
-// 		mp[id] = string(byteArray)
-// 		val := mp[id]
-// 		// fmt.Printf("time query from db: %v\n", time.Since(start))
-// 		return val
-// 		/*
-
-// 			for rows.Next() {
-// 				var name string
-// 				var quantity int
-// 				var price int
-// 				err = rows.Scan(&name, &quantity, &price)
-// 				result := data{Name: name, Quantity: quantity, Price: price}
-// 				byteArray, err := json.Marshal(result)
-// 				checkErr(err)
-
-// 				mp[id] = string(byteArray)
-
-// 			}
-// 			rows.Close()
-
-// 			val := mp[id]
-// 			fmt.Printf("time query from db: %v\n", time.Since(start))
-// 			return val
-// 		*/
-// 	}
-// }
-
 func display_pro() (val string) {
 	var l []string
 	for i := 1; i <= 1; i++ {
@@ -444,76 +324,4 @@ func getQuantity(t chan int, id int) {
 	fmt.Printf("time query from cache: %v\n", time.Since(start))
 	fmt.Println("Quantity: ", quan.Quantity)
 
-}
-
-func decrement(t chan int, transactionC chan bool, orderQuantity int, id int) {
-	start := time.Now()
-	quantity := <-t // channel from getQuantity
-	newQuantity := quantity - orderQuantity
-	if newQuantity < 0 {
-		transactionC <- false
-		return
-	}
-	fmt.Println("New Quantity: ", newQuantity)
-	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", newQuantity, id)
-
-	if _, ok := mp[id]; ok {
-		info := lru.Cache(id)
-		var quan data
-		err := json.Unmarshal([]byte(info), &quan)
-
-		result := data{Name: quan.Name, Quantity: newQuantity, Price: quan.Price}
-		byteArray, err := json.Marshal(result)
-		checkErr(err)
-		mp[id] = string(byteArray)
-		fmt.Println("punepit eiei", mp[id])
-	}
-
-	transactionC <- true
-	fmt.Printf("time decrement: %v\n", time.Since(start))
-	fmt.Printf(mp[id])
-	return
-
-}
-
-func insert(user string, id int, q int) {
-	start := time.Now()
-	db.Exec("INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
-	fmt.Printf("time insert: %v\n", time.Since(start))
-}
-
-func preorder(end chan bool, user string, productId int, orderQuantity int) bool {
-	// fmt.Printf("start\n")
-	start := time.Now()
-	transactionC := make(chan bool)
-	t := make(chan int)
-	// var success bool
-	mutex.Lock()
-	go getQuantity(t, productId)
-	go decrement(t, transactionC, orderQuantity, productId)
-	success := <-transactionC // wait for all go routines
-	mutex.Unlock()
-	if success {
-		go insert(user, productId, orderQuantity)
-	}
-	fmt.Printf("\ntime: %v\n", time.Since(start))
-	end <- success
-	return success
-}
-
-func postPreorder(id int, quantity int) bool {
-	//db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
-	//defer db.Close()
-	// n := 100 //
-	end := make(chan bool) //, n)
-	start2 := time.Now()
-
-	go preorder(end, "1", id, quantity)
-
-	success := <-end
-
-	fmt.Printf("Total time: %v\n", time.Since(start2))
-	fmt.Println("---------------")
-
-	return success
 }
