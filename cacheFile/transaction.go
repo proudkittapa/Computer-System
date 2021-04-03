@@ -78,7 +78,7 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 	go GetQuantity(tx, t, productId)
 	go Decrement(tx, t, transactionC, orderQuantity, productId)
 	if <-transactionC == "rollback" {
-		//fmt.Println("rollback")
+		fmt.Println("rollback")
 		Preorder(end, user, productId, orderQuantity)
 		return
 	}
