@@ -1,7 +1,6 @@
 package cacheFile
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -51,7 +50,7 @@ type JsonCache struct {
 }
 
 func Cache_cons(cap int) Lru_cache {
-	db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
+	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// db.SetMaxIdleConns(200000)
 	db.SetMaxOpenConns(200000)
 	return Lru_cache{limit: cap, mp: make(map[int]*Node, cap)}
