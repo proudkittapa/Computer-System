@@ -14,6 +14,8 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/pkg/profile"
 )
 
 type Messagee struct {
@@ -33,7 +35,7 @@ type PayInfo struct {
 }
 
 var mutex sync.Mutex
-var users int = 2
+var users int = 30000
 var c = 0
 
 //209.97.165.170
@@ -41,7 +43,7 @@ var c = 0
 var host = "178.128.94.63:8080"
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
-	// fmt.Println("sent:", userid)
+	// fmt.Println("sent:", userisd)
 	//	fmt.Println("sent")
 	// userid++
 	if m == "GET" {
@@ -110,16 +112,17 @@ var count_Fail = 0
 
 func main() {
 	// flag.Parse()
+	defer profile.Start().Stop()
 	var wg sync.WaitGroup
 	start := time.Now()
 	for i := 0; i < users; i++ {
 		wg.Add(1)
 		// client6(&wg, "POST", "/payment", i)
 		// client6(&wg, "GET", "/", i) //30000
-		// go client6(&wg, "GET", "/text", i)
+		go client6(&wg, "GET", "/text", i)
 		// go client6(&wg, "GET", "/products", i)
 		// client6(&wg, "GET", "/products/1", i)
-		client6(&wg, "POST", "/products/1", i)
+		// client6(&wg, "POST", "/products/1", i)
 	}
 	wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
