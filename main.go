@@ -100,7 +100,7 @@ func req(conn net.Conn) {
 		method := (strings.Split(headers[0], " "))[0]
 		path := (strings.Split(headers[0], " "))[1]
 		p := strings.Split(path, "/")
-		fmt.Println(message)
+		// fmt.Println(message)
 		if p[1] == "" {
 			home(conn, method, "pre-order/index.html", "text/html")
 			break
@@ -114,11 +114,11 @@ func req(conn net.Conn) {
 			if (len(p) > 2) && (p[2] != "") {
 				fmt.Println("message", message)
 				result := getJson(message)
-				fmt.Println("P2", p[2])
+				// fmt.Println("P2", p[2])
 				productWithID(conn, method, p[2], result)
 				break
 			} else {
-				fmt.Println("HI")
+				// fmt.Println("HI")
 				products(conn, method)
 				break
 			}
@@ -141,10 +141,10 @@ func getJson(message string) data {
 
 		r, _ := regexp.Compile("{([^)]+)}")
 		match := r.FindString(message)
-		fmt.Println(match)
+		// fmt.Println(match)
 		fmt.Printf("%T\n", match)
 		json.Unmarshal([]byte(match), &result)
-		fmt.Println("data", result)
+		// fmt.Println("data", result)
 	}
 	return result
 }
@@ -155,9 +155,9 @@ func receiveFile(connection net.Conn) {
 	bufferFileSize := make([]byte, 10)
 
 	connection.Read(bufferFileSize)
-	fmt.Println("connection", connection)
+	// fmt.Println("connection", connection)
 	fileSize, _ := strconv.ParseInt(strings.Trim(string(bufferFileSize), ":"), 10, 64)
-	fmt.Println("fileSize", fileSize)
+	// fmt.Println("fileSize", fileSize)
 
 	newFile, err := os.Create("new.jpg")
 
@@ -220,7 +220,7 @@ func products(conn net.Conn, method string) {
 }
 
 func productWithID(conn net.Conn, method string, id string, result data) {
-	fmt.Println("ID")
+	// fmt.Println("ID")
 	i, _ := strconv.Atoi(id)
 	if method == "GET" {
 		mutex.Lock()
@@ -230,10 +230,10 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 		send(conn, d, c)
 
 	} else if method == "POST" {
-		fmt.Println("here")
-		fmt.Println(result.Quantity)
+		// fmt.Println("here")
+		// fmt.Println(result.Quantity)
 		success := cacheFile.PostPreorder(i, result.Quantity)
-		fmt.Println("sjdkfa;sd")
+		// fmt.Println("sjdkfa;sd")
 		msg := ""
 		if success == true {
 			msg = "success"
@@ -308,7 +308,7 @@ func display_pro() (val string) {
 	checkErr(err)
 
 	val = string(byteArray)
-	fmt.Println(val)
+	// fmt.Println(val)
 	return
 }
 
@@ -322,6 +322,6 @@ func getQuantity(t chan int, id int) {
 	t <- quan.Quantity
 
 	fmt.Printf("time query from cache: %v\n", time.Since(start))
-	fmt.Println("Quantity: ", quan.Quantity)
+	// fmt.Println("Quantity: ", quan.Quantity)
 
 }
