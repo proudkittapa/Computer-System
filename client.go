@@ -55,7 +55,7 @@ func send6(conn net.Conn, host string, m string, p string, userId int) {
 		time.Sleep(1 * time.Millisecond)
 		send_file(conn)
 		// mutex.Unlock()
-	} else {
+	} else if m == "POST" {
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userId))
 	}
