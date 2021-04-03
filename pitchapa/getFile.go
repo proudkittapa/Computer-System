@@ -40,6 +40,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"time"
 )
 
 type chunk struct {
@@ -47,8 +48,9 @@ type chunk struct {
 	offset  int64
 }
 
-func main() {
-	const BufferSize = 100
+func test(s int) {
+	const BufferSize = 500
+	start := time.Now()
 	file, err := os.Open("index.html")
 	if err != nil {
 		fmt.Println(err)
@@ -94,7 +96,7 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(concurrency)
 	store := make([]string, concurrency)
-
+	start2 := time.Now()
 	for i := 0; i < concurrency; i++ {
 		go func(chunksizes []chunk, i int) {
 			defer wg.Done()
@@ -114,9 +116,13 @@ func main() {
 	}
 
 	wg.Wait()
+	fmt.Printf("time: %v\n", time.Since(start))
+	//fmt.Printf("hello")
+	fmt.Printf("time2: %v\n", time.Since(start2))
+
 	var text string
 	for i := 0; i < concurrency; i++ {
 		text += store[i]
 	}
-	fmt.Println(text)
+	// fmt.Println(text)
 }
