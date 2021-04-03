@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -208,7 +206,7 @@ func getImageFromFilePath(filePath string) (image.Image, error) {
 func home(conn net.Conn, method string, filename string, t string) {
 	if method == "GET" {
 		c := t
-		d := call_cache(filename)
+		d := cacheFile.Call_cache(filename)
 		send(conn, d, c)
 	}
 }
@@ -251,62 +249,6 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 		c := "application/json"
 		send(conn, d, c)
 	}
-}
-
-func call_cache(filename string) string {
-	start := time.Now()
-	d, err := cacheObject.Check(filename)
-	if err != nil {
-		fmt.Println(err)
-		a := getFile(filename)
-		cacheObject.Add(filename, a)
-		d, _ = cacheObject.Check(filename)
-		cacheObject.Display()
-
-		fmt.Println("Time calling cache miss: ", time.Since(start))
-		return d
-	} else {
-		cacheObject.Display()
-
-		fmt.Println("Time calling cache hit: ", time.Since(start))
-		return d
-	}
-
-}
-
-func getFile(filename string) string {
-	// call_cache(filename)
-	start := time.Now()
-	f, err := os.Open(filename)
-	if err != nil {
-		fmt.Println("File reading error", err)
-
-	}
-	defer func() {
-		if err := f.Close(); err != nil {
-			panic(err)
-		}
-	}()
-
-	chunksize := 512
-	reader := bufio.NewReader(f)
-	part := make([]byte, chunksize)
-	buffer := bytes.NewBuffer(make([]byte, 0))
-	var bufferLen int
-	for {
-		count, err := reader.Read(part)
-		if err != nil {
-			break
-		}
-		bufferLen += count
-		buffer.Write(part[:count])
-	}
-	// fmt.Println("home")
-	fmt.Println("Time get file: ", time.Since(start))
-	return buffer.String()
-	// contentType = "text/html"
-	// headers = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", bufferLen, contentType, buffer)
-
 }
 
 func sendFile(conn net.Conn, d image.Image, c string) {
