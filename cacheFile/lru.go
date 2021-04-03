@@ -116,6 +116,9 @@ func (list *Lru_cache) AddNode(node *Node) {
 	}
 }
 
+// ref https://www.tutorialfor.com/blog-259822.htm
+//     https://medium.com/@fazlulkabir94/lru-cache-golang-implementation-92b7bafb76f0
+
 func Db_query(id int) (val string) {
 
 	// fmt.Println("----------MISS----------")
@@ -161,6 +164,8 @@ func SaveFile(mp map[int]*Node, lru Lru_cache) {
 
 }
 
+// ref https://stackoverflow.com/questions/47898327/properly-create-a-json-file-and-read-from-it
+
 func ReadFile() Lru_cache {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
 	CheckErr(err)
@@ -189,6 +194,8 @@ func ReadFile() Lru_cache {
 
 	return c
 }
+
+// ref https://tutorialedge.net/golang/parsing-json-with-golang/
 
 // func main() {
 // 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
