@@ -55,7 +55,7 @@ type respond struct {
 func main() {
 	defer profile.Start().Stop()
 	li, err := net.Listen("tcp", ":8080")
-	db, _ = sql.Open("mysql", "root:62011139@tcp(209.97.165.170:3306)/prodj")
+	db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// db.SetMaxIdleConns(200000)
 	db.SetMaxOpenConns(200000)
 
