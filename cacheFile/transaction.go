@@ -60,7 +60,7 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 	transactionC <- "done"
 }
 
-func Insert(tx *sql.Tx, wg *sync.WaitGroup, transactionC chan string, user string, id int, q int) {
+func Insert(tx *sql.Tx, wg *sync.WaitGroup, user string, id int, q int) {
 	_, err := tx.Exec("INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
 	if err != nil {
 		fmt.Println("insert fail")
@@ -68,7 +68,6 @@ func Insert(tx *sql.Tx, wg *sync.WaitGroup, transactionC chan string, user strin
 		return
 	}
 	wg.Done()
-	transactionC <- "finish"
 }
 
 func Preorder(end chan bool, user string, productId int, orderQuantity int) {
@@ -93,14 +92,12 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 	}
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go Insert(tx, &wg, transactionC, user, productId, orderQuantity)
+	go Insert(tx, &wg, user, productId, orderQuantity)
 	wg.Wait()
 	if err = tx.Commit(); err != nil {
 		fmt.Printf("Failed to commit tx: %v\n", err)
 	}
-	if <-transactionC == "finish" {
-		Success = true
-	}
+	Success = true
 	//fmt.Println("success")
 	//fmt.Println("-----------------------------------")
 	elapsed := time.Since(start)
