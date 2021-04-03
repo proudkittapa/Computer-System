@@ -61,8 +61,7 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 }
 
 func Insert(tx *sql.Tx, wg *sync.WaitGroup, transactionC chan string, user string, id int, q int) {
-	tx.Exec("set transaction isolation level SERIALIZABLE")
-	_, err := tx.ExecContext(ctx, "INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
+	_, err := tx.Exec("INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
 	if err != nil {
 		fmt.Println("insert fail")
 		tx.Rollback()
