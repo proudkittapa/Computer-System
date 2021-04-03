@@ -446,7 +446,7 @@ func getQuantity(t chan int, id int) {
 
 }
 
-func decrement(t chan int, transactionC chan bool, orderQuantity int, id int) {
+/*func decrement(t chan int, transactionC chan bool, orderQuantity int, id int) {
 	start := time.Now()
 	quantity := <-t // channel from getQuantity
 	newQuantity := quantity - orderQuantity
@@ -517,3 +517,4 @@ func postPreorder(id int, quantity int) bool {
 
 	return success
 }
+*/
