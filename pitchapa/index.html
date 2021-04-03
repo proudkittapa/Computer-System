@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <!-- title -->
+	<title>Pin to Pre | Website for pre order</title>
+	<title>repl.it</title>
+	<link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<style>
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+  color: rgb(187, 187, 155)
+}
+body
+{
+  /* background-image: url("cloth bg.jpg"); */
+  background-size: cover;
+  background-position: center; 
+}
+/* .navbar{
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background: #BADFD7
+} */
+/* nav{
+  flex: 1;
+  text-align: right;
+}
+nav ul{
+  display: inline-block;
+  list-style-type: none;
+  color: #B2B2B2
+}
+nav ul li{
+  display: inline-block;
+  margin-right: 20px; 
+  padding: 15px;
+} */
+.menu-bar
+{
+  background: #B2B2B2;
+  text-align: center;
+}
+.menu-bar ul
+{
+  list-style: none;
+  color: antiquewhite;
+}
+.menu-bar ul li
+{
+  display: inline-flex;
+  width: 120px;
+  margin: 0px 15px 15px 15px;
+  padding: 15px;
+  justify-content: center;
+}
+.menu-bar ul li a
+{
+  text-decoration: none;
+  color: white;
+}
+.active, .menu-bar ul li:hover
+{
+  background: #6d8883f1;
+  border-radius: 30px;
+}
+
+.menu-bar .fa*/
+{
+  margin-right: 10px;
+}
+
+a{
+  text-decoration: none;
+  color: darkgray;
+}
+p{
+  color: darkgray;
+}
+.container{
+  max-width: 1300px;
+  margin: auto;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+ .row{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.col-2{
+  text-align: center;
+  flex-basis: 50%;
+  min-width: 300px;
+}
+.col-2 img{
+  max-width: 100%;
+  padding: 50px 0;
+}
+.btn{
+  display: inline-block;
+  background: rgb(168, 164, 153);
+  color: #fff;
+  padding: 8px 60px;
+  margin: 30px 0;
+  border-radius: 60px; 
+}
+.active, .btn:hover
+{
+  background: #6d8883f1;
+  border-radius: 60px;
+}
+
+.header h1
+{
+  padding-top: 260px;
+  padding-bottom: 0;
+  font-size: 55px;
+}
+.header p
+{
+  margin: 18px 0;
+}
+.input-group
+{
+  width: 90%;
+  max-width: 500px;
+  border-radius: 30px;
+  background: #fff;
+  margin: auto;
+  padding: 2px;
+}
+.small-container{
+  max-width: 1080px;
+  margin: auto;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+.col-3{
+  flex-basis: 25%;
+  padding: 10px;
+  min-width: 200px;
+  margin-bottom: 50px;
+}
+.col-3 img{
+  width: 0%;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+  color: rgb(187, 187, 155)
+}
+body
+{
+  /* background-image: url("cloth bg.jpg"); */
+  background-size: cover;
+  background-position: center;
+}
+
+.menu-bar
+{
+  background: #B2B2B2;
+  text-align: center;
+}
+.menu-bar ul
+{
+  list-style: none;
+  color: antiquewhite;
+}
+.menu-bar ul li
+{
+  display: inline-flex;
+  width: 120px;
+  margin: 0px 15px 15px 15px;
+  padding: 15px;
+  justify-content: center;
+}
+.menu-bar ul li a
+{
+  text-decoration: none;
+  color: white;
+}
+.active, .menu-bar ul li:hover
+{
+  background: #6d8883f1;
+  border-radius: 30px;
+}
+
+.menu-bar .fa*/
+{
+  margin-right: 10px;
+}
+a{
+  text-decoration: none;
+  color: darkgray;
+}
+p{
+  color: darkgray;
+}
+.container{
+  max-width: 1300px;
+  margin: auto;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.btn{
+  display: inline-block;
+  background: rgb(168, 164, 153);
+  color: #fff;
+  padding: 8px 60px;
+  margin: 30px 0;
+  border-radius: 60px;
+}
+.active, .btn:hover
+{
+  background: #6d8883f1;
+  border-radius: 60px;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-align: center;
+  color: rgb(187, 187, 155)
+}
+body
+{
+  /* background-image: url("cloth bg.jpg"); */
+  background-size: cover;
+  background-position: center;
+}
+
+.menu-bar
+{
+  background: #B2B2B2;
+  text-align: center;
+}
+.menu-bar ul
+{
+  list-style: none;
+  color: antiquewhite;
+}
+.menu-bar ul li
+{
+  display: inline-flex;
+  width: 120px;
+  margin: 0px 15px 15px 15px;
+  padding: 15px;
+  justify-content: center;
+}
+.menu-bar ul li a
+{
+  text-decoration: none;
+  color: white;
+}
+.active, .menu-bar ul li:hover
+{
+  background: #6d8883f1;
+  border-radius: 30px;
+}
+
+.menu-bar .fa*/
+{
+  margin-right: 10px;
+}
+a{
+  text-decoration: none;
+  color: darkgray;
+}
+p{
+  color: darkgray;
+}
+.container{
+  max-width: 1300px;
+  margin: auto;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.btn{
+  display: inline-block;
+  background: rgb(168, 164, 153);
+  color: #fff;
+  padding: 8px 60px;
+  margin: 30px 0;
+  border-radius: 60px;
+}
+.active, .btn:hover
+{
+  background: #6d8883f1;
+  border-radius: 60px;
+}
+
+
+</style>
+
+<body>
+
+
+	<div class=".container">
+		<div class="menu-bar">
+			<div class="logo">
+				<img href="index.html" src="https://pbs.twimg.com/media/Ewq9KIKVgAIg_z8?format=jpg&name=small" width="125px" alt="...">
+      </div>
+
+      <nav>
+        <ul>
+          <li class="active" >
+          <a href="index.html">Home</a><i class="fa fa-home" aria-hidden="true"></i> </li>
+          <li><a href="pre_order.html">Pre order</a><i class="fa fa-gratipay" aria-hidden="true"></i></li>
+          <li><a href="pre_form.html">pre_form delete after complete</a><i class="fa fa-tag" aria-hidden="true"></i></li>
+          <li><a href="account.html">Account</a><i class="fa fa-user-circle" aria-hidden="true"></i></li>
+          <li><a href="about_us.html">About us</a><i class="fa fa-phone" aria-hidden="true"></i></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- ----------home feed------------>
+    <div class="row">
+      <div class="col-2">
+        <h1>
+          Pin to pre(order)<br>with us
+        </h1>
+        <p>
+          A website to pre-order products. 
+
+        </p>
+        <a href="pre_order.html" class="btn">Pre order</a>
+      </div>
+
+      <div class="col-2 img">
+        <img src="https://i.pinimg.com/474x/f4/1f/56/f41f5626a3984c5337869e27f8e0b356.jpg"
+      </div>
+
+
+    </div> 
+    <!-- ----------login page----------
+    <div class = "account-page">
+      <div class="container">
+        <div class = "row">
+          <div class= "col-2">
+            <img src= "images/png white.png" width="100%">
+          </div>
+
+          <div class= "col-2">
+            <div class="form-container">
+              <div class="form-btn">
+              <span onclick="Login()">Login</span>
+              <span onclick="Register()">Register</span>
+              <hr id="Indicator"
+          </div>
+
+          <form id="LoginForm">
+            <input type="text" placeholder="Username">
+            <input type="password" placeholder="Password">
+            <button type="submit" class="btn">Login</button>
+            <!-- <a href = "">Forgot password</a> -->
+          <!-- </form>
+
+          <form id="RegForm">
+            <input type="text" placeholder="Username">
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Password">
+            <button type="submit" class="btn">Register</button>
+  
+          </form>
+         </div> 
+      </div>
+    </div> --> 
+
+    <!-- -----js for login form ---- -->
+    <!-- <script>
+
+    var LoginForm = document.getElementById("LoginForm");
+    var RegForm = document.getElementById("RegForm");
+    var Indicator = document.getElementById("Indicator");
+
+      function Register(){
+
+        RegForm.style.transform = "translateX(0px)";
+        LoginForm.style.
+      } -->
+
+ <!-- 
+//     <!------------product feature------------>
+     <!-- <div class="small-container">
+//         <h2> Featured Products</h2>
+//         <div class="row">
+//           <div class = "col-3">
+//            <img src="cream sweater.jpeg">
+//            <h3> Cream Sweater</h3>
+//            <p> $50.00 </p>-->
+    <!------------product homepage------------>
+
+    <div class="container" >
+        <div class="row row-cols-1 row-cols-md-3">
+          <div class="col mb-4">
+            <div class="card h-100">
+              <img src="https://i.pinimg.com/originals/28/da/97/28da97727bf73e7a6cefd09c6b1c5e60.png" class="card-img-top" alt=".image describe.">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <form  action="https://pre-order.uyuyesrun.repl.co/pre_form.html" method="get" target="_blank"> <!--make another tab-->
+                  <button type="submit" class="btn" value="login" id="preorder">order now!</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col mb-4">
+            <div class="card h-100">
+              <img src="https://i.pinimg.com/originals/8a/c3/d1/8ac3d18056f3d6542ec3ecc6327d6503.jpg" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This is a short card.</p>
+                  <form> <!--change page in the same page-->
+                    <button type="submit" class="btn" value="login" id="1" formaction="https://pre-order.uyuyesrun.repl.co/pre_form.html">order now!</button>
+                  </form>
+              </div>
+            </div>
+          </div>
+          <div class="col mb-4">
+            <div class="card h-100">
+              <img src="https://i.pinimg.com/originals/08/3e/a7/083ea74803c07a0f0f2c727e58e2e44e.png" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content.</p>
+                  <form action="pre_form.html"><!--change page in the same page-->
+                    <button type="submit" class="btn" value="login" id="2" >order now!</button>
+                  </form>
+              </div>
+            </div>
+          </div>
+          <div class="col mb-4">
+            <div class="card h-100">
+              <img src="https://images.squarespace-cdn.com/content/v1/5429b0c6e4b05b9a2cc5a175/1540131078424-Y34CD9H64RB6NTXUNGHW/ke17ZwdGBToddI8pDm48kOkIbZ2SL3KahQzdn9WofjNZw-zPPgdn4jUwVcJE1ZvWEtT5uBSRWt4vQZAgTJucoTqqXjS3CfNDSuuf31e0tVFR10CtDVWkGx6yuSWQDjGwTCXXh0e1an30boSpPzhb61tO8nJtk629tZGIWiyY3XQ/H%26M+Autumn+Sweater+%7C+Writing+Between+Pauses" class="card-img-top" alt="...">
+              <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional
+                    content. This content is a little bit longer.This is a longer card with supporting text below as a
+                    natural lead-in to additional content. This content is a little bit longer.This is a longer card
+                    with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  <p> $50.00 </p>
+                  <button type="submit" class="btn" value="login" id="3" onclick="window.location.href='pre_form.html';">order now!</button><!--change page in the same page-->
+              </div>
+            </div>
+          </div>
+          <div class="col mb-4">
+            <div class="card h-100">
+              <img src="https://www.kindpng.com/picc/m/137-1370122_cable-knit-sweater-transparent-hd-png-download.png" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This is a short card.</p>
+                  <button type="submit" class="btn" value="login" id="4">order now!</button>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+        <!------------pre order form feed------------>
+  <div class="container" style="background: radial-gradient(#fff, #CFD6EA)">
+    <br>
+    <h1 style="margin: 5% 5% 2% 5%">Complete this form in time!</h1>
+    <br>
+
+    <div class="shadow-sm p-3 mb-5 bg-white rounded" style="padding: 10%;  background-color: rgba(300,300,300);">
+      <div class="row">
+
+        <div class="col-sm">
+          <br>
+          <img src="https://i.pinimg.com/474x/f4/1f/56/f41f5626a3984c5337869e27f8e0b356.jpg"
+               width="70%">
+        </div>
+        
+        <div class="col-sm"><!--big column-->
+
+        <br><h1>Cloth</h1><a>50.0 baht</a>
+        <br><br><br>
+
+          <div class="form-group row"><!-- CHOOSE TYPE EG.COLOR, SIZE, ETC. -->
+            <div class="col-sm">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="inputGroupSelect01">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-wallet-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v2h6a.5.5 0 0 1 .5.5c0 .253.08.644.306.958.207.288.557.542 1.194.542.637 0 .987-.254 1.194-.542.226-.314.306-.705.306-.958a.5.5 0 0 1 .5-.5h6v-2A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                      <path d="M16 6.5h-5.551a2.678 2.678 0 0 1-.443 1.042C9.613 8.088 8.963 8.5 8 8.5c-.963 0-1.613-.412-2.006-.958A2.679 2.679 0 0 1 5.551 6.5H0v6A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-6z"/>
+                    </svg>
+                  </label>
+                </div>
+                <!-- <label for = "message">Message</label> -->
+                <select class="custom-select" id="message" name="message">
+                  <option selected>COLOR</option>
+                  <option value="1">cream</option>
+                  <option value="2">red</option>
+                  <option value="3">blue</option>
+                  <option value="4">white</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row"><!-- CHOOSE NUMBER EG.COLOR, SIZE, ETC. -->
+            <div class="col-sm">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="inputGroupSelect01">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-wallet-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v2h6a.5.5 0 0 1 .5.5c0 .253.08.644.306.958.207.288.557.542 1.194.542.637 0 .987-.254 1.194-.542.226-.314.306-.705.306-.958a.5.5 0 0 1 .5-.5h6v-2A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                      <path d="M16 6.5h-5.551a2.678 2.678 0 0 1-.443 1.042C9.613 8.088 8.963 8.5 8 8.5c-.963 0-1.613-.412-2.006-.958A2.679 2.679 0 0 1 5.551 6.5H0v6A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-6z"/>
+                    </svg>
+                  </label>
+                </div>
+                <select class="custom-select" id="inputGroupSelect01">
+                  <option selected>NUMBER</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="4">5</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- form -->
+          <form method="POST" id = "inputForm">
+            <div class="form-group row"><!-- First name -->
+              <div class="col-sm">
+                <div class="input-group mb-2 mr-sm-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                      </svg>
+                    </div>
+                  </div>
+                <input id = "message" name="message" value= "ptchp" class="form-control" id="inlineFormInputGroupUsername2" placeholder="First Name">
+                </div>
+              </div>
+
+              <!-- <div class="col-sm"> -->
+                 <!-- Surname -->
+                <!-- <div class="input-group mb-2 mr-sm-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">
+                      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-person-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <input type="text" class="form-control" id="inlineFormInputGroupSurname" placeholder="Surname">
+                </div>
+              </div>
+            </div> -->
+
+          <!-- <div class="form-group row"> -->
+            <!-- email -->
+            <!-- <div class="col-sm">
+              <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-envelope-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
+                    </svg>
+                  </div>
+                </div>
+              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+              </div>
+            </div>
+          </div> -->
+
+          <!-- <div class="form-group row"> -->
+            <!-- phone number -->
+            <!-- <div class="col-sm">
+              <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-telephone-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M2.267.98a1.636 1.636 0 0 1 2.448.152l1.681 2.162c.309.396.418.913.296 1.4l-.513 2.053a.636.636 0 0 0 .167.604L8.65 9.654a.636.636 0 0 0 .604.167l2.052-.513a1.636 1.636 0 0 1 1.401.296l2.162 1.681c.777.604.849 1.753.153 2.448l-.97.97c-.693.693-1.73.998-2.697.658a17.47 17.47 0 0 1-6.571-4.144A17.47 17.47 0 0 1 .639 4.646c-.34-.967-.035-2.004.658-2.698l.97-.969z"/>
+                    </svg>
+                  </div>
+                </div>
+                <input type="tel" class="form-control" id="exampleFormControlInput1" placeholder="phone number">
+              </div>
+            </div>
+          </div> -->
+
+            <!-- <div class="form-group row"> -->
+              <!-- Address -->
+            <!-- <div class="col-sm"> -->
+              <!--label for="inputAddress">Address</label-->
+              <!-- <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-telephone-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M2.267.98a1.636 1.636 0 0 1 2.448.152l1.681 2.162c.309.396.418.913.296 1.4l-.513 2.053a.636.636 0 0 0 .167.604L8.65 9.654a.636.636 0 0 0 .604.167l2.052-.513a1.636 1.636 0 0 1 1.401.296l2.162 1.681c.777.604.849 1.753.153 2.448l-.97.97c-.693.693-1.73.998-2.697.658a17.47 17.47 0 0 1-6.571-4.144A17.47 17.47 0 0 1 .639 4.646c-.34-.967-.035-2.004.658-2.698l.97-.969z"/>
+                    </svg>
+                  </div>
+                </div>
+                <input type="text" class="form-control" id="inputAddress" placeholder="Address">
+              </div>
+            </div>
+          </div> -->
+              
+            <div class="form-group"><!-- check -->
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="gridCheck">
+                <label class="form-check-label" for="gridCheck">
+                  I checked my information and will not change it.
+                </label>
+              </div>
+            </div>
+            <!-- <label for = "message">Message</label> -->
+            <input id = "message" name="message" value= "order!" type="text">
+            <button type="submit" class="btn" value= "order!">submit</button>
+          </form>
+
+        </div>
+        <br>
+
+
+      </div>
+      <br>
+    </div>
+
+      <br>
+    </div>
+    <br>
+
+
+    </div>
+
+
+
+
+
+
+
+    <!-- Optional JavaScript for bootstrap-->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+    <!-- ------------------------------- -->
+
+     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+
+  </body>
+</html> 
+
+<!-- <body>
+<section class="header">
+    <div class="menu-bar">
+  <ul>
+    <li class="active"><a href="#">Home</a><i class="fa fa-home" aria-hidden="true"></i> </li>
+    <li><a href="#">Services</a><i class="fa fa-gratipay" aria-hidden="true"></i></li>
+    <li><a href="#">Promotion</a><i class="fa fa-tag" aria-hidden="true"></i></li>
+    <li><a href="#">Account</a><i class="fa fa-user-circle" aria-hidden="true"></i></li>
+    <li><a href="#">Contact</a><i class="fa fa-phone" aria-hidden="true"></i></li>
+  </ul>
+    </div>
+<h1> DO DU DONE</h1>
+  <p>Give your life more choices</p>
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="Where are you?">
+    <div class="input-group-append">
+      <button type="submit" class="input-group-text btn">Search</button>
+    </div>
+  </div>
+</section>
+<section class="features">
+  <h1>Featured Destination</h1>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+      <div class="features-box">
+      <div class="features-img">
+      <img src="centralWorld.jpg">
+      <div class="where">
+        <p>BTS SIAM(BKK)</p>
+        <div class="rating">
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>
+          <i class="fa fa-star-o"></i>
+
+        </div>
+      </div> -->
+

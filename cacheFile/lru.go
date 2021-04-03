@@ -1,4 +1,4 @@
-package db_cache_map
+package cacheFile
 
 import (
 	"database/sql"
