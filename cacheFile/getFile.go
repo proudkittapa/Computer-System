@@ -110,7 +110,7 @@ func GetFile(filename string) string {
 	for i := 0; i < concurrency; i++ {
 		text += store[i]
 	}
-	fmt.Println(text)
+	// fmt.Println(text)
 
 	return text
 }
