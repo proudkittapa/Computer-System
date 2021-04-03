@@ -117,7 +117,7 @@ func main() {
 		//client6(&wg, "GET", "/", i) //30000
 		// client6(&wg, "GET", "/text", i)
 		// go client6(&wg, "GET", "/products", i)
-		client6(&wg, "GET", "/products/1", i)
+		go client6(&wg, "GET", "/products/1", i)
 		//	go client6(&wg, "POST", "/products/1")
 	}
 	wg.Wait()
