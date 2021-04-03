@@ -121,7 +121,7 @@ func call_cache(filename string) string {
 
 func getFile(filename string) string {
 	// call_cache("index.html")
-	const BufferSize = 500
+	const BufferSize = 1000
 	start := time.Now()
 	file, err := os.Open(filename)
 	if err != nil {
