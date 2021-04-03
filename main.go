@@ -31,6 +31,7 @@ const BUFFERSIZE = 1024
 
 var mp map[int]string = make(map[int]string)
 var cacheObject cacheFile.Cache = cacheFile.NewCache()
+var lru cacheFile.Lru_cache = cacheFile.Cache_cons(10)
 
 type data struct {
 	Name     string `json:"name"`
@@ -225,7 +226,7 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	i, _ := strconv.Atoi(id)
 	if method == "GET" {
 		mutex.Lock()
-		d := cache(i)
+		d := lru.Cache(i)
 
 		mutex.Unlock()
 		c := "application/json"
@@ -353,71 +354,71 @@ func checkErr(err error) (a bool) {
 	return
 }
 
-func cache(id int) string {
-	if val, ok := mp[id]; ok {
-		fmt.Println("----------HIT----------")
-		return val
-	} else {
-		fmt.Println("----------MISS----------")
-		return db_query(id)
-	}
-	// return db_query(id)
-}
+// func cache(id int) string {
+// 	if val, ok := mp[id]; ok {
+// 		fmt.Println("----------HIT----------")
+// 		return val
+// 	} else {
+// 		fmt.Println("----------MISS----------")
+// 		return db_query(id)
+// 	}
+// 	// return db_query(id)
+// }
 
-func db_query(id int) string {
-	// start := time.Now()
+// func db_query(id int) string {
+// 	// start := time.Now()
 
-	// db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
-	// checkErr(err)
-	for {
-		//rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-		rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-		// if checkErr(err) == false {
-		// 	// fmt.Println("error in db_query")
-		// 	time.Sleep(100 * time.Millisecond)
-		// 	continue
-		// }
-		var name string
-		var quantity int
-		var price int
-		err := rows.Scan(&name, &quantity, &price)
-		checkErr(err)
+// 	// db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
+// 	// checkErr(err)
+// 	for {
+// 		//rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+// 		rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+// 		// if checkErr(err) == false {
+// 		// 	// fmt.Println("error in db_query")
+// 		// 	time.Sleep(100 * time.Millisecond)
+// 		// 	continue
+// 		// }
+// 		var name string
+// 		var quantity int
+// 		var price int
+// 		err := rows.Scan(&name, &quantity, &price)
+// 		checkErr(err)
 
-		result := data{Name: name, Quantity: quantity, Price: price}
-		byteArray, err := json.Marshal(result)
-		checkErr(err)
+// 		result := data{Name: name, Quantity: quantity, Price: price}
+// 		byteArray, err := json.Marshal(result)
+// 		checkErr(err)
 
-		mp[id] = string(byteArray)
-		val := mp[id]
-		// fmt.Printf("time query from db: %v\n", time.Since(start))
-		return val
-		/*
+// 		mp[id] = string(byteArray)
+// 		val := mp[id]
+// 		// fmt.Printf("time query from db: %v\n", time.Since(start))
+// 		return val
+// 		/*
 
-			for rows.Next() {
-				var name string
-				var quantity int
-				var price int
-				err = rows.Scan(&name, &quantity, &price)
-				result := data{Name: name, Quantity: quantity, Price: price}
-				byteArray, err := json.Marshal(result)
-				checkErr(err)
+// 			for rows.Next() {
+// 				var name string
+// 				var quantity int
+// 				var price int
+// 				err = rows.Scan(&name, &quantity, &price)
+// 				result := data{Name: name, Quantity: quantity, Price: price}
+// 				byteArray, err := json.Marshal(result)
+// 				checkErr(err)
 
-				mp[id] = string(byteArray)
+// 				mp[id] = string(byteArray)
 
-			}
-			rows.Close()
+// 			}
+// 			rows.Close()
 
-			val := mp[id]
-			fmt.Printf("time query from db: %v\n", time.Since(start))
-			return val
-		*/
-	}
-}
+// 			val := mp[id]
+// 			fmt.Printf("time query from db: %v\n", time.Since(start))
+// 			return val
+// 		*/
+// 	}
+// }
 
 func display_pro() (val string) {
 	var l []string
 	for i := 1; i <= 1; i++ {
-		val := db_query(i)
+		val := cacheFile.Db_query(i)
 		l = append(l, val)
 	}
 
@@ -433,7 +434,7 @@ func display_pro() (val string) {
 
 func getQuantity(t chan int, id int) {
 	start := time.Now()
-	info := cache(id)
+	info := lru.Cache(id)
 
 	var quan data
 	err := json.Unmarshal([]byte(info), &quan)
@@ -457,7 +458,7 @@ func decrement(t chan int, transactionC chan bool, orderQuantity int, id int) {
 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", newQuantity, id)
 
 	if _, ok := mp[id]; ok {
-		info := cache(id)
+		info := lru.Cache(id)
 		var quan data
 		err := json.Unmarshal([]byte(info), &quan)
 
