@@ -149,7 +149,7 @@ func createHP(u int) string {
 	method := "POST"
 	// a := string(rand.Intn(100))
 	// fmt.Println("a:", a)
-	path := "/products/" + string(1)
+	path := "/products/1"
 	// host := "209.97.165.170:8080"
 	contentLength := 20
 	contentType := "application/json"
