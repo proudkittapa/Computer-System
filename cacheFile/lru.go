@@ -122,7 +122,7 @@ func (list *Lru_cache) AddNode(node *Node) {
 func Db_query(id int) (val string) {
 
 	// fmt.Println("----------MISS----------")
-
+	fmt.Println(id)
 	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 
 	var name string
