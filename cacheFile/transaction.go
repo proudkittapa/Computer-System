@@ -20,13 +20,13 @@ var (
 
 func GetQuantity(tx *sql.Tx, t chan int, id int) {
 	// rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
-	rows := tx.QueryRow("select name from products where product_id = " + strconv.Itoa(id))
+	rows := tx.QueryRow("select unit_price from products where product_id = " + strconv.Itoa(id))
 
-	var name string
+	// var name string
 	// var quantity int
-	// var price int
+	var price int
 	// err := rows.Scan(&name, &quantity, &price)
-	err := rows.Scan(&name)
+	err := rows.Scan(&price)
 	if err != nil {
 		fmt.Println("get quantity fail")
 		tx.Rollback()
