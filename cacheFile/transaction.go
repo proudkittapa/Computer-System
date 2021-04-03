@@ -19,6 +19,7 @@ var (
 )
 
 func GetQuantity(tx *sql.Tx, t chan int, id int) {
+	fmt.Println(id)
 	// rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
 	rows := tx.QueryRow("select unit_price from products where product_id = " + strconv.Itoa(id))
 
