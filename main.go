@@ -235,7 +235,7 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	} else if method == "POST" {
 		fmt.Println("here")
 		fmt.Println(result.Quantity)
-		success := postPreorder(i, result.Quantity)
+		success := cacheFile.PostPreorder(i, result.Quantity)
 		msg := ""
 		if success == true {
 			msg = "success"
