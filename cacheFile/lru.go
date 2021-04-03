@@ -20,41 +20,41 @@ func CheckErr(err error) {
 	}
 }
 
-type data struct {
+type Data struct {
 	Name     string `json:"name"`
 	Quantity int    `json:"quantity"`
 	Price    int    `json:"price"`
 }
 
-type node struct {
+type Node struct {
 	id    int
 	value string
-	prev  *node
-	next  *node
+	prev  *Node
+	next  *Node
 }
 
-type lru_cache struct {
+type Lru_cache struct {
 	limit int
-	mp    map[int]*node
-	head  *node
-	last  *node
+	mp    map[int]*Node
+	head  *Node
+	last  *Node
 }
 
-type kv struct {
+type Kv struct {
 	Key   int    `json:"key"`
 	Value string `json:"value"`
 }
 
-type jsonCache struct {
-	Cache []kv `json:"cache"`
+type JsonCache struct {
+	Cache []Kv `json:"cache"`
 	Limit int  `json:"limit"`
 }
 
-func Cache_cons(cap int) lru_cache {
-	return lru_cache{limit: cap, mp: make(map[int]*node, cap)}
+func Cache_cons(cap int) Lru_cache {
+	return Lru_cache{limit: cap, mp: make(map[int]*Node, cap)}
 }
 
-func (list *lru_cache) Cache(id int) string {
+func (list *Lru_cache) Cache(id int) string {
 	if node_val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
 		list.Move(node_val)
@@ -67,7 +67,7 @@ func (list *lru_cache) Cache(id int) string {
 			delete(list.mp, rm)
 		}
 		json := Db_query(id) // <--------------------------
-		node := node{id: id, value: json}
+		node := Node{id: id, value: json}
 		list.AddNode(&node)
 		list.mp[id] = &node
 		// fmt.Println(node.value)
@@ -81,7 +81,7 @@ func (list *lru_cache) Cache(id int) string {
 // mind -> set query
 // func set
 
-func (list *lru_cache) Move(node *node) {
+func (list *Lru_cache) Move(node *Node) {
 	if node == list.head {
 		return
 	}
@@ -89,7 +89,7 @@ func (list *lru_cache) Move(node *node) {
 	list.AddNode(node)
 }
 
-func (list *lru_cache) Remove(node *node) int {
+func (list *Lru_cache) Remove(node *Node) int {
 	if node == list.last {
 		// fmt.Println("con 1")
 		list.last = list.last.prev
@@ -104,7 +104,7 @@ func (list *lru_cache) Remove(node *node) int {
 	return node.id
 }
 
-func (list *lru_cache) AddNode(node *node) {
+func (list *Lru_cache) AddNode(node *Node) {
 	if list.head != nil {
 		list.head.prev = node
 		node.next = list.head
@@ -129,7 +129,7 @@ func Db_query(id int) (val string) {
 		err := rows.Scan(&name, &quantity, &price)
 		CheckErr(err)
 
-		result := data{Name: name, Quantity: quantity, Price: price}
+		result := Data{Name: name, Quantity: quantity, Price: price}
 		byteArray, err := json.Marshal(result)
 		CheckErr(err)
 		// fmt.Println(len(byteArray))
@@ -141,15 +141,15 @@ func Db_query(id int) (val string) {
 	return val
 }
 
-func SaveFile(mp map[int]*node, lru lru_cache) {
-	var cache_list []kv
+func SaveFile(mp map[int]*Node, lru Lru_cache) {
+	var cache_list []Kv
 
 	for productID := 1; productID < len(mp); productID++ {
-		temp_kv := kv{Key: productID, Value: mp[productID].value}
+		temp_kv := Kv{Key: productID, Value: mp[productID].value}
 		cache_list = append(cache_list, temp_kv)
 	}
 
-	tempCache := jsonCache{Cache: cache_list, Limit: lru.limit}
+	tempCache := JsonCache{Cache: cache_list, Limit: lru.limit}
 	fmt.Println(lru.limit)
 
 	jsonCacheList, _ := json.Marshal(tempCache)
@@ -161,11 +161,11 @@ func SaveFile(mp map[int]*node, lru lru_cache) {
 
 }
 
-func ReadFile() lru_cache {
+func ReadFile() Lru_cache {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
 	CheckErr(err)
 
-	var tempStruct jsonCache
+	var tempStruct JsonCache
 	err = json.Unmarshal(fromFile, &tempStruct)
 
 	c := Cache_cons(tempStruct.Limit)
@@ -173,7 +173,7 @@ func ReadFile() lru_cache {
 	t := tempStruct.Cache
 	for i := 0; i < len(t); i++ {
 		for j := 1; j <= len(t); j++ {
-			node := node{id: j, value: t[i].Value}
+			node := Node{id: j, value: t[i].Value}
 			c.AddNode(&node)
 			c.mp[j] = &node
 			// fmt.Println(c)
