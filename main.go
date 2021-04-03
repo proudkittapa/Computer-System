@@ -116,7 +116,7 @@ func req(conn net.Conn) {
 			if (len(p) > 2) && (p[2] != "") {
 				fmt.Println("message", message)
 				result := getJson(message)
-				// fmt.Println(result)
+				fmt.Println("P2", p[2])
 				productWithID(conn, method, p[2], result)
 				break
 			} else {
