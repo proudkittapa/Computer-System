@@ -12,7 +12,7 @@ import (
 
 var (
 	ctx context.Context
-	db  *sql.DB
+	// db  *sql.DB
 	//mutex sync.Mutex
 	TotalTime float64
 	Success   bool
@@ -109,6 +109,9 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 func PostPreorder(id int, quantity int) bool {
 	db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
+	var name string
+	db.QueryRow("select name from products where product_id = " + strconv.Itoa(1)).Scan(&name)
+	fmt.Println(name)
 	ctx = context.Background()
 	//n := 100
 	end := make(chan bool)
