@@ -1,4 +1,4 @@
-package db_cache_map
+package cacheFile
 
 import (
 	"database/sql"
@@ -127,11 +127,11 @@ func Db_query(id int) (val string) {
 		var quantity int
 		var price int
 		err := rows.Scan(&name, &quantity, &price)
-		checkErr(err)
+		CheckErr(err)
 
 		result := data{Name: name, Quantity: quantity, Price: price}
 		byteArray, err := json.Marshal(result)
-		checkErr(err)
+		CheckErr(err)
 		// fmt.Println(len(byteArray))
 
 		val = string(byteArray)
@@ -163,18 +163,18 @@ func SaveFile(mp map[int]*node, lru lru_cache) {
 
 func ReadFile() lru_cache {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
-	checkErr(err)
+	CheckErr(err)
 
 	var tempStruct jsonCache
 	err = json.Unmarshal(fromFile, &tempStruct)
 
-	c := cache_cons(tempStruct.Limit)
+	c := Cache_cons(tempStruct.Limit)
 
 	t := tempStruct.Cache
 	for i := 0; i < len(t); i++ {
 		for j := 1; j <= len(t); j++ {
 			node := node{id: j, value: t[i].Value}
-			c.add(&node)
+			c.AddNode(&node)
 			c.mp[j] = &node
 			// fmt.Println(c)
 		}
