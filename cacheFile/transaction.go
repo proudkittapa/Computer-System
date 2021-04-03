@@ -83,8 +83,8 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 		return
 	}
 	go Insert(tx, transactionC, user, productId, orderQuantity)
-	if err := tx.Commit(); err != nil {
-		//fmt.Printf("Failed to commit tx: %v\n", err)
+	if err = tx.Commit(); err != nil {
+		fmt.Printf("Failed to commit tx: %v\n", err)
 	}
 	if <-transactionC == "finish" {
 		Success = true
@@ -98,8 +98,6 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 	TotalTime += tt
 	fmt.Printf("total time: %v\n", TotalTime)
 	end <- Success
-	return
-
 }
 func PostPreorder(id int, quantity int) bool {
 	db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
@@ -110,6 +108,6 @@ func PostPreorder(id int, quantity int) bool {
 	go Preorder(end, "1", id, quantity)
 
 	Success = <-end
-
+	fmt.Println("before return")
 	return Success
 }
