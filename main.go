@@ -72,7 +72,7 @@ func main() {
 			log.Fatalln(err.Error())
 			continue
 		}
-		handle(conn)
+		go handle(conn)
 	}
 }
 
