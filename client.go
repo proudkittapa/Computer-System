@@ -20,6 +20,7 @@ import (
 type Messagee struct {
 	Name     string
 	Quantity int
+	Price    int
 }
 
 var img_name string = "IMG_3.jpg"
@@ -151,7 +152,7 @@ func createHP(u int) string {
 	// host := "209.97.165.170:8080"
 	contentLength := 20
 	contentType := "application/json"
-	jsonStr := Messagee{Name: "mos", Quantity: 2}
+	jsonStr := Messagee{Name: "mos", Quantity: 1, Price: 0}
 	jsonData, err := json.Marshal(jsonStr)
 	if err != nil {
 		fmt.Println(err)
