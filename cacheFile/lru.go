@@ -51,6 +51,9 @@ type JsonCache struct {
 }
 
 func Cache_cons(cap int) Lru_cache {
+	db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
+	// db.SetMaxIdleConns(200000)
+	db.SetMaxOpenConns(200000)
 	return Lru_cache{limit: cap, mp: make(map[int]*Node, cap)}
 }
 
@@ -122,24 +125,22 @@ func (list *Lru_cache) AddNode(node *Node) {
 func Db_query(id int) (val string) {
 
 	// fmt.Println("----------MISS----------")
+	fmt.Println(id)
+	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 
-	rows, _ := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+	var name string
+	var quantity int
+	var price int
+	err := rows.Scan(&name, &quantity, &price)
+	CheckErr(err)
 
-	for rows.Next() {
-		var name string
-		var quantity int
-		var price int
-		err := rows.Scan(&name, &quantity, &price)
-		CheckErr(err)
+	result := Data{Name: name, Quantity: quantity, Price: price}
+	byteArray, err := json.Marshal(result)
+	CheckErr(err)
+	// fmt.Println(len(byteArray))
 
-		result := Data{Name: name, Quantity: quantity, Price: price}
-		byteArray, err := json.Marshal(result)
-		CheckErr(err)
-		// fmt.Println(len(byteArray))
-
-		val = string(byteArray)
-		// fmt.Println(val)
-	}
+	val = string(byteArray)
+	// fmt.Println(val)
 
 	return val
 }

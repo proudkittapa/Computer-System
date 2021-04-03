@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math/rand"
 	"net"
 	"os"
 	"strconv"
@@ -20,6 +19,7 @@ import (
 type Messagee struct {
 	Name     string
 	Quantity int
+	Price    int
 }
 
 var img_name string = "IMG_3.jpg"
@@ -33,11 +33,12 @@ type PayInfo struct {
 }
 
 var mutex sync.Mutex
-var users int = 30000
+var users int = 1
 var c = 0
 
 //209.97.165.170
-var host = "209.97.165.170:8080"
+//178.128.94.63:3306
+var host = "178.128.94.63:8080"
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
 	// fmt.Println("sent:", userid)
@@ -54,7 +55,7 @@ func send6(conn net.Conn, host string, m string, p string, userId int) {
 		time.Sleep(1 * time.Millisecond)
 		send_file(conn)
 		// mutex.Unlock()
-	} else {
+	} else if m == "POST" {
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userId))
 	}
@@ -115,10 +116,10 @@ func main() {
 		wg.Add(1)
 		// client6(&wg, "POST", "/payment", i)
 		//client6(&wg, "GET", "/", i) //30000
-		// client6(&wg, "GET", "/text", i)
+		//client6(&wg, "GET", "/text", i)
 		// go client6(&wg, "GET", "/products", i)
-		client6(&wg, "GET", "/products/1", i)
-		//	go client6(&wg, "POST", "/products/1")
+		// client6(&wg, "GET", "/products/1", i)
+		client6(&wg, "POST", "/products/1", i)
 	}
 	wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
@@ -146,11 +147,13 @@ func createH(methodd string, pathh string, u int) string {
 func createHP(u int) string {
 	userID := u
 	method := "POST"
-	path := "/products/" + string(rand.Intn(100))
+	// a := string(rand.Intn(100))
+	// fmt.Println("a:", a)
+	path := "/products/1"
 	// host := "209.97.165.170:8080"
 	contentLength := 20
 	contentType := "application/json"
-	jsonStr := Messagee{Name: "mos", Quantity: 2}
+	jsonStr := Messagee{Name: "mos", Quantity: 1, Price: 0}
 	jsonData, err := json.Marshal(jsonStr)
 	if err != nil {
 		fmt.Println(err)
