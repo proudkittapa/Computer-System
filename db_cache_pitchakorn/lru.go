@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strconv"
-	"time"
+
+	// "time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -210,18 +211,18 @@ func main() {
 
 	c := cache_cons(10)
 
-	for i := 0; i < 10; i++ {
-		for j := 0; j < 2; j++ {
-			start := time.Now()
-			c.cache(i)
-			end := time.Since(start)
-			fmt.Printf("%v\n", end)
+	// for i := 0; i < 10; i++ {
+	// 	for j := 0; j < 2; j++ {
+	// 		start := time.Now()
+	// 		c.cache(i)
+	// 		end := time.Since(start)
+	// 		fmt.Printf("%v\n", end)
 
-			// t := c.cache(i)
-			// fmt.Println(t)
-			// fmt.Printf("%T\n", t)
-		}
-	}
+	// 		// t := c.cache(i)
+	// 		// fmt.Println(t)
+	// 		// fmt.Printf("%T\n", t)
+	// 	}
+	// }
 
 	// saveFile(c.mp, c)
 	// fmt.Println(c.limit)
@@ -229,23 +230,23 @@ func main() {
 
 	// fmt.Printf("%T\n", c.mp)
 
-	// c.cache(1)
-	// // c.Display()
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
-	// c.cache(2)
-	// // c.Display()
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
-	// c.cache(1)
-	// // c.Display()
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
-	// c.cache(3)
-	// c.cache(4)
-	// c.cache(5)
-	// c.cache(6)
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
+	c.cache(1)
+	// c.Display()
+	fmt.Println("last: ", c.last)
+	fmt.Println("head: ", c.head)
+	c.cache(2)
+	// c.Display()
+	fmt.Println("last: ", c.last)
+	fmt.Println("head: ", c.head)
+	c.cache(1)
+	// c.Display()
+	fmt.Println("last: ", c.last)
+	fmt.Println("head: ", c.head)
+	c.cache(3)
+	c.cache(4)
+	c.cache(5)
+	c.cache(6)
+	fmt.Println("last: ", c.last)
+	fmt.Println("head: ", c.head)
 
 }
