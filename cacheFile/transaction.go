@@ -22,7 +22,7 @@ func GetQuantity(tx *sql.Tx, t chan int, id int) {
 	rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
 	var name string
 	var quantity int
-	var price float32
+	var price int
 	err := rows.Scan(&name, &quantity, &price)
 	if err != nil {
 		fmt.Println("get quantity fail")
