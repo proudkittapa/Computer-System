@@ -14,7 +14,7 @@ var (
 	db *sql.DB
 )
 
-func checkErr(err error) {
+func CheckErr(err error) {
 	if err != nil {
 		panic(err)
 	}
@@ -50,25 +50,25 @@ type jsonCache struct {
 	Limit int  `json:"limit"`
 }
 
-func cache_cons(cap int) lru_cache {
+func Cache_cons(cap int) lru_cache {
 	return lru_cache{limit: cap, mp: make(map[int]*node, cap)}
 }
 
-func (list *lru_cache) cache(id int) string {
+func (list *lru_cache) Cache(id int) string {
 	if node_val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
-		list.move(node_val)
+		list.Move(node_val)
 		// fmt.Println(val.value)
 		return node_val.value
 	} else {
 		fmt.Println("-----------MISS-----------")
 		if len(list.mp) >= list.limit {
-			rm := list.remove(list.last)
+			rm := list.Remove(list.last)
 			delete(list.mp, rm)
 		}
-		json := db_query(id)
+		json := Db_query(id) // <--------------------------
 		node := node{id: id, value: json}
-		list.add(&node)
+		list.AddNode(&node)
 		list.mp[id] = &node
 		// fmt.Println(node.value)
 		return node.value
@@ -76,15 +76,20 @@ func (list *lru_cache) cache(id int) string {
 	}
 }
 
-func (list *lru_cache) move(node *node) {
+// mind -> cache MISS
+// mind -> Query
+// mind -> set query
+// func set
+
+func (list *lru_cache) Move(node *node) {
 	if node == list.head {
 		return
 	}
-	list.remove(node)
-	list.add(node)
+	list.Remove(node)
+	list.AddNode(node)
 }
 
-func (list *lru_cache) remove(node *node) int {
+func (list *lru_cache) Remove(node *node) int {
 	if node == list.last {
 		// fmt.Println("con 1")
 		list.last = list.last.prev
@@ -99,7 +104,7 @@ func (list *lru_cache) remove(node *node) int {
 	return node.id
 }
 
-func (list *lru_cache) add(node *node) {
+func (list *lru_cache) AddNode(node *node) {
 	if list.head != nil {
 		list.head.prev = node
 		node.next = list.head
@@ -111,7 +116,7 @@ func (list *lru_cache) add(node *node) {
 	}
 }
 
-func db_query(id int) (val string) {
+func Db_query(id int) (val string) {
 
 	// fmt.Println("----------MISS----------")
 
@@ -136,7 +141,7 @@ func db_query(id int) (val string) {
 	return val
 }
 
-func saveFile(mp map[int]*node, lru lru_cache) {
+func SaveFile(mp map[int]*node, lru lru_cache) {
 	var cache_list []kv
 
 	for productID := 1; productID < len(mp); productID++ {
@@ -156,7 +161,7 @@ func saveFile(mp map[int]*node, lru lru_cache) {
 
 }
 
-func readFile() lru_cache {
+func ReadFile() lru_cache {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
 	checkErr(err)
 
