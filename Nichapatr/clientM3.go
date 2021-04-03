@@ -18,7 +18,10 @@ type Messagee struct {
 	Name     string
 	Quantity int
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> da51f0cf0ec4ca38a79db0847fa110c4f164822d
 type PayInfo struct {
 	Name      string
 	ProductID int
@@ -26,6 +29,11 @@ type PayInfo struct {
 	Time      string
 	imageName string
 }
+<<<<<<< HEAD
+=======
+
+var img_name string = "IMG_4.jpg"
+>>>>>>> da51f0cf0ec4ca38a79db0847fa110c4f164822d
 
 var img_name string = "IMG_4.jpg"
 
@@ -35,10 +43,16 @@ func send6(conn net.Conn, host string, m string, p string, userid int) {
 	if m == "GET" {
 		// fmt.Println("sent GET")
 		fmt.Fprintf(conn, createHG(p, userid))
+<<<<<<< HEAD
 	} else if m == "POSE" && p == "/payment" {
 		// fmt.Println("sent POST, img")
 		fmt.Fprintf(conn, createHPimg(conn, userid))
 		send_file(conn)
+=======
+	} else if m == "POST" && p == "/payment" {
+		// fmt.Println("sent POST, img")
+		fmt.Fprintf(conn, createHPimg(conn, userid))
+>>>>>>> da51f0cf0ec4ca38a79db0847fa110c4f164822d
 	} else {
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userid))

@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"pin2pre/cacheFile"
 	"strconv"
 	"time"
 
@@ -15,21 +17,20 @@ var (
 	db  *sql.DB
 	//mutex sync.Mutex
 	//totalTime
-)
 
-func getQuantity(tx *sql.Tx, t chan int, id int) {
-	rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
-	var name string
-	var quantity int
-	var price float32
-	err := rows.Scan(&name, &quantity, &price)
-	if err != nil {
-		fmt.Println("get quantity fail")
-		tx.Rollback()
-		return
-	}
-	t <- quantity
-	fmt.Println("name: ", name, " quantity: ", quantity, " price: ", price)
+)
+var c cacheFile.Lru_cache = cacheFile.Cache_cons(10)
+
+func getQuantity(t chan int, id int) {
+
+	info := c.Cache(id)
+
+	var quan data
+	err := json.Unmarshal([]byte(info), &quan)
+	checkErr(err)
+	t <- quan.Quantity
+
+	fmt.Println("---------------------", quan.Quantity)
 
 }
 
@@ -87,9 +88,7 @@ func preorder(end chan int, user string, productId int, orderQuantity int) {
 	}
 	fmt.Println("success")
 	fmt.Println("-----------------------------------")
-	//time2 := time.Since(start).UnixNano() / int64(time.Millisecond)
 	fmt.Println("time: \n", time.Since(start))
-	//fmt.Printf("time: ?\n", time)
 	num, _ := strconv.Atoi(user)
 	end <- num
 	return
@@ -98,6 +97,7 @@ func preorder(end chan int, user string, productId int, orderQuantity int) {
 func main() {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
+
 	ctx = context.Background()
 	n := 5
 	end := make(chan int)

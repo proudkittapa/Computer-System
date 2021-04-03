@@ -87,9 +87,7 @@ func preorder(end chan int, user string, productId int, orderQuantity int) {
 	}
 	fmt.Println("success")
 	fmt.Println("-----------------------------------")
-	//time2 := time.Since(start).UnixNano() / int64(time.Millisecond)
 	fmt.Println("time: \n", time.Since(start))
-	//fmt.Printf("time: ?\n", time)
 	num, _ := strconv.Atoi(user)
 	end <- num
 	return

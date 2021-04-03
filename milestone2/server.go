@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"image"
-	"io"
 	"log"
 	"net"
 	"os"
@@ -19,15 +18,11 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/pkg/profile"
 )
 
-//helloproudd
 type display struct {
 	Product []string `json:"Product"`
 }
-
-const BUFFERSIZE = 1024
 
 var mp map[int]string = make(map[int]string)
 var cacheObject cacheFile.Cache = cacheFile.NewCache()
@@ -50,21 +45,14 @@ type respond struct {
 }
 
 // var count int = 0
-//178.128.94.63
 
 func main() {
-	defer profile.Start().Stop()
-	li, err := net.Listen("tcp", ":8080")
 	db, _ = sql.Open("mysql", "root:62011139@tcp(178.128.94.63:3306)/prodj")
-	// db.SetMaxIdleConns(200000)
-	db.SetMaxOpenConns(200000)
-
+	li, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 	defer li.Close()
-	defer db.Close()
-
 	for {
 		conn, err := li.Accept()
 
@@ -72,7 +60,7 @@ func main() {
 			log.Fatalln(err.Error())
 			continue
 		}
-		handle(conn)
+		go handle(conn)
 	}
 }
 
@@ -90,7 +78,6 @@ func req(conn net.Conn) {
 			fmt.Fprintln(os.Stderr, err)
 		}
 		message := string(buffer[:n])
-		// fmt.Println("mess", message)
 		if !strings.Contains(message, "HTTP") {
 			if _, err := conn.Write([]byte("Recieved\n")); err != nil {
 				log.Printf("failed to respond to client: %v\n", err)
@@ -101,15 +88,9 @@ func req(conn net.Conn) {
 		method := (strings.Split(headers[0], " "))[0]
 		path := (strings.Split(headers[0], " "))[1]
 		p := strings.Split(path, "/")
-		fmt.Println(message)
+
 		if p[1] == "" {
 			home(conn, method, "pre-order/index.html", "text/html")
-			break
-		} else if p[1] == "text" {
-			sendText(conn)
-			break
-		} else if p[1] == "payment" {
-			receiveFile(conn)
 			break
 		} else if p[1] == "products" {
 			if (len(p) > 2) && (p[2] != "") {
@@ -119,19 +100,19 @@ func req(conn net.Conn) {
 				productWithID(conn, method, p[2], result)
 				break
 			} else {
-				fmt.Println("HI")
+				// fmt.Println("HI")
 				products(conn, method)
 				break
 			}
 		} else if p[1] == "style.css" {
 			home(conn, method, "pre-order/style.css", "text/css")
 			break
-		} else if p[1] == "images" {
+		} /*else if p[1] == "images" {
 			f := p[2]
 			nf := "pre-order/images/" + f
 			homeImg(conn, method, nf, "image/apng")
 			break
-		}
+		}*/
 	}
 
 }
@@ -149,36 +130,6 @@ func getJson(message string) data {
 	}
 	return result
 }
-func receiveFile(connection net.Conn) {
-	// defer connection.Close()
-	fmt.Println("Connected to server, start receiving file size")
-	// bufferFileName := make([]byte, 64)
-	bufferFileSize := make([]byte, 10)
-
-	connection.Read(bufferFileSize)
-	fmt.Println("connection", connection)
-	fileSize, _ := strconv.ParseInt(strings.Trim(string(bufferFileSize), ":"), 10, 64)
-	fmt.Println("fileSize", fileSize)
-
-	newFile, err := os.Create("new.jpg")
-
-	if err != nil {
-		panic(err)
-	}
-	defer newFile.Close()
-	var receivedBytes int64
-	for {
-		if (fileSize - receivedBytes) < BUFFERSIZE {
-			io.CopyN(newFile, connection, (fileSize - receivedBytes))
-			connection.Read(make([]byte, (receivedBytes+BUFFERSIZE)-fileSize))
-			break
-		}
-		io.CopyN(newFile, connection, BUFFERSIZE)
-		receivedBytes += BUFFERSIZE
-	}
-	send(connection, "Received file completely!", "text")
-	// fmt.Println("Received file completely!")
-}
 
 func homeImg(conn net.Conn, method string, filename string, t string) {
 	if method == "GET" {
@@ -186,12 +137,6 @@ func homeImg(conn net.Conn, method string, filename string, t string) {
 		d, _ := getImageFromFilePath(filename)
 		sendFile(conn, d, c)
 	}
-}
-
-func sendText(conn net.Conn) {
-	c := "text"
-	d := "send text"
-	send(conn, d, c)
 }
 
 func getImageFromFilePath(filePath string) (image.Image, error) {
@@ -226,11 +171,9 @@ func productWithID(conn net.Conn, method string, id string, result data) {
 	if method == "GET" {
 		mutex.Lock()
 		d := cache(i)
-
 		mutex.Unlock()
 		c := "application/json"
 		send(conn, d, c)
-
 	} else if method == "POST" {
 		fmt.Println("here")
 		fmt.Println(result.Quantity)
@@ -287,7 +230,6 @@ func getFile(filename string) string {
 			panic(err)
 		}
 	}()
-
 	chunksize := 512
 	reader := bufio.NewReader(f)
 	part := make([]byte, chunksize)
@@ -333,24 +275,10 @@ func createHeader(d string, contentType string) string {
 	return headers
 }
 
-func send2(conn net.Conn, h string) {
-	fmt.Fprintf(conn, createHeader2(h))
-}
-
-//create header function
-func createHeader2(httpStatus string) string {
-	// contentLength := len(d)
-	headers := fmt.Sprintf("HTTP/1.1 %s\r\n", httpStatus)
-	return headers
-}
-
-func checkErr(err error) (a bool) {
-	a = true
+func checkErr(err error) {
 	if err != nil {
 		fmt.Println("check err", err)
-		a = false
 	}
-	return
 }
 
 func cache(id int) string {
@@ -358,65 +286,42 @@ func cache(id int) string {
 		fmt.Println("----------HIT----------")
 		return val
 	} else {
-		fmt.Println("----------MISS----------")
 		return db_query(id)
 	}
-	// return db_query(id)
 }
 
 func db_query(id int) string {
 	// start := time.Now()
-
 	// db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
 	// checkErr(err)
-	for {
-		//rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-		rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-		// if checkErr(err) == false {
-		// 	// fmt.Println("error in db_query")
-		// 	time.Sleep(100 * time.Millisecond)
-		// 	continue
-		// }
+
+	// fmt.Println("----------MISS----------")
+
+	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+	checkErr(err)
+
+	for rows.Next() {
 		var name string
 		var quantity int
 		var price int
-		err := rows.Scan(&name, &quantity, &price)
-		checkErr(err)
+		err = rows.Scan(&name, &quantity, &price)
 
 		result := data{Name: name, Quantity: quantity, Price: price}
 		byteArray, err := json.Marshal(result)
 		checkErr(err)
 
 		mp[id] = string(byteArray)
-		val := mp[id]
-		// fmt.Printf("time query from db: %v\n", time.Since(start))
-		return val
-		/*
 
-			for rows.Next() {
-				var name string
-				var quantity int
-				var price int
-				err = rows.Scan(&name, &quantity, &price)
-				result := data{Name: name, Quantity: quantity, Price: price}
-				byteArray, err := json.Marshal(result)
-				checkErr(err)
-
-				mp[id] = string(byteArray)
-
-			}
-			rows.Close()
-
-			val := mp[id]
-			fmt.Printf("time query from db: %v\n", time.Since(start))
-			return val
-		*/
 	}
+	rows.Close()
+	val := mp[id]
+	// fmt.Printf("time query from db: %v\n", time.Since(start))
+	return val
 }
 
 func display_pro() (val string) {
 	var l []string
-	for i := 1; i <= 1; i++ {
+	for i := 1; i <= 10; i++ {
 		val := db_query(i)
 		l = append(l, val)
 	}

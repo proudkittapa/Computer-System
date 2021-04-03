@@ -7,8 +7,12 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"math/rand"
 	"net"
+	"os"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -18,9 +22,22 @@ type Messagee struct {
 	Quantity int
 }
 
+var img_name string = "IMG_3.jpg"
+
+type PayInfo struct {
+	Name      string
+	ProductID int
+	Date      string
+	Time      string
+	imageName string
+}
+
 var mutex sync.Mutex
-var users int = 35000
+var users int = 30000
 var c = 0
+
+//209.97.165.170
+var host = "209.97.165.170:8080"
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
 	// fmt.Println("sent:", userid)
@@ -29,6 +46,14 @@ func send6(conn net.Conn, host string, m string, p string, userId int) {
 	if m == "GET" {
 		// fmt.Println("sent GET")
 		fmt.Fprintf(conn, createH(m, p, userId))
+	} else if m == "POST" && p == "/payment" {
+		// fmt.Println("sent POST, img")
+
+		fmt.Fprintf(conn, createHPimg(conn, userId))
+		// mutex.Lock()
+		time.Sleep(1 * time.Millisecond)
+		send_file(conn)
+		// mutex.Unlock()
 	} else {
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userId))
@@ -57,8 +82,8 @@ func recv(conn net.Conn) {
 
 func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 	// t0 := time.Now()
-	host := "209.97.165.170:8080"
-	conn, err := net.Dial("tcp", "209.97.165.170:8080")
+
+	conn, err := net.Dial("tcp", host)
 	if err != nil {
 		count_Fail++
 		log.Fatalln(err)
@@ -88,11 +113,11 @@ func main() {
 	start := time.Now()
 	for i := 0; i < users; i++ {
 		wg.Add(1)
-
-		// client6(&wg, "GET", "/", i) //30000
-		go client6(&wg, "GET", "/text", i)
+		// client6(&wg, "POST", "/payment", i)
+		//client6(&wg, "GET", "/", i) //30000
+		// client6(&wg, "GET", "/text", i)
 		// go client6(&wg, "GET", "/products", i)
-		// client6(&wg, "GET", "/products/1", i)
+		client6(&wg, "GET", "/products/1", i)
 		//	go client6(&wg, "POST", "/products/1")
 	}
 	wg.Wait()
@@ -110,7 +135,7 @@ func createH(methodd string, pathh string, u int) string {
 	userID := u
 	method := methodd
 	path := pathh
-	host := "209.97.165.170:8080"
+	// host := "209.97.165.170:8080"
 	contentLength := 0
 	contentType := "text"
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n userID:%d",
@@ -121,8 +146,8 @@ func createH(methodd string, pathh string, u int) string {
 func createHP(u int) string {
 	userID := u
 	method := "POST"
-	path := "/products/1"
-	host := "209.97.165.170:8080"
+	path := "/products/" + string(rand.Intn(100))
+	// host := "209.97.165.170:8080"
 	contentLength := 20
 	contentType := "application/json"
 	jsonStr := Messagee{Name: "mos", Quantity: 2}
@@ -133,4 +158,70 @@ func createHP(u int) string {
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
 		method, path, host, contentLength, contentType, string(jsonData), userID)
 	return headers
+}
+
+func createHPimg(conn net.Conn, u int) string {
+	userID := u
+	method := "POST"
+	path := "/payment"
+	// host := "127.0.0.1:8080"
+
+	contentType := "image/jpg"
+	jsonStr := PayInfo{Name: "Kanga", ProductID: 1123, Date: "20/02/21", Time: "12.00", imageName: img_name}
+	jsonData, err := json.Marshal(jsonStr)
+	if err != nil {
+		fmt.Println(err)
+	}
+	contentLength := len(string(jsonData))
+
+	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
+		method, path, host, contentLength, contentType, string(jsonData), userID)
+
+	return headers
+}
+
+const BUFFERSIZE = 1024
+
+func send_file(conn net.Conn) {
+	file, err := os.Open(img_name)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fileInfo, err := file.Stat()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fileSize := fillString(strconv.FormatInt(fileInfo.Size(), 10), 10)
+	// fileSize := strconv.FormatInt(fileInfo.Size(), 10)
+	// fileName := fillString(fileInfo.Name(), 64)
+	// var size int64 = fileInfo.Size()
+	// fileSize := make([]byte, size)
+	fmt.Println("Send filesize!")
+	conn.Write([]byte(fileSize))
+	// connection.Write([]byte(fileName))
+	sendBuffer := make([]byte, BUFFERSIZE)
+	fmt.Println("Start sending file!")
+	for {
+		_, err = file.Read(sendBuffer)
+		if err == io.EOF {
+			break
+		}
+		conn.Write(sendBuffer)
+	}
+	fmt.Println("File has been sent")
+	return
+}
+
+func fillString(retunString string, toLength int) string {
+	for {
+		lengtString := len(retunString)
+		if lengtString < toLength {
+			retunString = retunString + ":"
+			continue
+		}
+		break
+	}
+	return retunString
 }
