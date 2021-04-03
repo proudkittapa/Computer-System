@@ -41,7 +41,7 @@ func GetFile(filename string) string {
 	// call_cache("index.html")
 	const BufferSize = 500
 	start := time.Now()
-	file, err := os.Open(filename)
+	file, err := os.Open("../pre-order/" + filename)
 	if err != nil {
 		fmt.Println("File reading error", err)
 		return ""
