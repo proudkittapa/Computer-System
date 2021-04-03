@@ -131,13 +131,14 @@ func createHP(u int) string {
 	method := "POST"
 	path := "/products/" + string(rand.Intn(100))
 	host := "127.0.0.1:8080"
-	contentLength := len(string(jsonData))
+	
 	contentType := "application/json"
 	jsonStr := Messagee{Name: "mos", Quantity: 2}
 	jsonData, err := json.Marshal(jsonStr)
 	if err != nil {
 		fmt.Println(err)
 	}
+	contentLength := len(string(jsonData))
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
 		method, path, host, contentLength, contentType, string(jsonData), userID)
 	return headers
