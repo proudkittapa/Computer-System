@@ -12,7 +12,7 @@ import (
 
 var (
 	ctx context.Context
-	// db  *sql.DB
+	db  *sql.DB
 	//mutex sync.Mutex
 	TotalTime float64
 	Success   bool
