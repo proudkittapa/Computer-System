@@ -37,7 +37,8 @@ var users int = 30000
 var c = 0
 
 //209.97.165.170
-var host = "209.97.165.170:8080"
+//178.128.94.63:3306
+var host = "178.128.94.63:8080"
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
 	// fmt.Println("sent:", userid)
