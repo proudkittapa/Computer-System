@@ -77,9 +77,9 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 		panic(err)
 	}
 	start := time.Now()
-	var price int
-	tx.QueryRow("select unit_price from products where product_id = " + strconv.Itoa(productId)).Scan(&price)
-	fmt.Println("Asdsad", price)
+	var name string
+	tx.QueryRow("select name from products where product_id = " + strconv.Itoa(productId)).Scan(&price)
+	fmt.Println("Asdsad", name)
 	transactionC := make(chan string)
 	t := make(chan int)
 	go GetQuantity(tx, t, productId)
@@ -107,7 +107,7 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 	end <- Success
 }
 func PostPreorder(id int, quantity int) bool {
-	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
+	db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	ctx = context.Background()
 	//n := 100
