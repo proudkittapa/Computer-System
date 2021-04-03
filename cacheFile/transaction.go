@@ -76,7 +76,9 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 		panic(err)
 	}
 	start := time.Now()
-
+	var price int
+	tx.QueryRow("select unit_price from products where product_id = " + strconv.Itoa(id)).Scan(&price)
+	fmt.Println("Asdsad", price)
 	transactionC := make(chan string)
 	t := make(chan int)
 	go GetQuantity(tx, t, productId)
