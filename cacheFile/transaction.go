@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strconv"
+	"sync"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -59,7 +60,7 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 	transactionC <- "done"
 }
 
-func Insert(tx *sql.Tx, transactionC chan string, user string, id int, q int) {
+func Insert(tx *sql.Tx, wg *sync.WaitGroup, transactionC chan string, user string, id int, q int) {
 	tx.Exec("set transaction isolation level SERIALIZABLE")
 	_, err := tx.ExecContext(ctx, "INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
 	if err != nil {
@@ -67,6 +68,7 @@ func Insert(tx *sql.Tx, transactionC chan string, user string, id int, q int) {
 		tx.Rollback()
 		return
 	}
+	wg.Done()
 	transactionC <- "finish"
 }
 
@@ -80,7 +82,7 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 	var name string
 	fmt.Println(productId)
 	tx.QueryRow("select name from products where product_id = " + strconv.Itoa(1)).Scan(&name)
-	fmt.Println("Asdsad", name)
+	fmt.Println("name: ", name)
 	transactionC := make(chan string)
 	t := make(chan int)
 	go GetQuantity(tx, t, productId)
@@ -90,7 +92,10 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 		Preorder(end, user, productId, orderQuantity)
 		return
 	}
-	go Insert(tx, transactionC, user, productId, orderQuantity)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go Insert(tx, &wg, transactionC, user, productId, orderQuantity)
+	wg.Wait()
 	if err = tx.Commit(); err != nil {
 		fmt.Printf("Failed to commit tx: %v\n", err)
 	}
