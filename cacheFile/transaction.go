@@ -109,7 +109,7 @@ func PostPreorder(id int, quantity int) bool {
 	end := make(chan bool)
 	go Preorder(end, "1", id, quantity)
 
-	success := <-end
+	Success = <-end
 
-	return success
+	return Success
 }
