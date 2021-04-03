@@ -25,7 +25,7 @@ func GetQuantity(tx *sql.Tx, t chan int, id int) {
 	var price float32
 	err := rows.Scan(&name, &quantity, &price)
 	if err != nil {
-		//fmt.Println("get quantity fail")
+		fmt.Println("get quantity fail")
 		tx.Rollback()
 		return
 	}
@@ -39,7 +39,7 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 	quantity := <-t // channel from getQuantity
 	newQuantity := quantity - orderQuantity
 	if newQuantity < 0 {
-		//fmt.Println("the order is out of stock")
+		fmt.Println("the order is out of stock")
 		transactionC <- "not complete"
 		return
 	}
@@ -47,7 +47,7 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 
 	_, err := tx.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(id))
 	if err != nil {
-		//fmt.Println("decrement fail")
+		fmt.Println("decrement fail")
 		tx.Rollback()
 		transactionC <- "rollback"
 		return
@@ -59,6 +59,7 @@ func Insert(tx *sql.Tx, transactionC chan string, user string, id int, q int) {
 	tx.Exec("set transaction isolation level SERIALIZABLE")
 	_, err := tx.ExecContext(ctx, "INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
 	if err != nil {
+		fmt.Println("insert fail")
 		tx.Rollback()
 		return
 	}
