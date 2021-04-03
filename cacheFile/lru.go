@@ -185,23 +185,6 @@ func readFile() lru_cache {
 	return c
 }
 
-// func (l *lru_cache) Display() {
-// 	node := l.head
-// 	for node != nil {
-// 		fmt.Printf("%+v ->", node.id)
-// 		node = node.next
-// 	}
-// 	fmt.Println()
-// }
-
-// func Display(node *node) {
-// 	for node != nil {
-// 		fmt.Printf("%v ->", node.id)
-// 		node = node.next
-// 	}
-// 	fmt.Println()
-// }
-
 // func main() {
 // 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 
@@ -221,30 +204,4 @@ func readFile() lru_cache {
 // 			// fmt.Printf("%T\n", t)
 // 		}
 // 	}
-
-// 	// saveFile(c.mp, c)
-// 	// fmt.Println(c.limit)
-// 	readFile()
-
-// 	// fmt.Printf("%T\n", c.mp)
-
-// 	// c.cache(1)
-// 	// // c.Display()
-// 	// fmt.Println("last: ", c.last)
-// 	// fmt.Println("head: ", c.head)
-// 	// c.cache(2)
-// 	// // c.Display()
-// 	// fmt.Println("last: ", c.last)
-// 	// fmt.Println("head: ", c.head)
-// 	// c.cache(1)
-// 	// // c.Display()
-// 	// fmt.Println("last: ", c.last)
-// 	// fmt.Println("head: ", c.head)
-// 	// c.cache(3)
-// 	// c.cache(4)
-// 	// c.cache(5)
-// 	// c.cache(6)
-// 	// fmt.Println("last: ", c.last)
-// 	// fmt.Println("head: ", c.head)
-
 // }
