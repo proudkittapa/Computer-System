@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"strconv"
@@ -17,6 +18,10 @@ type Messagee struct {
 	Name     string
 	Quantity int
 }
+<<<<<<< HEAD
+
+=======
+>>>>>>> da51f0cf0ec4ca38a79db0847fa110c4f164822d
 type PayInfo struct {
 	Name      string
 	ProductID int
@@ -24,18 +29,30 @@ type PayInfo struct {
 	Time      string
 	imageName string
 }
+<<<<<<< HEAD
+=======
+
+var img_name string = "IMG_4.jpg"
+>>>>>>> da51f0cf0ec4ca38a79db0847fa110c4f164822d
 
 var img_name string = "IMG_4.jpg"
 
-func send6(conn net.Conn, host string, m string, p string) {
+func send6(conn net.Conn, host string, m string, p string, userid int) {
 	fmt.Println("sent")
 	userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
 		fmt.Fprintf(conn, createHG(p, userid))
+<<<<<<< HEAD
+	} else if m == "POSE" && p == "/payment" {
+		// fmt.Println("sent POST, img")
+		fmt.Fprintf(conn, createHPimg(conn, userid))
+		send_file(conn)
+=======
 	} else if m == "POST" && p == "/payment" {
 		// fmt.Println("sent POST, img")
 		fmt.Fprintf(conn, createHPimg(conn, userid))
+>>>>>>> da51f0cf0ec4ca38a79db0847fa110c4f164822d
 	} else {
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userid))
@@ -64,7 +81,7 @@ func client6(wg *sync.WaitGroup, m string, p string) {
 		count_Fail++
 		log.Fatalln(err)
 	}
-	send6(conn, host, m, p)
+	send6(conn, host, m, p, userid)
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
@@ -112,15 +129,16 @@ func createHG(pathh string, u int) string {
 func createHP(u int) string {
 	userID := u
 	method := "POST"
-	path := "/products/1"
+	path := "/products/" + string(rand.Intn(100))
 	host := "127.0.0.1:8080"
-	contentLength := len(string(jsonData))
+	
 	contentType := "application/json"
 	jsonStr := Messagee{Name: "mos", Quantity: 2}
 	jsonData, err := json.Marshal(jsonStr)
 	if err != nil {
 		fmt.Println(err)
 	}
+	contentLength := len(string(jsonData))
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
 		method, path, host, contentLength, contentType, string(jsonData), userID)
 	return headers
