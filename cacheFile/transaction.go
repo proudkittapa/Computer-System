@@ -14,11 +14,11 @@ var (
 	ctx context.Context
 	db  *sql.DB
 	//mutex sync.Mutex
-	totalTime float64
-	success   bool
+	TotalTime float64
+	Success   bool
 )
 
-func getQuantity(tx *sql.Tx, t chan int, id int) {
+func GetQuantity(tx *sql.Tx, t chan int, id int) {
 	rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
 	var name string
 	var quantity int
@@ -34,7 +34,7 @@ func getQuantity(tx *sql.Tx, t chan int, id int) {
 
 }
 
-func decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
+func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
 
 	quantity := <-t // channel from getQuantity
 	newQuantity := quantity - orderQuantity
@@ -55,7 +55,7 @@ func decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 	transactionC <- "done"
 }
 
-func insert(tx *sql.Tx, transactionC chan string, user string, id int, q int) {
+func Insert(tx *sql.Tx, transactionC chan string, user string, id int, q int) {
 	tx.Exec("set transaction isolation level SERIALIZABLE")
 	_, err := tx.ExecContext(ctx, "INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
 	if err != nil {
@@ -65,7 +65,7 @@ func insert(tx *sql.Tx, transactionC chan string, user string, id int, q int) {
 	transactionC <- "finish"
 }
 
-func preorder(end chan bool, user string, productId int, orderQuantity int) {
+func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
@@ -75,19 +75,19 @@ func preorder(end chan bool, user string, productId int, orderQuantity int) {
 
 	transactionC := make(chan string)
 	t := make(chan int)
-	go getQuantity(tx, t, productId)
-	go decrement(tx, t, transactionC, orderQuantity, productId)
+	go GetQuantity(tx, t, productId)
+	go Decrement(tx, t, transactionC, orderQuantity, productId)
 	if <-transactionC == "rollback" {
 		//fmt.Println("rollback")
-		preorder(end, user, productId, orderQuantity)
+		Preorder(end, user, productId, orderQuantity)
 		return
 	}
-	go insert(tx, transactionC, user, productId, orderQuantity)
+	go Insert(tx, transactionC, user, productId, orderQuantity)
 	if err := tx.Commit(); err != nil {
 		//fmt.Printf("Failed to commit tx: %v\n", err)
 	}
 	if <-transactionC == "finish" {
-		success = true
+		Success = true
 	}
 	//fmt.Println("success")
 	//fmt.Println("-----------------------------------")
@@ -95,19 +95,19 @@ func preorder(end chan bool, user string, productId int, orderQuantity int) {
 	tt := float64(elapsed)
 	fmt.Printf("time: %v\n", elapsed)
 	fmt.Printf("tt: %v\n", tt)
-	totalTime += tt
-	fmt.Printf("total time: %v\n", totalTime)
-	end <- success
+	TotalTime += tt
+	fmt.Printf("total time: %v\n", TotalTime)
+	end <- Success
 	return
 
 }
-func postPreorder(id int, quantity int) bool {
+func PostPreorder(id int, quantity int) bool {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	ctx = context.Background()
 	//n := 100
 	end := make(chan bool)
-	go preorder(end, "1", id, quantity)
+	go Preorder(end, "1", id, quantity)
 
 	success := <-end
 
