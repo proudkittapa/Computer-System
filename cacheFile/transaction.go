@@ -105,7 +105,7 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 }
 func PostPreorder(id int, quantity int) bool {
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
-	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 100, 1)
+	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	ctx = context.Background()
 	//n := 100
 	end := make(chan bool)
