@@ -1,4 +1,4 @@
-package main
+package cacheFile
 
 import (
 	"context"
@@ -15,6 +15,7 @@ var (
 	db  *sql.DB
 	//mutex sync.Mutex
 	totalTime float64
+	success   bool
 )
 
 func getQuantity(tx *sql.Tx, t chan int, id int) {
@@ -54,7 +55,7 @@ func decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 	transactionC <- "done"
 }
 
-func insert(tx *sql.Tx, user string, id int, q int) {
+func insert(tx *sql.Tx, transactionC chan string, user string, id int, q int) {
 	tx.Exec("set transaction isolation level SERIALIZABLE")
 	_, err := tx.ExecContext(ctx, "INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
 	if err != nil {
@@ -64,7 +65,7 @@ func insert(tx *sql.Tx, user string, id int, q int) {
 	transactionC <- "finish"
 }
 
-func preorder(end chan int, user string, productId int, orderQuantity int) bool {
+func preorder(end chan bool, user string, productId int, orderQuantity int) {
 
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
@@ -81,12 +82,12 @@ func preorder(end chan int, user string, productId int, orderQuantity int) bool 
 		preorder(end, user, productId, orderQuantity)
 		return
 	}
-	go insert(tx, user, productId, orderQuantity)
+	go insert(tx, transactionC, user, productId, orderQuantity)
 	if err := tx.Commit(); err != nil {
 		//fmt.Printf("Failed to commit tx: %v\n", err)
 	}
 	if <-transactionC == "finish" {
-		success := true
+		success = true
 	}
 	//fmt.Println("success")
 	//fmt.Println("-----------------------------------")
@@ -96,38 +97,19 @@ func preorder(end chan int, user string, productId int, orderQuantity int) bool 
 	fmt.Printf("tt: %v\n", tt)
 	totalTime += tt
 	fmt.Printf("total time: %v\n", totalTime)
-	num, _ := strconv.Atoi(user)
-	end <- num
-	return true
+	end <- success
+	return
 
 }
 func postPreorder(id int, quantity int) bool {
-	//db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
-	//defer db.Close()
-	// n := 100 //
-	end := make(chan bool) //, n)
-	start2 := time.Now()
-
+	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
+	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
+	ctx = context.Background()
+	//n := 100
+	end := make(chan bool)
 	go preorder(end, "1", id, quantity)
 
 	success := <-end
 
-	fmt.Printf("Total time: %v\n", time.Since(start2))
-	fmt.Println("---------------")
-
 	return success
-}
-func main() {
-	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
-	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
-	ctx = context.Background()
-	n := 100
-	end := make(chan int)
-	for i := 1; i <= n; i++ {
-		go preorder(end, strconv.Itoa(i), 1, 5)
-	}
-	for i := 1; i <= n; i++ {
-		<-end
-	}
-	return
 }
