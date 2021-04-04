@@ -159,7 +159,7 @@ func receiveFile(connection net.Conn) {
 
 	connection.Read(bufferFileSize)
 	// fmt.Println("connection", connection)
-	fileSize, _ := strconv.ParseInt(strings.Trim(string(bufferFileSize), ":"), 10, 64)
+	fileSize, _ := strconv.ParseInt(strings.Trim(string(bufferFileSize), ":"), 10, 10)
 	fmt.Println("fileSize", fileSize)
 	mutex.Lock()
 	newFile, err := os.Create("new.jpg")
