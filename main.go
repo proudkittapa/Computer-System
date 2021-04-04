@@ -194,6 +194,8 @@ func sendText(conn net.Conn) {
 	c := "text"
 	d := "send text"
 	send(conn, d, c)
+	count--
+	fmt.Println("connections after return:", count)
 }
 
 func getImageFromFilePath(filePath string) (image.Image, error) {
