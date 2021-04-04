@@ -218,7 +218,7 @@ func send_file(conn net.Conn) {
 		}
 		conn.Write(sendBuffer)
 	}
-	fmt.Println("File has been sent")
+	fmt.Println("File has been sent", fileSize)
 	return
 }
 
