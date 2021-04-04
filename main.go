@@ -55,9 +55,9 @@ var count int = 0
 func main() {
 	defer profile.Start().Stop()
 	li, err := net.Listen("tcp", ":8080")
-	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
+	db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// db.SetMaxIdleConns(200000)
-	// db.SetMaxOpenConns(200000)
+	db.SetMaxOpenConns(200000)
 
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -74,7 +74,7 @@ func main() {
 		}
 		count++
 		fmt.Println("connections:", count)
-		go handle(conn)
+		handle(conn)
 	}
 }
 
