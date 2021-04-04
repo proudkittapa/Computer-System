@@ -35,7 +35,7 @@ type PayInfo struct {
 }
 
 var mutex sync.Mutex
-var users int = 30000
+var users int = 10000
 var c = 0
 
 //209.97.165.170
