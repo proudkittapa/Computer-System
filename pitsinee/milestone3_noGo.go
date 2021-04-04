@@ -32,6 +32,7 @@ func getQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	}
 	t <- quantity
 	//fmt.Println("name: ", name, " quantity: ", quantity, " price: ", price)
+
 }
 
 func decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
@@ -44,6 +45,7 @@ func decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 		return
 	}
 	//fmt.Println(newQuantity)
+
 	_, err := tx.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(id))
 	if err != nil {
 		//fmt.Println("decrement fail")
@@ -64,22 +66,24 @@ func insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
 	wg.Done()
 }
 
-func preorder(end chan int, user string, productId int, orderQuantity int) {
+func preorder(user string, productId int, orderQuantity int) {
+
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
 		panic(err)
 	}
 	start := time.Now()
+
 	transactionC := make(chan string)
 	t := make(chan int)
 	go getQuantity(tx, transactionC, t, productId)
 	go decrement(tx, t, transactionC, orderQuantity, productId)
 	if <-transactionC == "rollback" {
 		//fmt.Println("rollback")
-		preorder(end, user, productId, orderQuantity)
+		preorder(user, productId, orderQuantity)
 		return
 	}
-	// fmt.Println("user:", user, "productId:", productId, "orderQuantity:", orderQuantity)
+	fmt.Println("user:", user, "productId:", productId, "orderQuantity:", orderQuantity)
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go insert(&wg, tx, user, productId, orderQuantity)
@@ -95,22 +99,23 @@ func preorder(end chan int, user string, productId int, orderQuantity int) {
 	fmt.Printf("tt: %v\n", tt)
 	totalTime += tt
 	fmt.Printf("total time: %v\n", totalTime)
-	num, _ := strconv.Atoi(user)
-	end <- num
+	// num, _ := strconv.Atoi(user)
+	// end <- num
 	return
-}
 
+}
 func main() {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	ctx = context.Background()
 	n := 100
-	end := make(chan int)
+	//end := make(chan int)
 	for i := 1; i <= n; i++ {
-		go preorder(end, strconv.Itoa(i), 1, 5)
+		preorder(strconv.Itoa(i), 1, 5)
 	}
-	for i := 1; i <= n; i++ {
-		<-end
-	}
+	// for i := 1; i <= n; i++ {
+	// 	<-end
+	// }
+	fmt.Println("doneeeeeee")
 	return
 }
