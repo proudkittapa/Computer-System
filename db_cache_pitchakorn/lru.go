@@ -1,4 +1,4 @@
-package db_cache_map
+package main
 
 import (
 	"database/sql"
@@ -177,13 +177,8 @@ func readFile() lru_cache {
 		}
 	}
 
-	// fmt.Println(tempStruct)
-
-	fmt.Println(c)
-	fmt.Printf("%T\n", c)
-	// fmt.Println(t[0].Value)
-	// fmt.Printf("%T\n", t[0].Value)
-
+	fmt.Println(tempStruct.Cache)
+	fmt.Printf("%T\n", tempStruct.Cache)
 	return c
 }
 
@@ -209,7 +204,7 @@ func main() {
 
 	// defer profile.Start(profile.MemProfile).Stop()
 
-	c := cache_cons(10)
+	// c := cache_cons(10)
 
 	// for i := 0; i < 10; i++ {
 	// 	for j := 0; j < 2; j++ {
@@ -230,23 +225,23 @@ func main() {
 
 	// fmt.Printf("%T\n", c.mp)
 
-	c.cache(1)
-	// c.Display()
-	fmt.Println("last: ", c.last)
-	fmt.Println("head: ", c.head)
-	c.cache(2)
-	// c.Display()
-	fmt.Println("last: ", c.last)
-	fmt.Println("head: ", c.head)
-	c.cache(1)
-	// c.Display()
-	fmt.Println("last: ", c.last)
-	fmt.Println("head: ", c.head)
-	c.cache(3)
-	c.cache(4)
-	c.cache(5)
-	c.cache(6)
-	fmt.Println("last: ", c.last)
-	fmt.Println("head: ", c.head)
+	// c.cache(1)
+	// // c.Display()
+	// fmt.Println("last: ", c.last)
+	// fmt.Println("head: ", c.head)
+	// c.cache(2)
+	// // c.Display()
+	// fmt.Println("last: ", c.last)
+	// fmt.Println("head: ", c.head)
+	// c.cache(1)
+	// // c.Display()
+	// fmt.Println("last: ", c.last)
+	// fmt.Println("head: ", c.head)
+	// c.cache(3)
+	// c.cache(4)
+	// c.cache(5)
+	// c.cache(6)
+	// fmt.Println("last: ", c.last)
+	// fmt.Println("head: ", c.head)
 
 }
