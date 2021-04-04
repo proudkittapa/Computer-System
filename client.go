@@ -35,7 +35,7 @@ type PayInfo struct {
 }
 
 var mutex sync.Mutex
-var users int = 30000
+var users int = 10000
 var c = 0
 
 //209.97.165.170
@@ -69,7 +69,7 @@ func recv(conn net.Conn) {
 	message, err := bufio.NewReader(conn).ReadString('\n')
 	if err != nil {
 		count_Fail++
-		log.Println("failed to read contents")
+		log.Println("recv failed to read contents", message)
 		return
 	}
 
