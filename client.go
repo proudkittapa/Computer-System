@@ -54,7 +54,7 @@ func send6(conn net.Conn, host string, m string, p string, userId int) {
 
 		fmt.Fprintf(conn, createHPimg(conn, userId))
 		// mutex.Lock()
-		// time.Sleep(1 * time.Millisecond)
+		time.Sleep(1 * time.Millisecond)
 		send_file(conn)
 		// mutex.Unlock()
 	} else if m == "POST" {
@@ -189,9 +189,9 @@ func createHPimg(conn net.Conn, u int) string {
 const BUFFERSIZE = 1024
 
 func send_file(conn net.Conn) {
-	mutex.Lock()
+	// mutex.Lock()
 	file, err := os.Open(img_name)
-	mutex.Unlock()
+	// mutex.Unlock()
 	if err != nil {
 		fmt.Println(err)
 		return
