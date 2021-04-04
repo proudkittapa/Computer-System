@@ -48,7 +48,8 @@ type respond struct {
 	Msg string `json:"msg"`
 }
 
-// var count int = 0
+var count int = 0
+
 //178.128.94.63
 
 func main() {
@@ -71,6 +72,8 @@ func main() {
 			log.Fatalln(err.Error())
 			continue
 		}
+		count++
+		fmt.Println("connections:", count)
 		go handle(conn)
 	}
 }
