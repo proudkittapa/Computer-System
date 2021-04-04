@@ -103,6 +103,7 @@ func req(conn net.Conn) {
 		method := (strings.Split(headers[0], " "))[0]
 		path := (strings.Split(headers[0], " "))[1]
 		p := strings.Split(path, "/")
+
 		// fmt.Println(message)
 		if p[1] == "" {
 			home(conn, method, "pre-order/index.html", "text/html")
