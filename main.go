@@ -178,7 +178,11 @@ func receiveFile(connection net.Conn) {
 		io.CopyN(newFile, connection, BUFFERSIZE)
 		receivedBytes += BUFFERSIZE
 	}
-	send(connection, "Received file completely!", "text")
+	if fileSize != 0 {
+		send(connection, "Received file completely!", "text")
+	} else {
+		send2(connection, "429")
+	}
 	// fmt.Println("Received file completely!")
 }
 
