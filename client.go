@@ -24,7 +24,7 @@ type Messagee struct {
 	Price    int
 }
 
-var img_name string = "IMG_3.jpg"
+var img_name string = "IMG_4.jpg"
 
 type PayInfo struct {
 	Name      string
@@ -35,7 +35,7 @@ type PayInfo struct {
 }
 
 var mutex sync.Mutex
-var users int = 1000
+var users int = 500
 var c = 0
 
 //209.97.165.170
