@@ -92,7 +92,7 @@ func req(conn net.Conn) {
 			fmt.Fprintln(os.Stderr, err)
 		}
 		message := string(buffer[:n])
-		// fmt.Println("mess", message)
+		fmt.Println("mess", message)
 		if !strings.Contains(message, "HTTP") {
 			if _, err := conn.Write([]byte("Recieved\n")); err != nil {
 				log.Printf("failed to respond to client: %v\n", err)
