@@ -211,14 +211,17 @@ func send_file(conn net.Conn) {
 	// connection.Write([]byte(fileName))
 	sendBuffer := make([]byte, BUFFERSIZE)
 	fmt.Println("Start sending file!")
+	temp := 0
+	n := 0
 	for {
-		_, err = file.Read(sendBuffer)
+		n, err = file.Read(sendBuffer)
 		if err == io.EOF {
 			break
 		}
 		conn.Write(sendBuffer)
+		temp += n
 	}
-	fmt.Println("File has been sent", fileSize)
+	fmt.Println("File has been sent", temp)
 	return
 }
 
