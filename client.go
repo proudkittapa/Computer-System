@@ -95,7 +95,10 @@ func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 	fmt.Println("current con:", c)
 	fmt.Println("sent", userId)
 	send6(conn, host, m, p, userId)
+	start2 := time.Now()
 	recv(conn)
+	t := time.Since(start2)
+	fmt.Println("response time:", t)
 	c--
 	fmt.Println("current con:", c)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
