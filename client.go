@@ -71,15 +71,12 @@ func recv(conn net.Conn) {
 		count_Fail++
 		log.Println("recv failed to read contents", message)
 		return
-	}
-
-	// conn.Close()
-	fmt.Println("mess", message)
-	if message == "HTTP/1.1 429\r\n" {
+	} else if message == "HTTP/1.1 429\r\n" {
 		count_Fail++
 	} else {
 		count_Res++
 	}
+	fmt.Println("mess", message)
 
 }
 
