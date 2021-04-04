@@ -74,7 +74,7 @@ func main() {
 		}
 		count++
 		fmt.Println("connections:", count)
-		handle(conn)
+		go handle(conn)
 	}
 }
 
