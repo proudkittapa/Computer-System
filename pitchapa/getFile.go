@@ -121,7 +121,7 @@ func call_cache(filename string) string {
 
 func getFile(filename string) string {
 	// call_cache("index.html")
-	const BufferSize = 500
+	const BufferSize = 300
 	start := time.Now()
 	file, err := os.Open(filename)
 	if err != nil {
@@ -185,14 +185,14 @@ func getFile(filename string) string {
 
 	wg.Wait()
 	fmt.Printf("time: %v\n", time.Since(start))
-	fmt.Printf("hello")
+	// fmt.Printf("hello")
 	fmt.Printf("time2: %v\n", time.Since(start2))
 
 	var text string
 	for i := 0; i < concurrency; i++ {
 		text += store[i]
 	}
-	fmt.Println(text)
+	// fmt.Println(text)
 
 	return text
 }
