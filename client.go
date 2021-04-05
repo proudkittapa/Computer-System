@@ -35,7 +35,7 @@ type PayInfo struct {
 }
 
 var mutex sync.Mutex
-var users int = 1000
+var users int = 5000
 var c = 0
 
 //209.97.165.170
@@ -120,9 +120,9 @@ func main() {
 		// go client6(&wg, "POST", "/payment", i)
 		// go client6(&wg, "GET", "/", i) //30000
 		//client6(&wg, "GET", "/text", i)
-		//client6(&wg, "GET", "/products", i)
-		//client6(&wg, "GET", "/products/1", i)
-		go client6(&wg, "POST", "/products/1", i)
+		// go client6(&wg, "GET", "/products", i)
+		go client6(&wg, "GET", "/products/1", i)
+		// go client6(&wg, "POST", "/products/1", i)
 	}
 	wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
