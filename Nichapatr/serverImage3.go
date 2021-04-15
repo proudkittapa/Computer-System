@@ -30,7 +30,7 @@ func main() {
 	}
 }
 
-func sendFileToClient(connection net.Conn) {
+func ReceiveFile(connection net.Conn) {
 	defer connection.Close()
 	fmt.Println("Connected to server, start receiving file size")
 	// bufferFileName := make([]byte, 64)
