@@ -26,6 +26,8 @@ type PayInfo struct {
 	imageName string
 }
 
+var wg sync.WaitGroup
+
 var img_name string = "IMG_4.jpg"
 
 func send6(conn net.Conn, host string, m string, p string, userid int) {
@@ -86,26 +88,6 @@ var count_Fail = 0
 
 // var n = flag.Int("n", 5, "Number of goroutines to create")
 // var ch = make(chan byte)
-
-func main() {
-	// flag.Parse()
-	var wg sync.WaitGroup
-	start := time.Now()
-	for i := 0; i < 200; i++ {
-		wg.Add(1)
-		onerun()
-	}
-	wg.Wait()
-	// time.Sleep(100 * time.Millisecond)
-	t := time.Since(start)
-	fmt.Printf("\n \nTotal TIME: %v\n", t)
-	fmt.Printf("Number Response: %d\n", count_Res)
-	fmt.Printf("Number fail: %d\n", count_Fail)
-	tt := float64(t) / 1e6
-	rate := float64(count_Res) / (tt / 1000)
-	fmt.Printf("Rate per Sec: %f", rate)
-}
-
 func createHG(pathh string, u int) string {
 	userID := u
 	method := "GET"
@@ -196,4 +178,22 @@ func fillString(retunString string, toLength int) string {
 		break
 	}
 	return retunString
+}
+
+func main() {
+	// flag.Parse()
+	start := time.Now()
+	for i := 0; i < 200; i++ {
+		wg.Add(1)
+		onerun()
+	}
+	wg.Wait()
+	// time.Sleep(100 * time.Millisecond)
+	t := time.Since(start)
+	fmt.Printf("\n \nTotal TIME: %v\n", t)
+	fmt.Printf("Number Response: %d\n", count_Res)
+	fmt.Printf("Number fail: %d\n", count_Fail)
+	tt := float64(t) / 1e6
+	rate := float64(count_Res) / (tt / 1000)
+	fmt.Printf("Rate per Sec: %f", rate)
 }
