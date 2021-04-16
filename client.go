@@ -224,6 +224,7 @@ func main() {
 	// var wg sync.WaitGroup
 	start := time.Now()
 	for i := 0; i < users; i++ {
+		go onerun(i)
 		// wg.Add(1)
 		// go client6(&wg, "POST", "/payment", i)
 		// go client6(&wg, "GET", "/", i) //30000
