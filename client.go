@@ -80,7 +80,7 @@ func recv(conn net.Conn) {
 
 }
 
-func client6(wg *sync.WaitGroup, m string, p string, userId int) {
+func client(m string, p string, userId int) {
 	// t0 := time.Now()
 
 	conn, err := net.Dial("tcp", host)
@@ -99,7 +99,6 @@ func client6(wg *sync.WaitGroup, m string, p string, userId int) {
 	c--
 	fmt.Println("current con:", c)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
-	wg.Done()
 	// <-ch
 }
 
@@ -109,31 +108,6 @@ var count_Fail = 0
 
 // var n = flag.Int("n", 5, "Number of goroutines to create")
 // var ch = make(chan byte)
-
-func main() {
-	// flag.Parse()
-	defer profile.Start().Stop()
-	var wg sync.WaitGroup
-	start := time.Now()
-	for i := 0; i < users; i++ {
-		wg.Add(1)
-		// go client6(&wg, "POST", "/payment", i)
-		go client6(&wg, "GET", "/", i) //30000
-		//client6(&wg, "GET", "/text", i)
-		// go client6(&wg, "GET", "/products", i)
-		// go client6(&wg, "GET", "/products/1", i)
-		// go client6(&wg, "POST", "/products/1", i)
-	}
-	wg.Wait()
-	// time.Sleep(100 * time.Millisecond)
-	t := time.Since(start)
-	fmt.Printf("\n \nTotal TIME: %v\n", t)
-	fmt.Printf("Number Response: %d\n", count_Res)
-	fmt.Printf("Number fail: %d\n", count_Fail)
-	tt := float64(t) / 1e6
-	rate := float64(count_Res) / (tt / 1000)
-	fmt.Printf("Rate per Sec: %f", rate)
-}
 
 func createH(methodd string, pathh string, u int) string {
 	userID := u
@@ -235,4 +209,36 @@ func fillString(retunString string, toLength int) string {
 		break
 	}
 	return retunString
+}
+func onerun(u int) {
+	client("GET", "/", u)
+	client("GET", "/products", u)
+	client("GET", "/products/1", u)
+	client("POST", "/products/1", u)
+	client("POST", "/payment", u)
+}
+
+func main() {
+	// flag.Parse()
+	defer profile.Start().Stop()
+	// var wg sync.WaitGroup
+	start := time.Now()
+	for i := 0; i < users; i++ {
+		// wg.Add(1)
+		// go client6(&wg, "POST", "/payment", i)
+		// go client6(&wg, "GET", "/", i) //30000
+		//client6(&wg, "GET", "/text", i)
+		// go client6(&wg, "GET", "/products", i)
+		// go client6(&wg, "GET", "/products/1", i)
+		// go client6(&wg, "POST", "/products/1", i)
+	}
+	// wg.Wait()
+	// time.Sleep(100 * time.Millisecond)
+	t := time.Since(start)
+	fmt.Printf("\n \nTotal TIME: %v\n", t)
+	fmt.Printf("Number Response: %d\n", count_Res)
+	fmt.Printf("Number fail: %d\n", count_Fail)
+	tt := float64(t) / 1e6
+	rate := float64(count_Res) / (tt / 1000)
+	fmt.Printf("Rate per Sec: %f", rate)
 }
