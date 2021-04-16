@@ -40,8 +40,9 @@ var c = 0
 
 //209.97.165.170
 //178.128.94.63:3306
-// var host = "178.128.94.63:8080"
-var host = "localhost:8080"
+var host = "178.128.94.63:8080"
+
+// var host = "localhost:8080"
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
 	// fmt.Println("sent:", userisd)
