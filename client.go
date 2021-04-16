@@ -214,8 +214,8 @@ func fillString(retunString string, toLength int) string {
 }
 func onerun(u int) {
 	// client("GET", "/", u)
-	client("GET", "/products", u)
-	// client("GET", "/products/1", u)
+	// client("GET", "/products", u)
+	client("GET", "/products/1", u)
 	// client("POST", "/products/1", u)
 	// client("POST", "/payment", u)
 }
@@ -228,12 +228,7 @@ func main() {
 	for i := 0; i < users; i++ {
 		onerun(i)
 		// wg.Add(1)
-		// go client6(&wg, "POST", "/payment", i)
-		// go client6(&wg, "GET", "/", i) //30000
-		//client6(&wg, "GET", "/text", i)
-		// go client6(&wg, "GET", "/products", i)
-		// go client6(&wg, "GET", "/products/1", i)
-		// go client6(&wg, "POST", "/products/1", i)
+
 	}
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
