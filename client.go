@@ -40,7 +40,8 @@ var c = 0
 
 //209.97.165.170
 //178.128.94.63:3306
-var host = "178.128.94.63:8080"
+// var host = "178.128.94.63:8080"
+var host = "localhost:8080"
 
 func send6(conn net.Conn, host string, m string, p string, userId int) {
 	// fmt.Println("sent:", userisd)
@@ -211,11 +212,11 @@ func fillString(retunString string, toLength int) string {
 	return retunString
 }
 func onerun(u int) {
-	client("GET", "/", u)
+	// client("GET", "/", u)
 	client("GET", "/products", u)
-	client("GET", "/products/1", u)
-	client("POST", "/products/1", u)
-	client("POST", "/payment", u)
+	// client("GET", "/products/1", u)
+	// client("POST", "/products/1", u)
+	// client("POST", "/payment", u)
 }
 
 func main() {
@@ -224,7 +225,7 @@ func main() {
 	// var wg sync.WaitGroup
 	start := time.Now()
 	for i := 0; i < users; i++ {
-		go onerun(i)
+		onerun(i)
 		// wg.Add(1)
 		// go client6(&wg, "POST", "/payment", i)
 		// go client6(&wg, "GET", "/", i) //30000
