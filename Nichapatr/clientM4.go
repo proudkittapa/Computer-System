@@ -185,7 +185,7 @@ func main() {
 	start := time.Now()
 	for i := 0; i < 200; i++ {
 		wg.Add(1)
-		onerun()
+		go onerun()
 	}
 	wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
