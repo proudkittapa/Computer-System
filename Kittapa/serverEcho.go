@@ -1,116 +1,85 @@
 package main
 
 import (
-	// "database/sql"
-	"log"
+	"database/sql"
+	"fmt"
 	"net/http"
 
-	"github.com/labstack/echo"
-	// _ "gorm.io/driver/mysql"
+	"github.com/JonathanMH/goClacks/echo"
 	_ "github.com/go-sql-driver/mysql"
-	"gorm.io/gorm"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
-type CustomerHandler struct {
-	DB *gorm.DB
-}
-
-func (h *CustomerHandler) Initialize() {
-	db, err := gorm.Open("mysql", "webservice:P@ssw0rd@tcp(127.0.0.1:3306)/db_webservice?charset=utf8&parseTime=True")
-	if err != nil {
-		log.Fatal(err)
+type (
+	Excuse struct {
+		Error string `json:"error"`
+		Id    string `json:"id"`
+		Quote string `json:"quote"`
 	}
+)
 
-	db.AutoMigrate(&Customer{})
-
-	h.DB = db
-}
-
-type Customer struct {
-	Id        uint   `gorm:"primary_key" json:"id"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Age       int    `json:"age"`
-	Email     string `json:"email"`
-}
-
-func (h *CustomerHandler) GetAllCustomer(c echo.Context) error {
-	customers := []Customer{}
-
-	h.DB.Find(&customers)
-
-	return c.JSON(http.StatusOK, customers)
-}
-
-func (h *CustomerHandler) GetCustomer(c echo.Context) error {
-	id := c.Param("id")
-	customer := Customer{}
-
-	if err := h.DB.Find(&customer, id).Error; err != nil {
-		return c.NoContent(http.StatusNotFound)
-	}
-
-	return c.JSON(http.StatusOK, customer)
-}
-
-func (h *CustomerHandler) SaveCustomer(c echo.Context) error {
-	customer := Customer{}
-
-	if err := c.Bind(&customer); err != nil {
-		return c.NoContent(http.StatusBadRequest)
-	}
-
-	if err := h.DB.Save(&customer).Error; err != nil {
-		return c.NoContent(http.StatusInternalServerError)
-	}
-
-	return c.JSON(http.StatusOK, customer)
-}
-
-func (h *CustomerHandler) UpdateCustomer(c echo.Context) error {
-	id := c.Param("id")
-	customer := Customer{}
-
-	if err := h.DB.Find(&customer, id).Error; err != nil {
-		return c.NoContent(http.StatusNotFound)
-	}
-
-	if err := c.Bind(&customer); err != nil {
-		return c.NoContent(http.StatusBadRequest)
-	}
-
-	if err := h.DB.Save(&customer).Error; err != nil {
-		return c.NoContent(http.StatusInternalServerError)
-	}
-
-	return c.JSON(http.StatusOK, customer)
-}
-
-func (h *CustomerHandler) DeleteCustomer(c echo.Context) error {
-	id := c.Param("id")
-	customer := Customer{}
-
-	if err := h.DB.Find(&customer, id).Error; err != nil {
-		return c.NoContent(http.StatusNotFound)
-	}
-
-	if err := h.DB.Delete(&customer).Error; err != nil {
-		return c.NoContent(http.StatusInternalServerError)
-	}
-
-	return c.NoContent(http.StatusNoContent)
-}
 func main() {
+	// Echo instance
 	e := echo.New()
+	e.Use(goClacks.Terrify)
 
-	h := CustomerHandler{}
-	h.Initialize()
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	e.GET("/customers", h.GetAllCustomer)
-	e.POST("/customers", h.SaveCustomer)
-	e.GET("/customers/:id", h.GetCustomer)
-	e.PUT("/customers/:id", h.UpdateCustomer)
-	e.DELETE("/customers/:id", h.DeleteCustomer)
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.PUT, echo.POST, echo.DELETE},
+	}))
 
-	e.Logger.Fatal(e.Start(":8080"))
+	// Route => handler
+	e.GET("/", func(c echo.Context) error {
+		db, err := sql.Open("mysql", "root:62011139@tcp(localhost:3306)/test")
+
+		if err != nil {
+			fmt.Println(err.Error())
+			response := Excuse{Id: "", Error: "true", Quote: ""}
+			return c.JSON(http.StatusInternalServerError, response)
+		}
+		defer db.Close()
+
+		var quote string
+		var id string
+		err = db.QueryRow("SELECT id, quote FROM excuses ORDER BY RAND() LIMIT 1").Scan(&id, &quote)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Println(quote)
+		response := Excuse{Id: id, Error: "false", Quote: quote}
+		return c.JSON(http.StatusOK, response)
+	})
+
+	e.GET("/id/:id", func(c echo.Context) error {
+		requested_id := c.Param("id")
+		fmt.Println(requested_id)
+		db, err := sql.Open("mysql", "root:62011139@tcp(localhost:3306)/test")
+
+		if err != nil {
+			fmt.Println(err.Error())
+			response := Excuse{Id: "", Error: "true", Quote: ""}
+			return c.JSON(http.StatusInternalServerError, response)
+		}
+		defer db.Close()
+
+		var quote string
+		var id string
+		err = db.QueryRow("SELECT id, quote FROM excuses WHERE id = ?", requested_id).Scan(&id, &quote)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		response := Excuse{Id: id, Error: "false", Quote: quote}
+		return c.JSON(http.StatusOK, response)
+	})
+
+	e.Logger.Fatal(e.Start(":4000"))
 }
