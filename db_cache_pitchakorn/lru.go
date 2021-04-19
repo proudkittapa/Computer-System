@@ -142,7 +142,7 @@ func db_query(id int) (val string) {
 func saveFile(mp map[int]*node, lru lru_cache) {
 	var prodIDList []int
 
-	for prodID := 1; prodID < len(mp); prodID++ {
+	for prodID := 1; prodID <= len(mp); prodID++ {
 		prodIDList = append(prodIDList, prodID)
 	}
 
@@ -171,11 +171,31 @@ func saveFile(mp map[int]*node, lru lru_cache) {
 
 // }
 
+func readFile() {
+	fromFile, err := ioutil.ReadFile("cacheSave.json")
+	checkErr(err)
+
+	var temp jsonSave
+	err = json.Unmarshal(fromFile, &temp)
+
+	c := cache_cons(temp.Limit)
+
+	t := temp.ProductIDList
+	// fmt.Println(t)
+	for i := 1; i <= len(t); i++ {
+		c.cache(i)
+	}
+
+	fmt.Println("last: ", c.last)
+	fmt.Println("head: ", c.head)
+
+}
+
 // func readFile_old() lru_cache {
 // 	fromFile, err := ioutil.ReadFile("cacheSave.json")
 // 	checkErr(err)
 
-// 	var tempStruct jsonCache
+// 	var tempStruct jsonSave
 // 	err = json.Unmarshal(fromFile, &tempStruct)
 
 // 	c := cache_cons(tempStruct.Limit)
@@ -221,22 +241,22 @@ func main() {
 
 	c := cache_cons(10)
 
-	for i := 0; i < 10; i++ {
-		for j := 0; j < 2; j++ {
-			start := time.Now()
-			c.cache(i)
-			end := time.Since(start)
-			fmt.Printf("%v\n", end)
+	for i := 1; i < 11; i++ {
+		// for j := 0; j < 2; j++ {
+		start := time.Now()
+		c.cache(i)
+		end := time.Since(start)
+		fmt.Printf("%v\n", end)
 
-			// t := c.cache(i)
-			// fmt.Println(t)
-			// fmt.Printf("%T\n", t)
-		}
+		// t := c.cache(i)
+		// fmt.Println(t)
+		// fmt.Printf("%T\n", t)
+		// }
 	}
 
-	saveFile(c.mp, c)
+	// saveFile(c.mp, c)
 	// fmt.Println(c.limit)
-	// readFile()
+	readFile()
 
 	// fmt.Printf("%T\n", c.mp)
 
