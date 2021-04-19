@@ -12,12 +12,24 @@ func hello(c echo.Context) error {
 
 func getNames(c echo.Context) error {
 	n := c.QueryParam("name")
-	return c.String(http.StatusOK, fmt.Sprintf("name: %s\n", n))
+	dataType := c.Param("data")
+	if dataType == "string" {
+		return c.String(http.StatusOK, fmt.Sprintf("name: %s\n", n))
+	}
+	if dataType == "json" {
+		return c.JSON(http.StatusOK, map[string]string{
+			"name": n,
+		})
+	}
+	return c.JSON(http.StatusBadRequest, map[string]string{
+		"error": "json or string",
+	})
 }
 
 func main() {
+	fmt.Println("Server started")
 	e := echo.New()
 	e.GET("/", hello)
-	e.GET("/user", getNames)
-	e.Start("8080")
+	e.GET("/users/:data", getNames)
+	e.Start(":8080")
 }
