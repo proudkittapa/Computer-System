@@ -43,11 +43,6 @@ type lru_cache struct {
 	last  *node
 }
 
-type kv struct {
-	Key   int    `json:"key"`
-	Value string `json:"value"`
-}
-
 type jsonSave struct {
 	ProductIDList []int `json:"productIDList"`
 	Limit         int   `json:"limit"`
