@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -86,11 +87,29 @@ func addProducts(c echo.Context) error {
 	return c.String(http.StatusOK, "new product added")
 }
 
+func mainAdmin(c echo.Context) error {
+	return c.String(http.StatusOK, "You are on the admin page")
+}
+
 func main() {
 	fmt.Println("Server started")
 	e := echo.New()
+
+	//grouping
+	g := e.Group("/admin")
+	g.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
+	}))
+	//g.Use(middleware.Logger()) //this logs the server interaction
+	//three ways to add middleware
+	//1 -  add to the Group -> e.Group("/admin", middleware.Logger())
+	//2 - g.Use(middleware.Logger())
+	//3 - add to the method -> g.GET("/main", mainAdmin, middleware.Logger())
+	g.GET("/main", mainAdmin)
+
 	e.GET("/", hello)
 	e.GET("/users/:data", getUsers)
+
 	e.POST("/users", addUser)
 	e.POST("/dogs", addDog)
 	e.POST("/products", addProducts)
