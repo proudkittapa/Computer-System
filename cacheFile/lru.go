@@ -182,16 +182,11 @@ func ReadFile() Lru_cache {
 			node := Node{id: j, value: t[i].Value}
 			c.AddNode(&node)
 			c.mp[j] = &node
-			// fmt.Println(c)
 		}
 	}
 
-	// fmt.Println(tempStruct)
-
 	fmt.Println(c)
 	fmt.Printf("%T\n", c)
-	// fmt.Println(t[0].Value)
-	// fmt.Printf("%T\n", t[0].Value)
 
 	return c
 }
