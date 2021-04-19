@@ -40,14 +40,9 @@ type Lru_cache struct {
 	last  *Node
 }
 
-type Kv struct {
-	Key   int    `json:"key"`
-	Value string `json:"value"`
-}
-
-type JsonCache struct {
-	Cache []Kv `json:"cache"`
-	Limit int  `json:"limit"`
+type JsonSave struct {
+	ProductIDList []int `json:"productIDList"`
+	Limit         int   `json:"limit"`
 }
 
 func Cache_cons(cap int) Lru_cache {
@@ -145,48 +140,34 @@ func Db_query(id int) (val string) {
 	return val
 }
 
-func SaveFile(mp map[int]*Node, lru Lru_cache) {
-	var cache_list []Kv
+func SaveFile(mp map[int]*node, lru lru_cache) {
+	var prodIDList []int
 
-	for productID := 1; productID < len(mp); productID++ {
-		temp_kv := Kv{Key: productID, Value: mp[productID].value}
-		cache_list = append(cache_list, temp_kv)
+	for prodID := 1; prodID <= len(mp); prodID++ {
+		prodIDList = append(prodIDList, prodID)
 	}
 
-	tempCache := JsonCache{Cache: cache_list, Limit: lru.limit}
-	fmt.Println(lru.limit)
-
-	jsonCacheList, _ := json.Marshal(tempCache)
-	_ = ioutil.WriteFile("cacheSave.json", jsonCacheList, 0644)
-
-	// fmt.Println(string(jsonCacheList))
-	// fmt.Println(cache_list)
-	// fmt.Println(tempCache)
-
+	tempList := jsonSave{ProductIDList: prodIDList, Limit: lru.limit}
+	jsonIDList, _ := json.Marshal(tempList)
+	_ = ioutil.WriteFile("cacheSave.json", jsonIDList, 0644)
 }
 
 // ref https://stackoverflow.com/questions/47898327/properly-create-a-json-file-and-read-from-it
 
 func ReadFile() Lru_cache {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
-	CheckErr(err)
+	checkErr(err)
 
-	var tempStruct JsonCache
-	err = json.Unmarshal(fromFile, &tempStruct)
+	var temp jsonSave
+	err = json.Unmarshal(fromFile, &temp)
 
-	c := Cache_cons(tempStruct.Limit)
+	c := cache_cons(temp.Limit)
 
-	t := tempStruct.Cache
-	for i := 0; i < len(t); i++ {
-		for j := 1; j <= len(t); j++ {
-			node := Node{id: j, value: t[i].Value}
-			c.AddNode(&node)
-			c.mp[j] = &node
-		}
+	t := temp.ProductIDList
+	// fmt.Println(t)
+	for i := 1; i <= len(t); i++ {
+		c.cache(i)
 	}
-
-	fmt.Println(c)
-	fmt.Printf("%T\n", c)
 
 	return c
 }
