@@ -42,14 +42,9 @@ type lru_cache struct {
 	last  *node
 }
 
-type kv struct {
-	Key   int    `json:"key"`
-	Value string `json:"value"`
-}
-
-type jsonCache struct {
-	Cache []kv `json:"cache"`
-	Limit int  `json:"limit"`
+type jsonSave struct {
+	ProductIDList []int `json:"productIDList"`
+	Limit         int   `json:"limit"`
 }
 
 func cache_cons(cap int) lru_cache {
@@ -60,7 +55,7 @@ func (list *lru_cache) cache(id int) string {
 	if node_val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
 		list.move(node_val)
-		// fmt.Println(val.value)
+		// fmt.Printf("%T", node_val)
 		return node_val.value
 	} else {
 		fmt.Println("-----------MISS-----------")
@@ -139,48 +134,80 @@ func db_query(id int) (val string) {
 }
 
 func saveFile(mp map[int]*node, lru lru_cache) {
-	var cache_list []kv
+	var prodIDList []int
 
-	for productID := 1; productID < len(mp); productID++ {
-		temp_kv := kv{Key: productID, Value: mp[productID].value}
-		cache_list = append(cache_list, temp_kv)
+	for prodID := 1; prodID <= len(mp); prodID++ {
+		prodIDList = append(prodIDList, prodID)
 	}
 
-	tempCache := jsonCache{Cache: cache_list, Limit: lru.limit}
-	fmt.Println(lru.limit)
-
-	jsonCacheList, _ := json.Marshal(tempCache)
-	_ = ioutil.WriteFile("cacheSave.json", jsonCacheList, 0644)
-
-	// fmt.Println(string(jsonCacheList))
-	// fmt.Println(cache_list)
-	// fmt.Println(tempCache)
-
+	tempList := jsonSave{ProductIDList: prodIDList, Limit: lru.limit}
+	jsonIDList, _ := json.Marshal(tempList)
+	_ = ioutil.WriteFile("cacheSave.json", jsonIDList, 0644)
 }
 
-func readFile() lru_cache {
+// func saveFile_old(mp map[int]*node, lru lru_cache) {
+// 	var cache_list []kv
+
+// 	for productID := 1; productID < len(mp); productID++ {
+// 		temp_kv := kv{Key: productID, Value: mp[productID].value}
+// 		cache_list = append(cache_list, temp_kv)
+// 	}
+
+// 	tempCache := jsonCache{Cache: cache_list, Limit: lru.limit}
+// 	// fmt.Println(lru.limit)
+
+// 	jsonCacheList, _ := json.Marshal(tempCache)
+// 	_ = ioutil.WriteFile("cacheSave.json", jsonCacheList, 0644)
+
+// 	// fmt.Println(string(jsonCacheList))
+// 	// fmt.Println(cache_list)
+// 	// fmt.Println(tempCache)
+
+// }
+
+func readFile() {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
 	checkErr(err)
 
-	var tempStruct jsonCache
-	err = json.Unmarshal(fromFile, &tempStruct)
+	var temp jsonSave
+	err = json.Unmarshal(fromFile, &temp)
 
-	c := cache_cons(tempStruct.Limit)
+	c := cache_cons(temp.Limit)
 
-	t := tempStruct.Cache
+	t := temp.ProductIDList
+	// fmt.Println(t[0])
 	for i := 0; i < len(t); i++ {
-		for j := 1; j <= len(t); j++ {
-			node := node{id: j, value: t[i].Value}
-			c.add(&node)
-			c.mp[j] = &node
-			// fmt.Println(c)
-		}
+		fmt.Println(t[i])
+		c.cache(t[i])
 	}
 
-	fmt.Println(tempStruct.Cache)
-	fmt.Printf("%T\n", tempStruct.Cache)
-	return c
 }
+
+// func readFile_old() lru_cache {
+// 	fromFile, err := ioutil.ReadFile("cacheSave.json")
+// 	checkErr(err)
+
+// 	var tempStruct jsonSave
+// 	err = json.Unmarshal(fromFile, &tempStruct)
+
+// 	c := cache_cons(tempStruct.Limit)
+
+// 	t := tempStruct.Cache
+// 	for i := 0; i < len(t); i++ {
+// 		for j := 1; j <= len(t); j++ {
+// 			node := node{id: j, value: t[i].Value}
+// 			c.add(&node)
+// 			c.mp[j] = &node
+// 			// fmt.Println(c)
+// 		}
+// 		// fmt.Println(t[i].Value)
+// 		// fmt.Printf("%T\n", t[i].Value)
+// 	}
+
+// 	fmt.Println(t)
+// 	fmt.Printf("%T\n", t)
+// 	return c
+// }
 
 // func (l *lru_cache) Display() {
 // 	node := l.head
@@ -206,17 +233,17 @@ func main() {
 
 	// c := cache_cons(10)
 
-	// for i := 0; i < 10; i++ {
-	// 	for j := 0; j < 2; j++ {
-	// 		start := time.Now()
-	// 		c.cache(i)
-	// 		end := time.Since(start)
-	// 		fmt.Printf("%v\n", end)
+	// for i := 1; i < 11; i++ {
+	// 	// for j := 0; j < 2; j++ {
+	// 	start := time.Now()
+	// 	c.cache(i)
+	// 	end := time.Since(start)
+	// 	fmt.Printf("%v\n", end)
 
-	// 		// t := c.cache(i)
-	// 		// fmt.Println(t)
-	// 		// fmt.Printf("%T\n", t)
-	// 	}
+	// 	// t := c.cache(i)
+	// 	// fmt.Println(t)
+	// 	// fmt.Printf("%T\n", t)
+	// 	// }
 	// }
 
 	// saveFile(c.mp, c)
@@ -227,20 +254,25 @@ func main() {
 
 	// c.cache(1)
 	// // c.Display()
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
+	// // fmt.Println("last: ", c.last)
+	// // fmt.Println("head: ", c.head)
 	// c.cache(2)
 	// // c.Display()
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
+	// // fmt.Println("last: ", c.last)
+	// // fmt.Println("head: ", c.head)
 	// c.cache(1)
 	// // c.Display()
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
+	// // fmt.Println("last: ", c.last)
+	// // fmt.Println("head: ", c.head)
 	// c.cache(3)
 	// c.cache(4)
 	// c.cache(5)
+	// c.cache(3)
 	// c.cache(6)
+	// c.cache(2)
+
+	// saveFile_old(c.mp, c)
+	// // c.Display()
 	// fmt.Println("last: ", c.last)
 	// fmt.Println("head: ", c.head)
 
