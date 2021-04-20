@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strconv"
-	"time"
 
 	// "time"
 
@@ -176,13 +175,11 @@ func readFile() {
 	c := cache_cons(temp.Limit)
 
 	t := temp.ProductIDList
-	// fmt.Println(t)
-	for i := 1; i <= len(t); i++ {
-		c.cache(i)
+	// fmt.Println(t[0])
+	for i := 0; i < len(t); i++ {
+		fmt.Println(t[i])
+		c.cache(t[i])
 	}
-
-	fmt.Println("last: ", c.last)
-	fmt.Println("head: ", c.head)
 
 }
 
@@ -234,20 +231,20 @@ func main() {
 
 	// defer profile.Start(profile.MemProfile).Stop()
 
-	c := cache_cons(10)
+	// c := cache_cons(10)
 
-	for i := 1; i < 11; i++ {
-		// for j := 0; j < 2; j++ {
-		start := time.Now()
-		c.cache(i)
-		end := time.Since(start)
-		fmt.Printf("%v\n", end)
+	// for i := 1; i < 11; i++ {
+	// 	// for j := 0; j < 2; j++ {
+	// 	start := time.Now()
+	// 	c.cache(i)
+	// 	end := time.Since(start)
+	// 	fmt.Printf("%v\n", end)
 
-		// t := c.cache(i)
-		// fmt.Println(t)
-		// fmt.Printf("%T\n", t)
-		// }
-	}
+	// 	// t := c.cache(i)
+	// 	// fmt.Println(t)
+	// 	// fmt.Printf("%T\n", t)
+	// 	// }
+	// }
 
 	// saveFile(c.mp, c)
 	// fmt.Println(c.limit)
