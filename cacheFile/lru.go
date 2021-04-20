@@ -140,14 +140,14 @@ func Db_query(id int) (val string) {
 	return val
 }
 
-func SaveFile(mp map[int]*node, lru lru_cache) {
+func SaveFile(mp map[int]*Node, lru Lru_cache) {
 	var prodIDList []int
 
 	for prodID := 1; prodID <= len(mp); prodID++ {
 		prodIDList = append(prodIDList, prodID)
 	}
 
-	tempList := jsonSave{ProductIDList: prodIDList, Limit: lru.limit}
+	tempList := JsonSave{ProductIDList: prodIDList, Limit: lru.limit}
 	jsonIDList, _ := json.Marshal(tempList)
 	_ = ioutil.WriteFile("cacheSave.json", jsonIDList, 0644)
 }
@@ -156,17 +156,18 @@ func SaveFile(mp map[int]*node, lru lru_cache) {
 
 func ReadFile() Lru_cache {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
-	checkErr(err)
+	CheckErr(err)
 
-	var temp jsonSave
+	var temp JsonSave
 	err = json.Unmarshal(fromFile, &temp)
 
-	c := cache_cons(temp.Limit)
+	c := Cache_cons(temp.Limit)
 
 	t := temp.ProductIDList
-	// fmt.Println(t)
-	for i := 1; i <= len(t); i++ {
-		c.cache(i)
+	// fmt.Println(t[0])
+	for i := 0; i < len(t); i++ {
+		fmt.Println(t[i])
+		c.Cache(t[i])
 	}
 
 	return c
