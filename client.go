@@ -215,8 +215,8 @@ func fillString(retunString string, toLength int) string {
 func onerun(u int) {
 	// client("GET", "/", u)
 	// client("GET", "/products", u)
-	// client("GET", "/products/1", u)
-	client("POST", "/products/1", u)
+	client("GET", "/products/1", u)
+	// client("POST", "/products/1", u)
 	// client("POST", "/payment", u)
 }
 
