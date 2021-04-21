@@ -55,10 +55,10 @@ func (list *lru_cache) cache(id int) string {
 	if node_val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
 		list.move(node_val)
-		// fmt.Printf("%T", node_val)
+
 		fmt.Println(node_val.value)
-		fmt.Printf("%T\n", node_val.value)
 		return node_val.value
+
 	} else {
 		fmt.Println("-----------MISS-----------")
 		if len(list.mp) >= list.limit {
@@ -70,7 +70,7 @@ func (list *lru_cache) cache(id int) string {
 		list.add(&node)
 		list.mp[id] = &node
 		fmt.Println(node.value)
-		fmt.Printf("%T\n", node.value)
+
 		return node.value
 		// return val.value
 	}
@@ -143,14 +143,22 @@ func db_query(id int) (val string, quan int) {
 
 }
 
-func saveFile(mp map[int]*node, lru lru_cache) {
-	var prodIDList []int
+func saveFile(lru lru_cache) {
+	var prodList []int
+	t := lru.mp
 
-	for prodID := 1; prodID <= len(mp); prodID++ {
-		prodIDList = append(prodIDList, prodID)
+	keys := make([]int, 0, len(t))
+	for k := range t {
+		keys = append(keys, k)
 	}
 
-	tempList := jsonSave{ProductIDList: prodIDList, Limit: lru.limit}
+	for i := 0; i < len(t); i++ {
+		prodList = append(prodList, keys[i])
+	}
+
+	fmt.Println(prodList)
+
+	tempList := jsonSave{ProductIDList: prodList, Limit: lru.limit}
 	jsonIDList, _ := json.Marshal(tempList)
 	_ = ioutil.WriteFile("cacheSave.json", jsonIDList, 0644)
 }
@@ -247,9 +255,9 @@ func main() {
 	// 	// fmt.Println(i)
 	// 	for j := 0; j < 2; j++ {
 	// 		// start := time.Now()
-	// 		// c.cache(i)
-	// 		_, temp := db_query(i)
-	// 		fmt.Println(temp)
+	// 		c.cache(i)
+	// 		// _, temp := db_query(i)
+	// 		// fmt.Println(temp)
 	// 		// end := time.Since(start)
 	// 		// fmt.Printf("%v\n", end)
 	// 	}
@@ -283,7 +291,7 @@ func main() {
 	c.cache(678)
 	c.cache(123)
 
-	saveFile(c.mp, c)
+	saveFile(c)
 
 	// saveFile_old(c.mp, c)
 	// // c.Display()
