@@ -1,4 +1,4 @@
-package main
+package cacheFile
 
 import (
 	"database/sql"
@@ -16,45 +16,45 @@ var (
 	db *sql.DB
 )
 
-func checkErr(err error) {
+func CheckErr(err error) {
 	if err != nil {
 		panic(err)
 	}
 }
 
-type data struct {
+type Data struct {
 	Name     string `json:"name"`
 	Quantity int    `json:"quantity"`
 	Price    int    `json:"price"`
 }
 
-type node struct {
+type Node struct {
 	id    int
 	value string
 	prev  *node
 	next  *node
 }
 
-type lru_cache struct {
+type Lru_cache struct {
 	limit int
 	mp    map[int]*node
 	head  *node
 	last  *node
 }
 
-type jsonSave struct {
+type JsonSave struct {
 	ProductIDList []int `json:"productIDList"`
 	Limit         int   `json:"limit"`
 }
 
-func cache_cons(cap int) lru_cache {
-	return lru_cache{limit: cap, mp: make(map[int]*node, cap)}
+func Cache_cons(cap int) Lru_cache {
+	return Lru_cache{limit: cap, mp: make(map[int]*Node, cap)}
 }
 
-func (list *lru_cache) cache(id int) string {
+func (list *Lru_cache) Cache(id int) (string, int){
 	if node_val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
-		list.move(node_val)
+		list.Move(node_val)
 		// fmt.Printf("%T", node_val)
 		fmt.Println(node_val.value)
 		fmt.Printf("%T\n", node_val.value)
@@ -62,12 +62,12 @@ func (list *lru_cache) cache(id int) string {
 	} else {
 		fmt.Println("-----------MISS-----------")
 		if len(list.mp) >= list.limit {
-			rm := list.remove(list.last)
+			rm := list.Remove(list.last)
 			delete(list.mp, rm)
 		}
-		json, _ := db_query(id)
-		node := node{id: id, value: json}
-		list.add(&node)
+		json, _ := Db_query(id)
+		node := Node{id: id, value: json}
+		list.Add(&node)
 		list.mp[id] = &node
 		fmt.Println(node.value)
 		fmt.Printf("%T\n", node.value)
@@ -76,7 +76,7 @@ func (list *lru_cache) cache(id int) string {
 	}
 }
 
-func (list *lru_cache) move(node *node) {
+func (list *Lru_cache) Move(node *Node) {
 	if node == list.head {
 		return
 	}
@@ -84,7 +84,7 @@ func (list *lru_cache) move(node *node) {
 	list.add(node)
 }
 
-func (list *lru_cache) remove(node *node) int {
+func (list *Lru_cache) Remove(node *Node) int {
 	if node == list.last {
 		// fmt.Println("con 1")
 		list.last = list.last.prev
@@ -99,7 +99,7 @@ func (list *lru_cache) remove(node *node) int {
 	return node.id
 }
 
-func (list *lru_cache) add(node *node) {
+func (list *Lru_cache) Add(node *Node) {
 	if list.head != nil {
 		list.head.prev = node
 		node.next = list.head
@@ -111,7 +111,7 @@ func (list *lru_cache) add(node *node) {
 	}
 }
 
-func db_query(id int) (val string, quan int) {
+func Db_query(id int) (val string, quan int) {
 
 	// fmt.Println("----------MISS----------")
 
@@ -122,11 +122,11 @@ func db_query(id int) (val string, quan int) {
 		var quantity int
 		var price int
 		err := rows.Scan(&name, &quantity, &price)
-		checkErr(err)
+		CheckErr(err)
 
-		result := data{Name: name, Quantity: quantity, Price: price}
+		result := Data{Name: name, Quantity: quantity, Price: price}
 		byteArray, err := json.Marshal(result)
-		checkErr(err)
+		CheckErr(err)
 		// fmt.Println(len(byteArray))
 
 		val = string(byteArray)
@@ -143,7 +143,7 @@ func db_query(id int) (val string, quan int) {
 
 }
 
-func saveFile(mp map[int]*node, lru lru_cache) {
+func SaveFile(mp map[int]*Node, lru Lru_cache) {
 	var prodIDList []int
 
 	for prodID := 1; prodID <= len(mp); prodID++ {
@@ -175,7 +175,7 @@ func saveFile(mp map[int]*node, lru lru_cache) {
 
 // }
 
-func readFile() {
+func ReadFile() {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
 	checkErr(err)
 
@@ -236,25 +236,25 @@ func readFile() {
 // 	fmt.Println()
 // }
 
-func main() {
-	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+// func main() {
+// 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 
-	// var prodIDList []int
+// 	// var prodIDList []int
 
-	// c := cache_cons(1000)
+// 	// c := cache_cons(1000)
 
-	for i := 0; i < 10; i++ {
-		// fmt.Println(i)
-		for j := 0; j < 2; j++ {
-			// start := time.Now()
-			// c.cache(i)
-			_, temp := db_query(i)
-			fmt.Println(temp)
-			// end := time.Since(start)
-			// fmt.Printf("%v\n", end)
-		}
+// 	for i := 0; i < 10; i++ {
+// 		// fmt.Println(i)
+// 		for j := 0; j < 2; j++ {
+// 			// start := time.Now()
+// 			// c.cache(i)
+// 			_, temp := db_query(i)
+// 			fmt.Println(temp)
+// 			// end := time.Since(start)
+// 			// fmt.Printf("%v\n", end)
+// 		}
 
-	}
+// 	}
 
 	// fmt.Println("last: ", c.last)
 	// fmt.Println("head: ", c.head)
@@ -289,4 +289,4 @@ func main() {
 	// fmt.Println("last: ", c.last)
 	// fmt.Println("head: ", c.head)
 
-}
+// }
