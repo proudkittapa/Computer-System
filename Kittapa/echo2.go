@@ -3,11 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
+	"time"
+
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 type User struct {
@@ -91,22 +94,80 @@ func mainAdmin(c echo.Context) error {
 	return c.String(http.StatusOK, "You are on the admin page")
 }
 
+func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set(echo.HeaderServer, "Example/1.0")
+		c.Response().Header().Set("notReallyHeader", "notHeader")
+		return next(c)
+	}
+}
+
+func mainCookie(c echo.Context) error {
+	return c.String(http.StatusOK, "You are on the cookie page")
+}
+
+func login(c echo.Context) error {
+	username := c.QueryParam("username")
+	password := c.QueryParam("password")
+	//check username and password against DP after hashing the password
+	if username == "proud" && password == "kittapa" {
+		cookie := &http.Cookie{}
+		//cookie := new(http.Cookie)
+		cookie.Name = "sessionID"    //store in db
+		cookie.Value = "some_string" //usually store id or email'
+		cookie.Expires = time.Now().Add(48 * time.Hour)
+
+		c.SetCookie(cookie)
+		return c.String(http.StatusOK, "You were logged in!")
+	}
+	return c.String(http.StatusUnauthorized, "Your username and password are wrong")
+}
+
+func checkCookie(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cookie, err := c.Cookie("sessionID")
+
+		if err != nil {
+			if strings.Contains(err.Error(), "named cookie not preseint") {
+				return c.String(http.StatusUnauthorized, "you don't have any cookie")
+			}
+			log.Println(err)
+			return err
+		}
+		if cookie.Value == "some_string" {
+			return next(c)
+		}
+		return c.String(http.StatusUnauthorized, "You don't have the right cookie, cookie")
+	}
+}
 func main() {
 	fmt.Println("Server started")
 	e := echo.New()
 
+	e.Use(ServerHeader)
+
 	//grouping
-	g := e.Group("/admin")
-	g.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+	adminGroup := e.Group("/admin")
+	cookieGroup := e.Group("/cookie")
+
+	adminGroup.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
 	}))
-	//g.Use(middleware.Logger()) //this logs the server interaction
 	//three ways to add middleware
 	//1 -  add to the Group -> e.Group("/admin", middleware.Logger())
 	//2 - g.Use(middleware.Logger())
 	//3 - add to the method -> g.GET("/main", mainAdmin, middleware.Logger())
-	g.GET("/main", mainAdmin)
 
+	adminGroup.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+		if username == "proud" && password == "password" {
+			return true, nil
+		}
+		return false, nil
+	}))
+	cookieGroup.Use(checkCookie)
+	cookieGroup.GET("/main", mainCookie)
+	adminGroup.GET("/main", mainAdmin)
+	e.GET("/login", login)
 	e.GET("/", hello)
 	e.GET("/users/:data", getUsers)
 
