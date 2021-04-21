@@ -106,6 +106,10 @@ func mainCookie(c echo.Context) error {
 	return c.String(http.StatusOK, "You are on the cookie page")
 }
 
+func mainJwt(c echo.Context) error {
+	return c.String(http.StatusOK, "You are on the jwt page")
+}
+
 func login(c echo.Context) error {
 	username := c.QueryParam("username")
 	password := c.QueryParam("password")
@@ -149,6 +153,7 @@ func main() {
 	//grouping
 	adminGroup := e.Group("/admin")
 	cookieGroup := e.Group("/cookie")
+	jwtGroup := e.Group("/jwt")
 
 	adminGroup.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `[${time_rfc3339}] ${status} ${method} ${host}${path} ${latency_human}` + "\n",
@@ -164,9 +169,17 @@ func main() {
 		}
 		return false, nil
 	}))
+
+	jwtGroup.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+		SigningMethod: "HS512",
+		SigningKey:    []byte("mySecret"),
+		TokenLookup:   "header:MyHeader",
+		AuthScheme:    "auth scheme",
+	}))
 	cookieGroup.Use(checkCookie)
 	cookieGroup.GET("/main", mainCookie)
 	adminGroup.GET("/main", mainAdmin)
+	jwtGroup.GET("/main", mainJwt)
 	e.GET("/login", login)
 	e.GET("/", hello)
 	e.GET("/users/:data", getUsers)
