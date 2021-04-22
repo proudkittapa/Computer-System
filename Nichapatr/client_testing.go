@@ -188,12 +188,27 @@ func main() {
 	for i := 1; i < 6; i++ {
 		t0 := time.Now()
 		client6("GET", "/products/"+strconv.Itoa(i))
-		fmt.Printf("Latency Time:   %v ", (float64(time.Since(t0)))/1e6/5)
+		t00 = float64(time.Since(t0)))/1e6/5
+		fmt.Printf("Latency Time:   %v ", t00)
 	}
 	for i := 6; i < 11; i++ {
 		t1 := time.Now()
 		client6("GET", "/products/"+strconv.Itoa(i))
-		fmt.Printf("Latency Time:   %v ", (float64(time.Since(t1)))/1e6/5)
+		t01 = float64(time.Since(t1)))/1e6/5
+		fmt.Printf("Latency Time:   %v ", t01)
+	}
+	for i := 6; i < 11; i++ {
+		t2 := time.Now()
+		client6("GET", "/products/"+strconv.Itoa(i))
+		t02 = float64(time.Since(t1)))/1e6/5
+		fmt.Printf("Latency Time:   %v ", t02)
+	}
+	if (t00 - t01) < 1 {
+		fmt.Println("miss?")
+	} if t02 <= t01 {
+		fmt.Println("faster")
+	} else {
+		fmt.Println("someting is not right")
 	}
 	for i := 0; i < 200; i++ {
 		go onerun()
