@@ -182,40 +182,36 @@ func onerun() {
 	client6("POST", "/products/1", 2)
 	client6("POST", "/payment")
 }
-
-func main() {
-	// flag.Parse()
-	start := time.Now()
+func test_check() {
 	/*--------------------Cache check (2)--------------------*/
-	t5 := time.Now()
-	for i := 0; i < 1000; i++ {
-		client6("POST", "/products/1", 2) // stock must = 0
-	}
-	t05 = float64(time.Since(t5)) / 1e6 / 5
-	fmt.Printf("Latency Time:   %v ", t05)
-	fmt.Printf("Number Response: %d\nIf number of Responses = 1000, is it success or not since it out of stock at Order500?", count_Res)
+	// t5 := time.Now()
+	// for i := 0; i < 1000; i++ {
+	// 	client6("POST", "/products/1", 2) // stock must = 0
+	// }
+	// t05 = float64(time.Since(t5)) / 1e6 / 5
+	// fmt.Printf("Latency Time:   %v ", t05)
+	// fmt.Printf("Number Response: %d\nIf number of Responses = 1000, is it success or not since it out of stock at Order500?", count_Res)
 	/*--------------------Cache check (1)--------------------*/
-	t0 := time.Now()
+	t1 := time.Now()
 	for i := 1; i < 6; i++ {	
 		client6("GET", "/products/"+strconv.Itoa(i))
 	}
-	t00 = float64(time.Since(t0))/1e6/ 5
-	fmt.Printf("Latency Time:   %v ", t00)
-
-	t1 := time.Now()
-	for i := 6; i < 11; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i))
-	}
-	t01 = float64(time.Since(t1)))/1e6/ 5
-	fmt.Printf("Latency Time:   %v \n", t01)
+	t01 = float64(time.Since(t1))/1e6/ 5
+	fmt.Printf("Latency Time:   %v ", t01)
 
 	t2 := time.Now()
 	for i := 6; i < 11; i++ {
 		client6("GET", "/products/"+strconv.Itoa(i))
 	}
-	t02 = float64(time.Since(t2)))/1e6/ 5
+	t02 = float64(time.Since(t2))/1e6/ 5
 	fmt.Printf("Latency Time:   %v \n", t02)
-	
+
+	t3 := time.Now()
+	for i := 6; i < 11; i++ {
+		client6("GET", "/products/"+strconv.Itoa(i))
+	}
+	t03 = float64(time.Since(t3)))/1e6/ 5
+	fmt.Printf("Latency Time:   %v \n", t03)
 	if math.Abs(t00 - t01) <= 1 {
 		fmt.Println("miss?\n")
 	} else {
@@ -227,24 +223,41 @@ func main() {
 	} else {
 		fmt.Println("cache not make faster maybe not hit\n")
 	}
-
 	/*--------------------Cache check (2)--------------------*/
-	t3 := time.Now()
+	t4 := time.Now()
 	for i := 0; i < 2; i++ {
 		client6("POST", "/products/1", 2) // stock must = 998
 		client6("POST", "/products/1", 3) // stock must = 995
 		client6("POST", "/products/1", 5) // stock must = 990
 		client6("POST", "/products/1", 1000) // stock must = 0
 	}
-	t03 = float64(time.Since(t3))/1e6/ 4
-	fmt.Printf("Latency Time:   %v ", t03)
+	t04 = float64(time.Since(t4))/1e6/ 4
+	fmt.Printf("Latency Time:   %v ", t04)
 	
-	t4 := time.Now()
+	t5 := time.Now()
 	for i := 0; i < 2; i++ {
 		client6("POST", "/products/2", 10000) // stock must = 0 
 	}
-	t04 = float64(time.Since(t4))/1e6/ 2
-	fmt.Printf("Latency Time:   %v ", t04)
+	t05 = float64(time.Since(t5))/1e6/ 2
+	fmt.Printf("Latency Time:   %v ", t05)
+}
+
+func user_model {
+
+
+
+
+
+}
+
+
+
+
+
+func main() {
+	// flag.Parse()
+	start := time.Now()
+	test_check()
 	
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
