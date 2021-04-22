@@ -186,6 +186,7 @@ func onerun() {
 func main() {
 	// flag.Parse()
 	start := time.Now()
+	/*------------Cache check (1)------------*/
 	for i := 1; i < 6; i++ {
 		t0 := time.Now()
 		client6("GET", "/products/"+strconv.Itoa(i))
@@ -196,25 +197,26 @@ func main() {
 		t1 := time.Now()
 		client6("GET", "/products/"+strconv.Itoa(i))
 		t01 = float64(time.Since(t1)))/1e6/5
-		fmt.Printf("Latency Time:   %v ", t01)
+		fmt.Printf("Latency Time:   %v \n", t01)
 	}
 	for i := 6; i < 11; i++ {
 		t2 := time.Now()
 		client6("GET", "/products/"+strconv.Itoa(i))
 		t02 = float64(time.Since(t2)))/1e6/5
-		fmt.Printf("Latency Time:   %v ", t02)
+		fmt.Printf("Latency Time:   %v \n", t02)
 	}
 	if math.Abs(t00 - t01) <= 1 {
-		fmt.Println("miss?")
+		fmt.Println("miss?\n")
 	} else {
-		fmt.Println("someting is not right(1)")
+		fmt.Println("something is not right(1) :")
+		fmt.Println(t00 - t01, "\n")
 	} 
 	if t02 <= t01 {
-		fmt.Println("faster")
+		fmt.Println("faster\n")
 	} else {
-		fmt.Println("someting is not right(2)")
+		fmt.Println("cache not make faster maybe not hit\n")
 	}
-
+	/*------------Cache check (2)------------*/
 	for i := 0; i < 200; i++ {
 		t3 := time.Now()
 		client6("GET", "/products/"+strconv.Itoa(i))
