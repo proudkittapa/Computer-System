@@ -199,6 +199,8 @@ func readFile() {
 		c.cache(t[i])
 	}
 
+	// c.Display()
+
 }
 
 // func readFile_old() lru_cache {
@@ -249,7 +251,7 @@ func main() {
 
 	// var prodIDList []int
 
-	c := cache_cons(1000)
+	// c := cache_cons(1000)
 
 	// for i := 0; i < 10; i++ {
 	// 	// fmt.Println(i)
@@ -272,26 +274,28 @@ func main() {
 
 	// fmt.Printf("%T\n", c.mp)
 
-	c.cache(32)
-	// c.Display()
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
-	c.cache(555)
-	// c.Display()
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
-	c.cache(90)
-	// c.Display()
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
-	c.cache(42)
-	c.cache(7231)
-	c.cache(555)
-	c.cache(4)
-	c.cache(678)
-	c.cache(123)
+	// c.cache(32)
+	// // c.Display()
+	// // fmt.Println("last: ", c.last)
+	// // fmt.Println("head: ", c.head)
+	// c.cache(555)
+	// // c.Display()
+	// // fmt.Println("last: ", c.last)
+	// // fmt.Println("head: ", c.head)
+	// c.cache(90)
+	// // c.Display()
+	// // fmt.Println("last: ", c.last)
+	// // fmt.Println("head: ", c.head)
+	// c.cache(42)
+	// c.cache(7231)
+	// c.cache(555)
+	// c.cache(4)
+	// c.cache(678)
+	// c.cache(123)
 
-	saveFile(c)
+	// saveFile(c)
+
+	// readFile()
 
 	// saveFile_old(c.mp, c)
 	// // c.Display()
