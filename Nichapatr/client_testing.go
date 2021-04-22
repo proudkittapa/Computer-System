@@ -186,11 +186,11 @@ func onerun() {
 func main() {
 	// flag.Parse()
 	start := time.Now()
-	/*------------Cache check (1)------------*/
+	/*--------------------Cache check (1)--------------------*/
 	for i := 1; i < 6; i++ {
 		t0 := time.Now()
 		client6("GET", "/products/"+strconv.Itoa(i))
-		t00 = float64(time.Since(t0)))/1e6/5
+		t00 = float64(time.Since(t0))/1e6/5
 		fmt.Printf("Latency Time:   %v ", t00)
 	}
 	for i := 6; i < 11; i++ {
@@ -216,7 +216,7 @@ func main() {
 	} else {
 		fmt.Println("cache not make faster maybe not hit\n")
 	}
-	/*------------Cache check (2)------------*/
+	/*--------------------Cache check (2)--------------------*/
 	for i := 0; i < 200; i++ {
 		t3 := time.Now()
 		client6("GET", "/products/"+strconv.Itoa(i))
