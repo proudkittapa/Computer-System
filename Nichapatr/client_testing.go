@@ -176,11 +176,13 @@ func fillString(retunString string, toLength int) string {
 }
 
 func onerun() {
-	client6("GET", "/")
-	client6("GET", "/products")
-	client6("GET", "/products/1")
+	// for i := 0; i < 200; i++ {
+	client6("GET", "/", 0)
+	client6("GET", "/products", 0)
+	client6("GET", "/products/1", 0)
 	client6("POST", "/products/1", 2)
-	client6("POST", "/payment")
+	client6("POST", "/payment", 0)
+	// }
 }
 func test_check() {
 	/*--------------------Cache check (2)--------------------*/
@@ -194,21 +196,21 @@ func test_check() {
 	/*--------------------Cache check (1)--------------------*/
 	t1 := time.Now()
 	for i := 1; i < 6; i++ {	
-		client6("GET", "/products/"+strconv.Itoa(i))
+		client6("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t01 = float64(time.Since(t1))/1e6/ 5
 	fmt.Printf("Latency Time:   %v ", t01)
 
 	t2 := time.Now()
 	for i := 6; i < 11; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i))
+		client6("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t02 = float64(time.Since(t2))/1e6/ 5
 	fmt.Printf("Latency Time:   %v \n", t02)
 
 	t3 := time.Now()
 	for i := 6; i < 11; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i))
+		client6("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t03 = float64(time.Since(t3)))/1e6/ 5
 	fmt.Printf("Latency Time:   %v \n", t03)
@@ -241,24 +243,42 @@ func test_check() {
 	t05 = float64(time.Since(t5))/1e6/ 2
 	fmt.Printf("Latency Time:   %v ", t05)
 }
-
-func user_model {
-
-
-
-
-
+num_user = 100
+func user_model() {
+	// go func {
+		go for i := 0; i < (num_user*0.60); i++ {
+			go func {
+				goclient6("GET", "/", 0)
+				client6("GET", "/products", 0)
+			}
+		}
+	// }
+	// go func {
+		go for i := 0; i < (num_user*0.25); i++ {
+			go func {
+				client6("GET", "/", 0)
+				client6("GET", "/products", 0)
+				client6("GET", "/products/"+strconv.Itoa(rand.Intn(967), 0)
+			}
+		}
+	// }
+	// go func {
+		go for i := 0; i < (num_user*0.15); i++ {
+			go func {
+				client6("GET", "/", 0)
+				client6("GET", "/products", 0)
+				client6("GET", "/products/"+strconv.Itoa(rand.Intn(967), 0)
+				client6("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+			}
+		}
+	// }
 }
-
-
-
-
 
 func main() {
 	// flag.Parse()
 	start := time.Now()
-	test_check()
-	
+	// test_check()
+	user_model()
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
