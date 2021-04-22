@@ -72,6 +72,7 @@ func (list *Lru_cache) Cache(id int) string {
 		return node.value
 		// return val.value
 	}
+
 }
 
 // mind -> cache MISS
@@ -141,13 +142,21 @@ func Db_query(id int) (val string) {
 }
 
 func SaveFile(mp map[int]*Node, lru Lru_cache) {
-	var prodIDList []int
+	var prodList []int
+	t := lru.mp
 
-	for prodID := 1; prodID <= len(mp); prodID++ {
-		prodIDList = append(prodIDList, prodID)
+	keys := make([]int, 0, len(t))
+	for k := range t {
+		keys = append(keys, k)
 	}
 
-	tempList := JsonSave{ProductIDList: prodIDList, Limit: lru.limit}
+	for i := 0; i < len(t); i++ {
+		prodList = append(prodList, keys[i])
+	}
+
+	fmt.Println(prodList)
+
+	tempList := jsonSave{ProductIDList: prodList, Limit: lru.limit}
 	jsonIDList, _ := json.Marshal(tempList)
 	_ = ioutil.WriteFile("cacheSave.json", jsonIDList, 0644)
 }

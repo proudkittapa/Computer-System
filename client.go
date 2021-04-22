@@ -35,7 +35,7 @@ type PayInfo struct {
 }
 
 var mutex sync.Mutex
-var users int = 1000
+var users int = 10000
 var c = 0
 
 //209.97.165.170
@@ -213,10 +213,10 @@ func fillString(retunString string, toLength int) string {
 	return retunString
 }
 func onerun(u int) {
-	// client("GET", "/", u)
-	// client("GET", "/products", u)
-	// client("GET", "/products/1", u)
-	client("POST", "/products/1", u)
+	client("GET", "/", u)
+	client("GET", "/products", u)
+	client("GET", "/products/1", u)
+	// client("POST", "/products/1", u)
 	// client("POST", "/payment", u)
 }
 
@@ -226,7 +226,7 @@ func main() {
 	// var wg sync.WaitGroup
 	start := time.Now()
 	for i := 0; i < users; i++ {
-		onerun(i)
+		go onerun(i)
 		// wg.Add(1)
 
 	}
