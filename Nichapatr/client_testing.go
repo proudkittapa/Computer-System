@@ -56,8 +56,7 @@ func recv(conn net.Conn) {
 		count_Fail++
 		log.Println("failed to read contents", message)
 		return
-	}
-	else {
+	} else {
 		count_Res++
 	}
 	fmt.Print(message)
@@ -136,6 +135,7 @@ func createHPimg(conn net.Conn, u int) string {
 }
 
 const BUFFERSIZE = 1024
+
 func send_file(conn net.Conn) {
 	file, err := os.Open(img_name)
 	if err != nil {
@@ -182,14 +182,23 @@ func onerun() {
 	client6("POST", "/payment")
 }
 
-
 func main() {
 	// flag.Parse()
 	start := time.Now()
+	for i := 1; i < 6; i++ {
+		t0 := time.Now()
+		client6("GET", "/products/"+strconv.Itoa(i))
+		fmt.Printf("Latency Time:   %v ", (float64(time.Since(t0)))/1e6/5)
+	}
+	for i := 6; i < 11; i++ {
+		t1 := time.Now()
+		client6("GET", "/products/"+strconv.Itoa(i))
+		fmt.Printf("Latency Time:   %v ", (float64(time.Since(t1)))/1e6/5)
+	}
 	for i := 0; i < 200; i++ {
 		go onerun()
 		// wg.Add(1)
-		
+
 	}
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
