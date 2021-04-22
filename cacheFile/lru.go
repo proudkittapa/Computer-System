@@ -1,4 +1,4 @@
-package main
+package cacheFile
 
 import (
 	"database/sql"
@@ -211,36 +211,36 @@ func (l *Lru_cache) Display() {
 // 	fmt.Println()
 // }
 
-func main() {
-	// db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+// func main() {
+// 	// db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 
-	// defer profile.Start(profile.MemProfile).Stop()
+// 	// defer profile.Start(profile.MemProfile).Stop()
 
-	c := Cache_cons(10)
+// 	c := Cache_cons(10)
 
-	temp := Data{Name: "pune", Quantity: 20, Price: 100}
-	temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
-	temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
+// 	temp := Data{Name: "pune", Quantity: 20, Price: 100}
+// 	temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
+// 	temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
 
-	c.Set(1, temp)
-	c.Set(1, temp2)
-	c.Set(1, temp3)
-	// c.Set(1, temp3)
-	c.Display()
-	fmt.Println(c.GetCache(1))
-	fmt.Println("last: ", c.last)
-	fmt.Println("head: ", c.head)
+// 	c.Set(1, temp)
+// 	c.Set(1, temp2)
+// 	c.Set(1, temp3)
+// 	// c.Set(1, temp3)
+// 	c.Display()
+// 	fmt.Println(c.GetCache(1))
+// 	fmt.Println("last: ", c.last)
+// 	fmt.Println("head: ", c.head)
 
-	// for i := 0; i < 10; i++ {
-	// 	for j := 0; j < 2; j++ {
-	// 		// start := time.Now()
-	// 		c.Set()
-	// end := time.Since(start)
-	// fmt.Printf("%v\n", end)
+// 	// for i := 0; i < 10; i++ {
+// 	// 	for j := 0; j < 2; j++ {
+// 	// 		// start := time.Now()
+// 	// 		c.Set()
+// 	// end := time.Since(start)
+// 	// fmt.Printf("%v\n", end)
 
-	// t := c.cache(i)
-	// fmt.Println(t)
-	// fmt.Printf("%T\n", t)
-	// 	}
-	// }
-}
+// 	// t := c.cache(i)
+// 	// fmt.Println(t)
+// 	// fmt.Printf("%T\n", t)
+// 	// 	}
+// 	// }
+// }
