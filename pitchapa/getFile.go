@@ -1,3 +1,4 @@
+//https://kgrz.io/reading-files-in-go-an-overview.html#reading-file-chunks-concurrently
 package main
 
 import (
@@ -121,7 +122,7 @@ func call_cache(filename string) string {
 
 func getFile(filename string) string {
 	// call_cache("index.html")
-	const BufferSize = 300
+	const BufferSize = 2500
 	start := time.Now()
 	file, err := os.Open(filename)
 	if err != nil {
@@ -164,7 +165,7 @@ func getFile(filename string) string {
 	var wg sync.WaitGroup
 	wg.Add(concurrency)
 	store := make([]string, concurrency)
-	start2 := time.Now()
+	// start2 := time.Now()
 	for i := 0; i < concurrency; i++ {
 		go func(chunksizes []chunk, i int) {
 			defer wg.Done()
@@ -186,7 +187,7 @@ func getFile(filename string) string {
 	wg.Wait()
 	fmt.Printf("time: %v\n", time.Since(start))
 	// fmt.Printf("hello")
-	fmt.Printf("time2: %v\n", time.Since(start2))
+	// fmt.Printf("time2: %v\n", time.Since(start2))
 
 	var text string
 	for i := 0; i < concurrency; i++ {
