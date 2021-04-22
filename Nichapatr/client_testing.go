@@ -32,7 +32,7 @@ var wg sync.WaitGroup
 
 var img_name string = "IMG_4.jpg"
 
-func send6(conn net.Conn, host string, m string, p string, userid int) {
+func send6(conn net.Conn, host string, m string, p string, userid int, quan int) {
 	// fmt.Println("sent")
 	userid++
 	if m == "GET" {
@@ -45,7 +45,7 @@ func send6(conn net.Conn, host string, m string, p string, userid int) {
 		send_file(conn)
 	} else {
 		// fmt.Println("sent POST")
-		fmt.Fprintf(conn, createHP(userid))
+		fmt.Fprintf(conn, createHP(userid, quan))
 	}
 }
 
@@ -63,7 +63,7 @@ func recv(conn net.Conn) {
 	fmt.Print(message)
 }
 
-func client6(m string, p string) {
+func client6(m string, p string, quan int) {
 	// t0 := time.Now()
 	host := "localhost:8080"
 	conn, err := net.Dial("tcp", ":8080")
@@ -71,7 +71,7 @@ func client6(m string, p string) {
 		count_Fail++
 		log.Fatalln(err)
 	}
-	send6(conn, host, m, p, userid)
+	send6(conn, host, m, p, userid, quan)
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
@@ -96,7 +96,7 @@ func createHG(pathh string, u int) string {
 	return headers
 }
 
-func createHP(u int) string {
+func createHP(u int, quan int) string {
 
 	userID := u
 	method := "POST"
@@ -104,7 +104,7 @@ func createHP(u int) string {
 	host := "127.0.0.1:8080"
 
 	contentType := "application/json"
-	jsonStr := Messagee{Name: "mos", Quantity: 2}
+	jsonStr := Messagee{Name: "mos", Quantity: quan}
 	jsonData, err := json.Marshal(jsonStr)
 	if err != nil {
 		fmt.Println(err)
@@ -179,7 +179,7 @@ func onerun() {
 	client6("GET", "/")
 	client6("GET", "/products")
 	client6("GET", "/products/1")
-	client6("POST", "/products/1")
+	client6("POST", "/products/1", 2)
 	client6("POST", "/payment")
 }
 
@@ -217,12 +217,22 @@ func main() {
 		fmt.Println("cache not make faster maybe not hit\n")
 	}
 	/*--------------------Cache check (2)--------------------*/
-	for i := 0; i < 200; i++ {
+	for i := 0; i < 2; i++ {
 		t3 := time.Now()
-		client6("GET", "/products/"+strconv.Itoa(i))
+		client6("POST", "/products/1", 2)
+		client6("POST", "/products/1", 3)
+		client6("POST", "/products/1", 5)
+		client6("POST", "/products/1", 1000)
 		t03 = float64(time.Since(t3)))/1e6/5
 		fmt.Printf("Latency Time:   %v ", t03)
 	}
+	for i := 0; i < 2; i++ {
+		t4 := time.Now()
+		client6("POST", "/products/2", 10000)
+		t04 = float64(time.Since(t4)))/1e6/5
+		fmt.Printf("Latency Time:   %v ", t04)
+	}
+	
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
