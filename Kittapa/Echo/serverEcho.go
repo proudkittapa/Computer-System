@@ -48,7 +48,7 @@ func main() {
 		var quote string
 		var id string
 		var quantity int
-		err = db.QueryRow("SELECT id, quote, quantity FROM excuses WHERE id = ?", requested_id).Scan(&id, &quote, &quantity)
+		err = db.QueryRow("SELECT id, quote, quantity FROM excuses ORDER BY RAND() LIMIT 1").Scan(&id, &quote, &quantity)
 
 		if err != nil {
 			fmt.Println(err)
