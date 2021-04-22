@@ -251,20 +251,20 @@ func main() {
 
 	// var prodIDList []int
 
-	// c := cache_cons(1000)
+	c := cache_cons(1000)
 
-	// for i := 0; i < 10; i++ {
-	// 	// fmt.Println(i)
-	// 	for j := 0; j < 2; j++ {
-	// 		// start := time.Now()
-	// 		c.cache(i)
-	// 		// _, temp := db_query(i)
-	// 		// fmt.Println(temp)
-	// 		// end := time.Since(start)
-	// 		// fmt.Printf("%v\n", end)
-	// 	}
+	for i := 0; i < 10; i++ {
+		// fmt.Println(i)
+		for j := 0; j < 2; j++ {
+			// start := time.Now()
+			c.cache(i)
+			// _, temp := db_query(i)
+			// fmt.Println(temp)
+			// end := time.Since(start)
+			// fmt.Printf("%v\n", end)
+		}
 
-	// }
+	}
 
 	// fmt.Println("last: ", c.last)
 	// fmt.Println("head: ", c.head)
