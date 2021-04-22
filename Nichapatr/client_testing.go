@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"sync"
 	"time"
+	"math"
 )
 
 type Messagee struct {
@@ -200,20 +201,25 @@ func main() {
 	for i := 6; i < 11; i++ {
 		t2 := time.Now()
 		client6("GET", "/products/"+strconv.Itoa(i))
-		t02 = float64(time.Since(t1)))/1e6/5
+		t02 = float64(time.Since(t2)))/1e6/5
 		fmt.Printf("Latency Time:   %v ", t02)
 	}
-	if (t00 - t01) < 1 {
+	if math.Abs(t00 - t01) <= 1 {
 		fmt.Println("miss?")
-	} if t02 <= t01 {
+	} else {
+		fmt.Println("someting is not right(1)")
+	} 
+	if t02 <= t01 {
 		fmt.Println("faster")
 	} else {
-		fmt.Println("someting is not right")
+		fmt.Println("someting is not right(2)")
 	}
-	for i := 0; i < 200; i++ {
-		go onerun()
-		// wg.Add(1)
 
+	for i := 0; i < 200; i++ {
+		t3 := time.Now()
+		client6("GET", "/products/"+strconv.Itoa(i))
+		t03 = float64(time.Since(t3)))/1e6/5
+		fmt.Printf("Latency Time:   %v ", t03)
 	}
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
