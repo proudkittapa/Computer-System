@@ -1,7 +1,6 @@
 package cacheFile
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,7 +9,7 @@ import (
 )
 
 var (
-	db *sql.DB
+//db *sql.DB
 )
 
 func CheckErr(err error) {
@@ -73,13 +72,18 @@ func (list *Lru_cache) Set(id int, val Data) {
 	temp := string(byteArray)
 
 	if prod, ok := list.mp[id]; ok || len(list.mp) >= list.limit {
+		fmt.Println("if 1")
 		if len(list.mp) >= list.limit {
+			fmt.Println("if 2")
 			rm := list.Remove(list.last)
 			delete(list.mp, rm)
+
 		} else if _, ok := list.mp[id]; ok {
+			fmt.Println("else")
 			// list.Move(prod)
 			rm := list.Remove(prod)
 			delete(list.mp, rm)
+
 		}
 	}
 
