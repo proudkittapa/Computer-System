@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"math/rand"
 	"net"
 	"os"
 	"strconv"
 	"sync"
 	"time"
-	"math"
 )
 
 type Messagee struct {
@@ -195,82 +195,84 @@ func test_check() {
 	// fmt.Printf("Number Response: %d\nIf number of Responses = 1000, is it success or not since it out of stock at Order500?", count_Res)
 	/*--------------------Cache check (1)--------------------*/
 	t1 := time.Now()
-	for i := 1; i < 6; i++ {	
+	for i := 1; i < 6; i++ {
 		client6("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	t01 = float64(time.Since(t1))/1e6/ 5
+	t01 := float64(time.Since(t1)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v ", t01)
 
 	t2 := time.Now()
 	for i := 6; i < 11; i++ {
 		client6("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	t02 = float64(time.Since(t2))/1e6/ 5
+	t02 := float64(time.Since(t2)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t02)
 
 	t3 := time.Now()
 	for i := 6; i < 11; i++ {
 		client6("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	t03 = float64(time.Since(t3)))/1e6/ 5
+	t03 := float64(time.Since(t3)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t03)
-	if math.Abs(t00 - t01) <= 1 {
-		fmt.Println("miss?\n")
+	if math.Abs(t01-t02) <= 1 {
+		fmt.Println("miss?")
 	} else {
 		fmt.Println("something is not right(1) :")
-		fmt.Println(t00 - t01, "\n")
-	} 
-	if t02 <= t01 {
-		fmt.Println("faster\n")
+		fmt.Println(t01 - t02)
+	}
+	if t03 <= t02 {
+		fmt.Println("faster")
 	} else {
-		fmt.Println("cache not make faster maybe not hit\n")
+		fmt.Println("cache not make faster maybe not hit")
 	}
 	/*--------------------Cache check (2)--------------------*/
 	t4 := time.Now()
 	for i := 0; i < 2; i++ {
-		client6("POST", "/products/1", 2) // stock must = 998
-		client6("POST", "/products/1", 3) // stock must = 995
-		client6("POST", "/products/1", 5) // stock must = 990
+		client6("POST", "/products/1", 2)    // stock must = 998
+		client6("POST", "/products/1", 3)    // stock must = 995
+		client6("POST", "/products/1", 5)    // stock must = 990
 		client6("POST", "/products/1", 1000) // stock must = 0
 	}
-	t04 = float64(time.Since(t4))/1e6/ 4
+	t04 := float64(time.Since(t4)) / 1e6 / 4
 	fmt.Printf("Latency Time:   %v ", t04)
-	
+
 	t5 := time.Now()
 	for i := 0; i < 2; i++ {
-		client6("POST", "/products/2", 10000) // stock must = 0 
+		client6("POST", "/products/2", 10000) // stock must = 0
 	}
-	t05 = float64(time.Since(t5))/1e6/ 2
+	t05 := float64(time.Since(t5)) / 1e6 / 2
 	fmt.Printf("Latency Time:   %v ", t05)
 }
-num_user = 100
+
+var num_user float64 = 100
+
 func user_model() {
-	// go func {
-		go for i := 0; i < (num_user*0.60); i++ {
-			go func {
-				goclient6("GET", "/", 0)
-				client6("GET", "/products", 0)
-			}
-		}
+	// go func() {
+	for i := 0.0; i < (num_user * 0.60); i++ {
+		go func() {
+			client6("GET", "/", 0)
+			client6("GET", "/products", 0)
+		}()
+	}
 	// }
 	// go func {
-		go for i := 0; i < (num_user*0.25); i++ {
-			go func {
-				client6("GET", "/", 0)
-				client6("GET", "/products", 0)
-				client6("GET", "/products/"+strconv.Itoa(rand.Intn(967), 0)
-			}
-		}
+	for i := 0.0; i < (num_user * 0.25); i++ {
+		go func() {
+			client6("GET", "/", 0)
+			client6("GET", "/products", 0)
+			client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+		}()
+	}
 	// }
 	// go func {
-		go for i := 0; i < (num_user*0.15); i++ {
-			go func {
-				client6("GET", "/", 0)
-				client6("GET", "/products", 0)
-				client6("GET", "/products/"+strconv.Itoa(rand.Intn(967), 0)
-				client6("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
-			}
-		}
+	for i := 0.0; i < (num_user * 0.15); i++ {
+		go func() {
+			client6("GET", "/", 0)
+			client6("GET", "/products", 0)
+			client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+			client6("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+		}()
+	}
 	// }
 }
 
