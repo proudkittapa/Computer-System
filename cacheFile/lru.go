@@ -1,4 +1,4 @@
-package cacheFile
+package main
 
 import (
 	"database/sql"
@@ -52,7 +52,7 @@ func Cache_cons(cap int) Lru_cache {
 	return Lru_cache{limit: cap, mp: make(map[int]*Node, cap)}
 }
 
-func (list *Lru_cache) Cache(id int) string {
+func (list *Lru_cache) GetCache(id int) string {
 	if node_val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
 		list.Move(node_val)
@@ -60,19 +60,34 @@ func (list *Lru_cache) Cache(id int) string {
 		return node_val.value
 	} else {
 		fmt.Println("-----------MISS-----------")
+		return ""
+	}
+
+}
+
+func (list *Lru_cache) Set(id int, val Data) {
+
+	byteArray, err := json.Marshal(val)
+	CheckErr(err)
+	// fmt.Println(len(byteArray))
+
+	temp := string(byteArray)
+
+	if prod, ok := list.mp[id]; ok || len(list.mp) >= list.limit {
 		if len(list.mp) >= list.limit {
 			rm := list.Remove(list.last)
 			delete(list.mp, rm)
+		} else if _, ok := list.mp[id]; ok {
+			// list.Move(prod)
+			rm := list.Remove(prod)
+			delete(list.mp, rm)
 		}
-		json := Db_query(id) // <--------------------------
-		node := Node{id: id, value: json}
-		list.AddNode(&node)
-		list.mp[id] = &node
-		// fmt.Println(node.value)
-		return node.value
-		// return val.value
 	}
 
+	node := Node{id: id, value: temp}
+	list.AddNode(&node)
+	list.mp[id] = &node
+	// fmt.Println(node.value)
 }
 
 // mind -> cache MISS
@@ -130,12 +145,6 @@ func Db_query(id int) (val string) {
 	err := rows.Scan(&name, &quantity, &price)
 	CheckErr(err)
 
-	result := Data{Name: name, Quantity: quantity, Price: price}
-	byteArray, err := json.Marshal(result)
-	CheckErr(err)
-	// fmt.Println(len(byteArray))
-
-	val = string(byteArray)
 	// fmt.Println(val)
 
 	return val
@@ -156,51 +165,82 @@ func SaveFile(mp map[int]*Node, lru Lru_cache) {
 
 	fmt.Println(prodList)
 
-	tempList := jsonSave{ProductIDList: prodList, Limit: lru.limit}
+	tempList := JsonSave{ProductIDList: prodList, Limit: lru.limit}
 	jsonIDList, _ := json.Marshal(tempList)
 	_ = ioutil.WriteFile("cacheSave.json", jsonIDList, 0644)
 }
 
 // ref https://stackoverflow.com/questions/47898327/properly-create-a-json-file-and-read-from-it
 
-func ReadFile() Lru_cache {
-	fromFile, err := ioutil.ReadFile("cacheSave.json")
-	CheckErr(err)
+// func ReadFile() Lru_cache {
 
-	var temp JsonSave
-	err = json.Unmarshal(fromFile, &temp)
+// 	fromFile, err := ioutil.ReadFile("cacheSave.json")
+// 	CheckErr(err)
 
-	c := Cache_cons(temp.Limit)
+// 	var temp JsonSave
+// 	err = json.Unmarshal(fromFile, &temp)
 
-	t := temp.ProductIDList
-	// fmt.Println(t[0])
-	for i := 0; i < len(t); i++ {
-		fmt.Println(t[i])
-		c.Cache(t[i])
-	}
+// 	c := Cache_cons(temp.Limit)
 
-	return c
-}
+// 	t := temp.ProductIDList
+// 	// fmt.Println(t[0])
+// 	for i := 0; i < len(t); i++ {
+// 		fmt.Println(t[i])
+// 		c.Set(t[i])
+// 	}
+
+// 	return c
+// }
 
 // ref https://tutorialedge.net/golang/parsing-json-with-golang/
 
-// func main() {
-// 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+func (l *Lru_cache) Display() {
+	node := l.last
+	for node != nil {
+		fmt.Printf("%+v ->", node.id)
+		node = node.prev
+	}
+	fmt.Println()
+}
 
-// 	// defer profile.Start(profile.MemProfile).Stop()
-
-// 	c := cache_cons(10)
-
-// 	for i := 0; i < 10; i++ {
-// 		for j := 0; j < 2; j++ {
-// 			start := time.Now()
-// 			c.cache(i)
-// 			end := time.Since(start)
-// 			fmt.Printf("%v\n", end)
-
-// 			// t := c.cache(i)
-// 			// fmt.Println(t)
-// 			// fmt.Printf("%T\n", t)
-// 		}
+// func Display(node *Node) {
+// 	for node != nil {
+// 		fmt.Printf("%v ->", node.id)
+// 		node = node.next
 // 	}
+// 	fmt.Println()
 // }
+
+func main() {
+	// db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+
+	// defer profile.Start(profile.MemProfile).Stop()
+
+	c := Cache_cons(10)
+
+	temp := Data{Name: "pune", Quantity: 20, Price: 100}
+	temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
+	temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
+
+	c.Set(1, temp)
+	c.Set(1, temp2)
+	c.Set(1, temp3)
+	// c.Set(1, temp3)
+	c.Display()
+	fmt.Println(c.GetCache(1))
+	fmt.Println("last: ", c.last)
+	fmt.Println("head: ", c.head)
+
+	// for i := 0; i < 10; i++ {
+	// 	for j := 0; j < 2; j++ {
+	// 		// start := time.Now()
+	// 		c.Set()
+	// end := time.Since(start)
+	// fmt.Printf("%v\n", end)
+
+	// t := c.cache(i)
+	// fmt.Println(t)
+	// fmt.Printf("%T\n", t)
+	// 	}
+	// }
+}
