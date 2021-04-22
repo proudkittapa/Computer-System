@@ -1,10 +1,14 @@
-package main
+package cacheFile
 
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"pin2pre/cacheFile"
+	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -18,24 +22,53 @@ var (
 	totalTime float64
 )
 
+type product struct {
+	Name     string
+	Quantity int
+	Price    int
+}
+
+func getJson(message string) product {
+	var result product
+	if strings.ContainsAny(string(message), "}") {
+
+		r, _ := regexp.Compile("{([^)]+)}")
+		match := r.FindString(message)
+		// fmt.Println(match)
+		fmt.Printf("%T\n", match)
+		json.Unmarshal([]byte(match), &result)
+		// fmt.Println("data", result)
+	}
+	return result
+}
+
 func getQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	//query from cache (get)
-
+	a := cacheFile.GetCache(id)
+	if a == "" {
+		rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
+		var name string
+		var quantity int
+		var price float32
+		err := rows.Scan(&name, &quantity, &price)
+		if err != nil {
+			//fmt.Println("get quantity fail")
+			transactionC <- "rollback"
+			tx.Rollback()
+			return
+		}
+		cacheFile.Set(id, a)
+		fmt.Println("Name: %s, Quantity: %d", name, quantity)
+		t <- quantity
+	} else {
+		p := getJson(a)
+		fmt.Println("Name: %s, Quantity: %d", p.Name, p.Quantity)
+		t <- p.Quantity
+	}
 	//get return value
 	//if hit use the value
 	//if miss
-	rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
-	var name string
-	var quantity int
-	var price float32
-	err := rows.Scan(&name, &quantity, &price)
-	if err != nil {
-		//fmt.Println("get quantity fail")
-		transactionC <- "rollback"
-		tx.Rollback()
-		return
-	}
-	t <- quantity
+
 	//set cache
 	//fmt.Println("name: ", name, " quantity: ", quantity, " price: ", price)
 }

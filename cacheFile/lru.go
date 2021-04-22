@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -133,22 +132,22 @@ func (list *Lru_cache) AddNode(node *Node) {
 // ref https://www.tutorialfor.com/blog-259822.htm
 //     https://medium.com/@fazlulkabir94/lru-cache-golang-implementation-92b7bafb76f0
 
-func Db_query(id int) (val string) {
+// func Db_query(id int) (val string) {
 
-	// fmt.Println("----------MISS----------")
-	fmt.Println(id)
-	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+// 	// fmt.Println("----------MISS----------")
+// 	fmt.Println(id)
+// 	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 
-	var name string
-	var quantity int
-	var price int
-	err := rows.Scan(&name, &quantity, &price)
-	CheckErr(err)
+// 	var name string
+// 	var quantity int
+// 	var price int
+// 	err := rows.Scan(&name, &quantity, &price)
+// 	CheckErr(err)
 
-	// fmt.Println(val)
+// 	// fmt.Println(val)
 
-	return val
-}
+// 	return val
+// }
 
 func SaveFile(mp map[int]*Node, lru Lru_cache) {
 	var prodList []int
