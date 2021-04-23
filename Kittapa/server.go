@@ -19,19 +19,17 @@ type (
 		Name   HandlerFunc `json:"name"`
 	}
 )
-type HandlerFunc func()
+type HandlerFunc func() string
 
 var count = 0
 
 func (s *Server) GET(path string, h HandlerFunc) *Route {
 	m := "GET"
-	h()
 	return s.Add(m, path, h)
 }
 
 func (s *Server) POST(path string, h HandlerFunc) *Route {
 	m := "POST"
-	h()
 	return s.Add(m, path, h)
 }
 
@@ -51,7 +49,7 @@ func New() *Server {
 	}
 }
 
-func listen(port string) {
+func (s *Server) listen(port string) {
 	li, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -67,32 +65,45 @@ func listen(port string) {
 		}
 		count++
 		fmt.Println("connections:", count)
-		go handle(conn)
+		go s.handle(conn)
 	}
 }
 
-func handle(conn net.Conn) {
+func (s *Server) handle(conn net.Conn) {
 	defer conn.Close()
-	req(conn)
+	s.req(conn)
 }
 
-func req(conn net.Conn) {
+func (s *Server) req(conn net.Conn) {
 	buffer := make([]byte, 1024)
+	var fc string
 	for {
 		n, err := conn.Read(buffer)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 		}
+		fmt.Println(string(buffer[:n]))
 		method, path, _ := getMessage(string(buffer[:n]))
 		fmt.Println(method, path)
-
+		r, yes := s.check(method, path)
+		if yes {
+			fc = r.Name()
+		}
+		send(conn, fc, "text/html")
 	}
 }
 
 func getMessage(message string) (string, string, []string) {
 	headers := strings.Split(message, "\n")
+	// fmt.Println("headers", headers)
+	// if len(headers) == 1 {
+	// 	panic("len is 1")
+	// }
 	method := (strings.Split(headers[0], " "))[0]
+	// fmt.Println("len:", len(headers))
+	// fmt.Println("headers[0]", headers[0])
 	path := (strings.Split(headers[0], " "))[1]
+	// path := "path"
 	p := strings.Split(path, "/")
 	return method, path, p
 }
@@ -103,5 +114,16 @@ func (s *Server) check(method, path string) (*Route, bool) {
 }
 
 func (s *Server) Start(port string) {
-	listen(port)
+	s.listen(port)
+}
+
+func send(conn net.Conn, d string, c string) {
+	fmt.Fprintf(conn, createHeader(d, c))
+}
+
+//create header function
+func createHeader(d string, contentType string) string {
+	contentLength := len(d)
+	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, d)
+	return headers
 }
