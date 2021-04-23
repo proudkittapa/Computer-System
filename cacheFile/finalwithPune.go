@@ -5,27 +5,36 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"pin2pre/cacheFile"
+
+	//"pin2pre/cacheFile"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
-	ctx context.Context
-	db  *sql.DB
-	//mutex sync.Mutex
+	ctx       context.Context
+	db        *sql.DB
+	mutex     sync.Mutex
 	totalTime float64
+	c         Lru_cache
+	x         Data
 )
 
 type product struct {
 	Name     string
 	Quantity int
 	Price    int
+}
+
+func InitCache() {
+	c = Cache_cons(10)
+}
+func InitDatabase() {
+	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 }
 
 func getJson(message string) product {
@@ -42,14 +51,14 @@ func getJson(message string) product {
 	return result
 }
 
-func getQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
+func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	//query from cache (get)
-	a := cacheFile.GetCache(id)
+	a := c.GetCache(id)
 	if a == "" {
 		rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
 		var name string
 		var quantity int
-		var price float32
+		var price int
 		err := rows.Scan(&name, &quantity, &price)
 		if err != nil {
 			//fmt.Println("get quantity fail")
@@ -57,14 +66,20 @@ func getQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 			tx.Rollback()
 			return
 		}
-		cacheFile.Set(id, a)
-		fmt.Println("Name: %s, Quantity: %d", name, quantity)
+		x = Data{Name: name, Quantity: quantity, Price: price}
+		c.Set(id, x)
+		//fmt.Printf("Name: %s, Quantity: %d\n", name, quantity)
+		//fmt.Println("done")
+		//fmt.Println(quantity)
 		t <- quantity
+
 	} else {
 		p := getJson(a)
-		fmt.Println("Name: %s, Quantity: %d", p.Name, p.Quantity)
+		fmt.Printf("Name: %s, Quantity: %d\n", p.Name, p.Quantity)
 		t <- p.Quantity
+		//fmt.Println("done")
 	}
+
 	//get return value
 	//if hit use the value
 	//if miss
@@ -73,8 +88,8 @@ func getQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	//fmt.Println("name: ", name, " quantity: ", quantity, " price: ", price)
 }
 
-func decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
-
+func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
+	//fmt.Println("start decrement func")
 	quantity := <-t // channel from getQuantity
 	newQuantity := quantity - orderQuantity
 	if newQuantity < 0 {
@@ -83,6 +98,7 @@ func decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 		return
 	}
 	//fmt.Println(newQuantity)
+	//fmt.Println("decrement 1")
 	_, err := tx.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(id))
 	if err != nil {
 		//fmt.Println("decrement fail")
@@ -90,10 +106,13 @@ func decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 		transactionC <- "rollback"
 		return
 	}
+	x = Data{Quantity: newQuantity}
+	c.Set(id, x)
+	//fmt.Println("decrement 2")
 	transactionC <- "done"
 }
 
-func insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
+func Insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
 	_, err := tx.Exec("INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
 	if err != nil {
 		fmt.Println("insert fail")
@@ -103,53 +122,56 @@ func insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
 	wg.Done()
 }
 
-func preorder(end chan int, user string, productId int, orderQuantity int) {
+func Preorder(end chan int, user string, productId int, orderQuantity int) {
+	ctx = context.Background()
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
 		panic(err)
 	}
-	start := time.Now()
 	transactionC := make(chan string)
 	t := make(chan int)
-	go getQuantity(tx, transactionC, t, productId)
-	go decrement(tx, t, transactionC, orderQuantity, productId)
+	//start := time.Now()
+	go GetQuantity(tx, transactionC, t, productId)
+	//fmt.Println("hereee")
+	go Decrement(tx, t, transactionC, orderQuantity, productId)
 	if <-transactionC == "rollback" {
 		//fmt.Println("rollback")
-		preorder(end, user, productId, orderQuantity)
+		Preorder(end, user, productId, orderQuantity)
 		return
 	}
 	// fmt.Println("user:", user, "productId:", productId, "orderQuantity:", orderQuantity)
 	var wg sync.WaitGroup
 	wg.Add(1)
-	go insert(&wg, tx, user, productId, orderQuantity)
+	go Insert(&wg, tx, user, productId, orderQuantity)
 	wg.Wait()
 	if err := tx.Commit(); err != nil {
 		//fmt.Printf("Failed to commit tx: %v\n", err)
 	}
 	//fmt.Println("success")
 	//fmt.Println("-----------------------------------")
-	elapsed := time.Since(start)
-	tt := float64(elapsed)
-	fmt.Printf("time: %v\n", elapsed)
-	fmt.Printf("tt: %v\n", tt)
-	totalTime += tt
-	fmt.Printf("total time: %v\n", totalTime)
+	//elapsed := time.Since(start)
+	//tt := float64(elapsed)
+	//fmt.Printf("time: %v\n", elapsed)
+	//fmt.Printf("tt: %v\n", tt)
+	//totalTime += tt
+	//fmt.Printf("total time: %v\n", totalTime)
 	num, _ := strconv.Atoi(user)
 	end <- num
+	c.Display()
 	return
 }
 
-func main() {
-	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
-	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
-	ctx = context.Background()
-	n := 100
-	end := make(chan int)
-	for i := 1; i <= n; i++ {
-		go preorder(end, strconv.Itoa(i), 1, 5)
-	}
-	for i := 1; i <= n; i++ {
-		<-end
-	}
-	return
-}
+// func main() {
+// 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
+// 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
+// 	ctx = context.Background()
+// 	n := 100
+// 	end := make(chan int)
+// 	for i := 1; i <= n; i++ {
+// 		go preorder(end, strconv.Itoa(i), 1, 5)
+// 	}
+// 	for i := 1; i <= n; i++ {
+// 		<-end
+// 	}
+// 	return
+// }
