@@ -88,8 +88,13 @@ func (s *Server) req(conn net.Conn) {
 		r, yes := s.check(method, path)
 		if yes {
 			fc = r.Name()
+			send(conn, fc, "text/html")
+		} else {
+			// a := fmt.Sprintf("HTTP/1.0 404 Nof Found\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", 14, "text/html", "404 not found")
+			// a := fmt.Sprintf("HTTP/1.0 404\r\n")
+			// fmt.Fprintf(conn, a)
 		}
-		send(conn, fc, "text/html")
+
 	}
 }
 
