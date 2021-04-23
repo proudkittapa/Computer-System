@@ -183,7 +183,7 @@ func saveFile(lru lru_cache) {
 
 // }
 
-func readFile() {
+func readFile() lru_cache {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
 	checkErr(err)
 
@@ -196,11 +196,37 @@ func readFile() {
 	// fmt.Println(t[0])
 	for i := 0; i < len(t); i++ {
 		fmt.Println(t[i])
-		c.cache(t[i])
+		tmp, _ := db_query(t[i])
+		c.Set(t[i], t)
+	}
+	c.Display()
+	return c
+
+}
+
+func (list *lru_cache) Set(id int, val data) {
+
+	byteArray, err := json.Marshal(val)
+	CheckErr(err)
+	// fmt.Println(len(byteArray))
+
+	temp := string(byteArray)
+
+	if prod, ok := list.mp[id]; ok || len(list.mp) >= list.limit {
+		if len(list.mp) >= list.limit {
+			rm := list.remove(list.last)
+			delete(list.mp, rm)
+		} else if _, ok := list.mp[id]; ok {
+			// list.Move(prod)
+			rm := list.remove(prod)
+			delete(list.mp, rm)
+		}
 	}
 
-	// c.Display()
-
+	node := node{id: id, value: temp}
+	list.add(&node)
+	list.mp[id] = &node
+	// fmt.Println(node.value)
 }
 
 // func readFile_old() lru_cache {
@@ -229,14 +255,14 @@ func readFile() {
 // 	return c
 // }
 
-// func (l *lru_cache) Display() {
-// 	node := l.head
-// 	for node != nil {
-// 		fmt.Printf("%+v ->", node.id)
-// 		node = node.next
-// 	}
-// 	fmt.Println()
-// }
+func (l *lru_cache) Display() {
+	node := l.head
+	for node != nil {
+		fmt.Printf("%+v ->", node.id)
+		node = node.next
+	}
+	fmt.Println()
+}
 
 // func Display(node *node) {
 // 	for node != nil {
@@ -251,26 +277,26 @@ func main() {
 
 	// var prodIDList []int
 
-	c := cache_cons(1000)
+	// c := cache_cons(1000)
 
-	for i := 0; i < 10; i++ {
-		// fmt.Println(i)
-		for j := 0; j < 2; j++ {
-			// start := time.Now()
-			c.cache(i)
-			// _, temp := db_query(i)
-			// fmt.Println(temp)
-			// end := time.Since(start)
-			// fmt.Printf("%v\n", end)
-		}
+	// for i := 0; i < 10; i++ {
+	// 	// fmt.Println(i)
+	// 	for j := 0; j < 2; j++ {
+	// 		// start := time.Now()
+	// 		c.cache(i)
+	// 		// _, temp := db_query(i)
+	// 		// fmt.Println(temp)
+	// 		// end := time.Since(start)
+	// 		// fmt.Printf("%v\n", end)
+	// 	}
 
-	}
+	// }
 
 	// fmt.Println("last: ", c.last)
 	// fmt.Println("head: ", c.head)
 
 	// fmt.Println(c.limit)
-	// readFile()
+	readFile()
 
 	// fmt.Printf("%T\n", c.mp)
 

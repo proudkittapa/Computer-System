@@ -1,10 +1,11 @@
-package cacheFile
+package main
 
 import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -64,7 +65,7 @@ func (list *Lru_cache) GetCache(id int) string {
 
 }
 
-func (list *Lru_cache) Set(id int, val Data) {
+func (list *Lru_cache) Set(id int, val Data) string {
 
 	byteArray, err := json.Marshal(val)
 	CheckErr(err)
@@ -86,7 +87,9 @@ func (list *Lru_cache) Set(id int, val Data) {
 	node := Node{id: id, value: temp}
 	list.AddNode(&node)
 	list.mp[id] = &node
-	// fmt.Println(node.value)
+
+	reVal := node.value
+	return reVal
 }
 
 // mind -> cache MISS
@@ -132,22 +135,24 @@ func (list *Lru_cache) AddNode(node *Node) {
 // ref https://www.tutorialfor.com/blog-259822.htm
 //     https://medium.com/@fazlulkabir94/lru-cache-golang-implementation-92b7bafb76f0
 
-// func Db_query(id int) (val string) {
+func Db_query(id int) (val Data) {
 
-// 	// fmt.Println("----------MISS----------")
-// 	fmt.Println(id)
-// 	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+	// fmt.Println("----------MISS----------")
+	// fmt.Println("productID :", id)
+	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 
-// 	var name string
-// 	var quantity int
-// 	var price int
-// 	err := rows.Scan(&name, &quantity, &price)
-// 	CheckErr(err)
+	var name string
+	var quantity int
+	var price int
+	err := rows.Scan(&name, &quantity, &price)
+	CheckErr(err)
 
-// 	// fmt.Println(val)
+	result := Data{Name: name, Quantity: quantity, Price: price}
 
-// 	return val
-// }
+	// fmt.Println(val)
+
+	return result
+}
 
 func SaveFile(mp map[int]*Node, lru Lru_cache) {
 	var prodList []int
@@ -171,35 +176,37 @@ func SaveFile(mp map[int]*Node, lru Lru_cache) {
 
 // ref https://stackoverflow.com/questions/47898327/properly-create-a-json-file-and-read-from-it
 
-// func ReadFile() Lru_cache {
+func ReadFile() Lru_cache {
 
-// 	fromFile, err := ioutil.ReadFile("cacheSave.json")
-// 	CheckErr(err)
+	fromFile, err := ioutil.ReadFile("cacheSave.json")
+	CheckErr(err)
 
-// 	var temp JsonSave
-// 	err = json.Unmarshal(fromFile, &temp)
+	var temp JsonSave
+	err = json.Unmarshal(fromFile, &temp)
 
-// 	c := Cache_cons(temp.Limit)
+	c := Cache_cons(temp.Limit)
 
-// 	t := temp.ProductIDList
-// 	// fmt.Println(t[0])
-// 	for i := 0; i < len(t); i++ {
-// 		fmt.Println(t[i])
-// 		c.Set(t[i])
-// 	}
+	t := temp.ProductIDList
+	// fmt.Println(t[0])
+	for i := 0; i < len(t); i++ {
+		// fmt.Println(t[i])
+		// fmt.Printf("%T\n", t[i])
+		tmp := Db_query(t[i])
+		c.Set(t[i], tmp)
 
-// 	return c
-// }
+	}
+	c.Display()
+	return c
+}
 
 // ref https://tutorialedge.net/golang/parsing-json-with-golang/
 
 func (l *Lru_cache) Display() {
 	node := l.last
 	for node != nil {
-		fmt.Printf("%+v ->", node.id)
+		fmt.Printf("%+v <- ", node.id)
 		node = node.prev
 	}
-	fmt.Println()
 }
 
 // func Display(node *Node) {
@@ -210,36 +217,38 @@ func (l *Lru_cache) Display() {
 // 	fmt.Println()
 // }
 
-// func main() {
-// 	// db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+func main() {
+	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 
-// 	// defer profile.Start(profile.MemProfile).Stop()
+	// defer profile.Start(profile.MemProfile).Stop()
 
-// 	c := Cache_cons(10)
+	ReadFile()
 
-// 	temp := Data{Name: "pune", Quantity: 20, Price: 100}
-// 	temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
-// 	temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
+	// c := Cache_cons(10)
 
-// 	c.Set(1, temp)
-// 	c.Set(1, temp2)
-// 	c.Set(1, temp3)
-// 	// c.Set(1, temp3)
-// 	c.Display()
-// 	fmt.Println(c.GetCache(1))
-// 	fmt.Println("last: ", c.last)
-// 	fmt.Println("head: ", c.head)
+	// temp := Data{Name: "pune", Quantity: 20, Price: 100}
+	// temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
+	// temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
 
-// 	// for i := 0; i < 10; i++ {
-// 	// 	for j := 0; j < 2; j++ {
-// 	// 		// start := time.Now()
-// 	// 		c.Set()
-// 	// end := time.Since(start)
-// 	// fmt.Printf("%v\n", end)
+	// c.Set(1, temp)
+	// c.Set(1, temp2)
+	// c.Set(1, temp3)
+	// // c.Set(1, temp3)
+	// c.Display()
+	// fmt.Println(c.GetCache(1))
+	// fmt.Println("last: ", c.last)
+	// fmt.Println("head: ", c.head)
 
-// 	// t := c.cache(i)
-// 	// fmt.Println(t)
-// 	// fmt.Printf("%T\n", t)
-// 	// 	}
-// 	// }
-// }
+	// for i := 0; i < 10; i++ {
+	// 	for j := 0; j < 2; j++ {
+	// 		// start := time.Now()
+	// 		c.Set()
+	// end := time.Since(start)
+	// fmt.Printf("%v\n", end)
+
+	// t := c.cache(i)
+	// fmt.Println(t)
+	// fmt.Printf("%T\n", t)
+	// 	}
+	// }
+}
