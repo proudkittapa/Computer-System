@@ -21,6 +21,7 @@ var (
 	mutex     sync.Mutex
 	totalTime float64
 	c         Lru_cache
+	x         Data
 )
 
 type product struct {
@@ -30,7 +31,7 @@ type product struct {
 }
 
 func InitCache() {
-	c = Cache_cons(20)
+	c = Cache_cons(10)
 }
 func InitDatabase() {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
@@ -65,15 +66,20 @@ func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 			tx.Rollback()
 			return
 		}
-		x := Data{Name: name, Quantity: quantity, Price: price}
+		x = Data{Name: name, Quantity: quantity, Price: price}
 		c.Set(id, x)
-		fmt.Printf("Name: %s, Quantity: %d\n", name, quantity)
+		//fmt.Printf("Name: %s, Quantity: %d\n", name, quantity)
+		//fmt.Println("done")
+		//fmt.Println(quantity)
 		t <- quantity
+
 	} else {
 		p := getJson(a)
 		fmt.Printf("Name: %s, Quantity: %d\n", p.Name, p.Quantity)
 		t <- p.Quantity
+		//fmt.Println("done")
 	}
+
 	//get return value
 	//if hit use the value
 	//if miss
@@ -83,7 +89,7 @@ func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 }
 
 func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
-
+	//fmt.Println("start decrement func")
 	quantity := <-t // channel from getQuantity
 	newQuantity := quantity - orderQuantity
 	if newQuantity < 0 {
@@ -92,6 +98,7 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 		return
 	}
 	//fmt.Println(newQuantity)
+	//fmt.Println("decrement 1")
 	_, err := tx.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(id))
 	if err != nil {
 		//fmt.Println("decrement fail")
@@ -99,6 +106,9 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 		transactionC <- "rollback"
 		return
 	}
+	x = Data{Quantity: newQuantity}
+	c.Set(id, x)
+	//fmt.Println("decrement 2")
 	transactionC <- "done"
 }
 
@@ -122,6 +132,7 @@ func Preorder(end chan int, user string, productId int, orderQuantity int) {
 	t := make(chan int)
 	//start := time.Now()
 	go GetQuantity(tx, transactionC, t, productId)
+	//fmt.Println("hereee")
 	go Decrement(tx, t, transactionC, orderQuantity, productId)
 	if <-transactionC == "rollback" {
 		//fmt.Println("rollback")
