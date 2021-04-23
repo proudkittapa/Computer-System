@@ -1,6 +1,7 @@
-package main
+package cacheFile
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,7 +11,8 @@ import (
 )
 
 var (
-//db *sql.DB
+	db *sql.DB
+	c  Lru_cache
 )
 
 func CheckErr(err error) {
@@ -44,6 +46,28 @@ type JsonSave struct {
 	Limit         int   `json:"limit"`
 }
 
+func InitCache() {
+	c = Cache_cons(10)
+}
+
+func (list *Lru_cache) ReCache(id int) (val string) {
+	temp := c.GetCache(id)
+	// fmt.Printf("%T\n", temp)
+
+	if temp == "" {
+		i := Db_query(id)
+		val = c.Set(id, i)
+
+		fmt.Println(val)
+		return val
+
+	} else {
+		fmt.Println(temp)
+		return temp
+	}
+
+}
+
 func Cache_cons(cap int) Lru_cache {
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// // db.SetMaxIdleConns(200000)
@@ -73,14 +97,14 @@ func (list *Lru_cache) Set(id int, val Data) string {
 	temp := string(byteArray)
 
 	if prod, ok := list.mp[id]; ok || len(list.mp) >= list.limit {
-		fmt.Println("if 1")
+		// fmt.Println("if 1")
 		if len(list.mp) >= list.limit {
-			fmt.Println("if 2")
+			// fmt.Println("if 2")
 			rm := list.Remove(list.last)
 			delete(list.mp, rm)
 
 		} else if _, ok := list.mp[id]; ok {
-			fmt.Println("else")
+			// fmt.Println("else")
 			// list.Move(prod)
 			rm := list.Remove(prod)
 			delete(list.mp, rm)
@@ -213,46 +237,45 @@ func (l *Lru_cache) Display() {
 	}
 }
 
-// func Display(node *Node) {
-// 	for node != nil {
-// 		fmt.Printf("%v ->", node.id)
-// 		node = node.next
-// 	}
-// 	fmt.Println()
+// func main() {
+// 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+
+// 	InitCache()
+// 	c.ReCache(1)
+// 	c.ReCache(1)
+// 	c.ReCache(2)
+// 	c.ReCache(3)
+// 	c.ReCache(4)
+// 	// c.Display()
+// 	// defer profile.Start(profile.MemProfile).Stop()
+
+// 	// ReadFile()
+
+// 	// c := Cache_cons(10)
+
+// 	// temp := Data{Name: "pune", Quantity: 20, Price: 100}
+// 	// temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
+// 	// temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
+
+// 	// c.Set(1, temp)
+// 	// c.Set(1, temp2)
+// 	// c.Set(1, temp3)
+// 	// // c.Set(1, temp3)
+// 	// c.Display()
+// 	// fmt.Println(c.GetCache(1))
+// 	// fmt.Println("\nlast: ", c.last)
+// 	// fmt.Println("head: ", c.head)
+
+// 	// for i := 0; i < 10; i++ {
+// 	// 	for j := 0; j < 2; j++ {
+// 	// 		// start := time.Now()
+// 	// 		c.Set()
+// 	// end := time.Since(start)
+// 	// fmt.Printf("%v\n", end)
+
+// 	// t := c.cache(i)
+// 	// fmt.Println(t)
+// 	// fmt.Printf("%T\n", t)
+// 	// 	}
+// 	// }
 // }
-
-func main() {
-	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
-
-	// defer profile.Start(profile.MemProfile).Stop()
-
-	ReadFile()
-
-	// c := Cache_cons(10)
-
-	// temp := Data{Name: "pune", Quantity: 20, Price: 100}
-	// temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
-	// temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
-
-	// c.Set(1, temp)
-	// c.Set(1, temp2)
-	// c.Set(1, temp3)
-	// // c.Set(1, temp3)
-	// c.Display()
-	// fmt.Println(c.GetCache(1))
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
-
-	// for i := 0; i < 10; i++ {
-	// 	for j := 0; j < 2; j++ {
-	// 		// start := time.Now()
-	// 		c.Set()
-	// end := time.Since(start)
-	// fmt.Printf("%v\n", end)
-
-	// t := c.cache(i)
-	// fmt.Println(t)
-	// fmt.Printf("%T\n", t)
-	// 	}
-	// }
-}
