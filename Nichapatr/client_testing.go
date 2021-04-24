@@ -25,15 +25,8 @@ type Rate struct {
 	Hit  int `json:"hit"`
 }
 type Mess struct {
-	Mess	string `json:"mess"`
+	Mess string `json:"mess"`
 }
-// type PayInfo struct {
-//  Name      string
-//  ProductID int
-//  Date      string
-//  Time      string
-//  imageName string
-// }
 
 var wg sync.WaitGroup
 
@@ -56,22 +49,23 @@ func send(conn net.Conn, host string, m string, p string, userid int, quan int) 
 
 var result Rate
 
-func recv(conn net.Conn) {
+func recv(conn net.Conn) string {
 	defer conn.Close()
 	// fmt.Println("reading")
 	message, err := bufio.NewReader(conn).ReadString('\n')
 	if err != nil {
 		count_Fail++
 		log.Println("failed to read contents", message)
-		return
+		return ""
 	} else {
 		count_Res++
 	}
 	fmt.Print(message)
-	result = getJson(message)
+	return message
+	// result = getJson(message)
 }
 
-func client(m string, p string, quan int) {
+func client(m string, p string, quan int) string {
 	// t0 := time.Now()
 	host := "178.128.94.63:8080"
 	conn, err := net.Dial("tcp", host)
@@ -80,7 +74,7 @@ func client(m string, p string, quan int) {
 		log.Fatalln(err)
 	}
 	send(conn, host, m, p, userid, quan) //check parameter quan
-	recv(conn)
+	return recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	// wg.Done()
 	// <-ch
@@ -90,8 +84,6 @@ var userid = 0
 var count_Res = 0
 var count_Fail = 0
 
-// var n = flag.Int("n", 5, "Number of goroutines to create")
-// var ch = make(chan byte)
 func createHeaderGET(pathh string, u int) string {
 	userID := u
 	method := "GET"
@@ -124,13 +116,12 @@ func createHeaderPOST(u int, quan int) string {
 }
 
 func onerun() {
-	// for i := 0; i < 200; i++ {
-	// client("GET", "/", 0)
-	// client("GET", "/products", 0)
-	client("GET", "/products/1", 0)
-	// client("POST", "/products/1", 2)
-	// client6("POST", "/payment", 0)
-	// }
+	for i := 0; i < 200; i++ {
+		client("GET", "/", 0)
+		client("GET", "/products", 0)
+		client("GET", "/products/1", 0)
+		client("POST", "/products/1", 2)
+	}
 }
 func test_time_check() {
 	/*--------------------Cache check (2)--------------------*/
@@ -226,7 +217,7 @@ func user_model() {
 
 }
 
-func check(expect struct, get struct) {
+func check(expect Rate, get Rate) {
 	if get != expect {
 		fmt.Printf("smt wrong!, expected v ==== %v \n, get v ==== %v \n", expect, get)
 	} else {
@@ -234,64 +225,54 @@ func check(expect struct, get struct) {
 	}
 }
 
-func hitmiss_check() {
+func misshit_check() {
 	//declare variables pid
 	// check1 := []string{"miss", "miss", "miss", "miss", "miss"}
 	// check2 := []string{"miss", "miss", "miss", "miss", "miss"}
 	// check3 := []string{"hit", "hit", "hit", "hit", "hit"}
-	checkU1 := Rate{Miss: 0, Hit: 5}
+	checkU1 := Rate{Miss: 1, Hit: 4}
 	for i := 1; i < 6; i++ {
 		client("GET", "/", 0)
 	}
-	j1 := getJson(message)
+	m := client("GET", "/hitmiss", 0)
+	j1 := getJson(m)
 	k1 := getJson2(j1.Mess)
-	check(checkU1, k1)//check miss, hit
-	
-	checkU2 := Rate{Miss: 0, Hit: 10}
-	for i := 6; i < 11; i++ {
-		client("GET", "/products/"+strconv.Itoa(i), 0)
-	}
-	j2 := getJson(message)
-	k2 := getJson2(j2.Mess)
-	check(checkU2, k2)
+	check(checkU1, k1) //check miss, hit
 
-	checkP3 := Rate{Miss: 5, Hit: 10}
-	for i := 6; i < 11; i++ {
-		client("GET", "/products/"+strconv.Itoa(i), 0)
-	}
-	j3 := getJson(message)
-	k3 := getJson2(j3.Mess)
-	check(checkU3, k3)
 	/*-------------check(2)-------------*/
-	checkP1 := Rate{Miss: 0, Hit: 5}
+	checkP1 := Rate{Miss: 5, Hit: 0}
 	for i := 1; i < 6; i++ {
 		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	l1 := getJson(message)
-	m1 := getJson2(l1.Mess)
-	check(checkP1, m1)//check miss, hit
+	m1 := client("GET", "/hitmiss", 0)
+	l1 := getJson(m1)
+	n1 := getJson2(l1.Mess)
+	check(checkP1, n1) //check miss, hit
 
-	checkP2 := Rate{Miss: 0, Hit: 10}
+	checkP2 := Rate{Miss: 10, Hit: 0}
 	for i := 6; i < 11; i++ {
 		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	l2 := getJson(message)
-	m2 := getJson2(l2.Mess)
-	check(checkP2, m2)
+	m2 := client("GET", "/hitmiss", 0)
+	l2 := getJson(m2)
+	n2 := getJson2(l2.Mess)
+	check(checkP2, n2)
 
-	checkP3 := Rate{Miss: 5, Hit: 10}
+	checkP3 := Rate{Miss: 10, Hit: 5}
 	for i := 6; i < 11; i++ {
 		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	l3 := getJson(message)
-	m3 := getJson2(l3.Mess)
-	check(checkP3, m3)
+	m3 := client("GET", "/hitmiss", 0)
+	l3 := getJson(m3)
+	n3 := getJson2(l3.Mess)
+	check(checkP3, n3)
 }
 
 func main() {
 	// flag.Parse()
 	start := time.Now()
-	// test_check()
+	// misshit_check()
+	// test_time_check()
 	// user_model()
 	onerun()
 	// wg.Wait()
