@@ -85,7 +85,7 @@ func createHeaderGET(pathh string, u int) string {
 	userID := u
 	method := "GET"
 	path := pathh
-	host := "127.0.0.1:8080"
+	host := "178.128.94.63:8080"
 	contentLength := 0
 	contentType := "text"
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n userID:%d",
