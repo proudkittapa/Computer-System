@@ -13,6 +13,7 @@ var quan int = 0
 
 func main() {
 	s := Kittapa.New()
+	cacheFile.InitDatabase()
 	cacheFile.InitCache()
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
