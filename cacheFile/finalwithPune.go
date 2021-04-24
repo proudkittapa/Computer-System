@@ -34,7 +34,7 @@ type product struct {
 // 	c = Cache_cons(10)
 // }
 func InitDatabase() {
-	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
+	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
 }
 
 func getJson(message string) product {
