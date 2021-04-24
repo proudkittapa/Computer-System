@@ -11,7 +11,10 @@ import (
 )
 
 var (
-	db *sql.DB
+	db    *sql.DB
+	C     Lru_cache
+	cMiss int = 0
+	cHit  int = 0
 )
 
 func CheckErr(err error) {
@@ -45,6 +48,37 @@ type JsonSave struct {
 	Limit         int   `json:"limit"`
 }
 
+type Pam struct {
+	Miss int `json:"miss"`
+	Hit  int `json:"hit"`
+}
+
+func InitCache() {
+	//C.limit = 10
+	C = Cache_cons(10)
+	// fmt.Println("head", C.head)
+	// fmt.Println("last", C.last)
+	// C.Display()
+}
+
+func (list *Lru_cache) ReCache(id int) (val string) {
+	temp := C.GetCache(id)
+	// fmt.Printf("%T\n", temp)
+
+	if temp == "" {
+		i := Db_query(id)
+		val = C.Set(id, i)
+
+		fmt.Println(val)
+		return val
+
+	} else {
+		fmt.Println(temp)
+		return temp
+	}
+
+}
+
 func Cache_cons(cap int) Lru_cache {
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// // db.SetMaxIdleConns(200000)
@@ -55,11 +89,13 @@ func Cache_cons(cap int) Lru_cache {
 func (list *Lru_cache) GetCache(id int) string {
 	if node_val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
+		cHit++
 		list.Move(node_val)
 		// fmt.Println(val.value)
 		return node_val.value
 	} else {
 		fmt.Println("-----------MISS-----------")
+		cMiss++
 		return ""
 	}
 
@@ -74,13 +110,19 @@ func (list *Lru_cache) Set(id int, val Data) string {
 	temp := string(byteArray)
 
 	if prod, ok := list.mp[id]; ok || len(list.mp) >= list.limit {
+		// fmt.Println("if 1")
+		fmt.Println("len", len(list.mp))
+		fmt.Println("limit", list.limit)
 		if len(list.mp) >= list.limit {
+			fmt.Println("cache full -> deleting last node -> add new node")
 			rm := list.Remove(list.last)
 			delete(list.mp, rm)
+
 		} else if _, ok := list.mp[id]; ok {
-			// list.Move(prod)
+			fmt.Println("Same product ID -> deleting old -> add new")
 			rm := list.Remove(prod)
 			delete(list.mp, rm)
+
 		}
 	}
 
@@ -203,26 +245,47 @@ func ReadFile() Lru_cache {
 
 func (l *Lru_cache) Display() {
 	node := l.last
+	if node == nil {
+		fmt.Println("empty")
+	}
 	for node != nil {
 		fmt.Printf("%+v <- ", node.id)
 		node = node.prev
 	}
 }
 
-// func Display(node *Node) {
-// 	for node != nil {
-// 		fmt.Printf("%v ->", node.id)
-// 		node = node.next
-// 	}
-// 	fmt.Println()
-// }
+func SendHitMiss() Pam {
+	result := Pam{Miss: cMiss, Hit: cHit}
+
+	return result
+}
 
 func main() {
 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 
+	InitCache()
+	fmt.Printf("Miss: %d Hit: %d\n", cMiss, cHit)
+
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.GetCache(1)
+
+	fmt.Printf("Miss: %d Hit: %d\n", cMiss, cHit)
+
+	a := SendHitMiss()
+	fmt.Println("sent: ", a)
+
+	// c.Display()
 	// defer profile.Start(profile.MemProfile).Stop()
 
-	ReadFile()
+	// ReadFile()
 
 	// c := Cache_cons(10)
 
@@ -236,7 +299,7 @@ func main() {
 	// // c.Set(1, temp3)
 	// c.Display()
 	// fmt.Println(c.GetCache(1))
-	// fmt.Println("last: ", c.last)
+	// fmt.Println("\nlast: ", c.last)
 	// fmt.Println("head: ", c.head)
 
 	// for i := 0; i < 10; i++ {
