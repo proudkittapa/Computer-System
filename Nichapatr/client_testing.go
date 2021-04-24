@@ -8,7 +8,9 @@ import (
 	"math"
 	"math/rand"
 	"net"
+	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -17,6 +19,10 @@ type Messagee struct {
 	Name     string
 	Quantity int
 	Price    int
+}
+type mess struct {
+	miss int
+	hit  int
 }
 
 // type PayInfo struct {
@@ -237,6 +243,19 @@ func user_model() {
 		}
 	}()
 
+}
+func getJson(message string) data {
+	var result data
+	if strings.ContainsAny(string(message), "}") {
+
+		r, _ := regexp.Compile("{([^)]+)}")
+		match := r.FindString(message)
+		// fmt.Println(match)
+		fmt.Printf("%T\n", match)
+		json.Unmarshal([]byte(match), &result)
+		// fmt.Println("data", result)
+	}
+	return result
 }
 func check() {
 	//declare variables pid
