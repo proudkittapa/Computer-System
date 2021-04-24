@@ -62,7 +62,7 @@ func recv(conn net.Conn) {
 	fmt.Print(message)
 }
 
-func client6(m string, p string, quan int) {
+func client(m string, p string, quan int) {
 	// t0 := time.Now()
 	host := "localhost:8080"
 	conn, err := net.Dial("tcp", ":8080")
@@ -138,10 +138,10 @@ func createHP(u int, quan int) string {
 
 func onerun() {
 	// for i := 0; i < 200; i++ {
-	client6("GET", "/", 0)
-	client6("GET", "/products", 0)
-	client6("GET", "/products/1", 0)
-	client6("POST", "/products/1", 2)
+	client("GET", "/", 0)
+	client("GET", "/products", 0)
+	client("GET", "/products/1", 0)
+	client("POST", "/products/1", 2)
 	// client6("POST", "/payment", 0)
 	// }
 }
@@ -157,21 +157,21 @@ func test_check() {
 	/*--------------------Cache check (1)--------------------*/
 	t1 := time.Now()
 	for i := 1; i < 6; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i), 0)
+		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t01 := float64(time.Since(t1)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v ", t01)
 
 	t2 := time.Now()
 	for i := 6; i < 11; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i), 0)
+		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t02 := float64(time.Since(t2)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t02)
 
 	t3 := time.Now()
 	for i := 6; i < 11; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i), 0)
+		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t03 := float64(time.Since(t3)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t03)
@@ -189,17 +189,17 @@ func test_check() {
 	/*--------------------Cache check (2)--------------------*/
 	t4 := time.Now()
 	for i := 0; i < 2; i++ {
-		client6("POST", "/products/1", 2)    // stock must = 998
-		client6("POST", "/products/1", 3)    // stock must = 995
-		client6("POST", "/products/1", 5)    // stock must = 990
-		client6("POST", "/products/1", 1000) // stock must = 0
+		client("POST", "/products/1", 2)    // stock must = 998
+		client("POST", "/products/1", 3)    // stock must = 995
+		client("POST", "/products/1", 5)    // stock must = 990
+		client("POST", "/products/1", 1000) // stock must = 0
 	}
 	t04 := float64(time.Since(t4)) / 1e6 / 4
 	fmt.Printf("Latency Time:   %v ", t04)
 
 	t5 := time.Now()
 	for i := 0; i < 2; i++ {
-		client6("POST", "/products/2", 10000) // stock must = 0
+		client("POST", "/products/2", 10000) // stock must = 0
 	}
 	t05 := float64(time.Since(t5)) / 1e6 / 2
 	fmt.Printf("Latency Time:   %v ", t05)
@@ -211,17 +211,17 @@ func user_model() {
 	go func() {
 		for i := 0.0; i < (num_user * 0.60); i++ {
 			go func() {
-				client6("GET", "/", 0)
-				client6("GET", "/products", 0)
+				client("GET", "/", 0)
+				client("GET", "/products", 0)
 			}()
 		}
 	}()
 	go func() {
 		for i := 0.0; i < (num_user * 0.25); i++ {
 			go func() {
-				client6("GET", "/", 0)
-				client6("GET", "/products", 0)
-				client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+				client("GET", "/", 0)
+				client("GET", "/products", 0)
+				client("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
 			}()
 		}
 	}()
@@ -229,10 +229,10 @@ func user_model() {
 	go func() {
 		for i := 0.0; i < (num_user * 0.15); i++ {
 			go func() {
-				client6("GET", "/", 0)
-				client6("GET", "/products", 0)
-				client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-				client6("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+				client("GET", "/", 0)
+				client("GET", "/products", 0)
+				client("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+				client("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
 			}()
 		}
 	}()
@@ -245,7 +245,7 @@ func check() {
 	// check3 := []string{"hit", "hit", "hit", "hit", "hit"}
 
 	for i := 1; i < 6; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i), 0)
+		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	//check
 	for i := range check1 {
@@ -258,12 +258,12 @@ func check() {
 	fmt.Printf("success")
 
 	for i := 6; i < 11; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i), 0)
+		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 
 	for i := 6; i < 11; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i), 0)
-	}
+		client("GET", "/products/"+strconv.Itoa(i), 0)
+	}[a]
 
 	// check4 := []string{"miss", "hit", "hit", "hit", "hit"}
 }
@@ -283,5 +283,5 @@ func main() {
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f", rate)
 
-	client6("GET", "hit miss", 0)
+	client("GET", "hit miss", 0)
 }
