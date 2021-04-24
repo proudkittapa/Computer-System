@@ -20,8 +20,8 @@ var (
 	db        *sql.DB
 	mutex     sync.Mutex
 	totalTime float64
-	c         Lru_cache
-	x         Data
+	//c         Lru_cache
+	x Data
 )
 
 type product struct {
@@ -34,7 +34,7 @@ type product struct {
 // 	c = Cache_cons(10)
 // }
 func InitDatabase() {
-	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
+	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 }
 
 func getJson(message string) product {
@@ -53,7 +53,7 @@ func getJson(message string) product {
 
 func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	//query from cache (get)
-	a := c.GetCache(id)
+	a := C.GetCache(id)
 	if a == "" {
 		rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
 		var name string
@@ -67,7 +67,7 @@ func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 			return
 		}
 		x = Data{Name: name, Quantity: quantity, Price: price}
-		c.Set(id, x)
+		C.Set(id, x)
 		//fmt.Printf("Name: %s, Quantity: %d\n", name, quantity)
 		//fmt.Println("done")
 		//fmt.Println(quantity)
@@ -107,7 +107,7 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 		return
 	}
 	x = Data{Quantity: newQuantity}
-	c.Set(id, x)
+	C.Set(id, x)
 	//fmt.Println("decrement 2")
 	transactionC <- "done"
 }
@@ -157,7 +157,7 @@ func Preorder(end chan int, user string, productId int, orderQuantity int) {
 	//fmt.Printf("total time: %v\n", totalTime)
 	num, _ := strconv.Atoi(user)
 	end <- num
-	c.Display()
+	C.Display()
 	return
 }
 

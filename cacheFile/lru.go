@@ -46,19 +46,19 @@ type JsonSave struct {
 }
 
 func InitCache() {
-	C.limit = 10
-	C = Cache_cons(C.limit)
+	//C.limit = 10
+	C = Cache_cons(10)
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
 	// C.Display()
 }
 func (list *Lru_cache) ReCache(id int) (val string) {
-	temp := c.GetCache(id)
+	temp := C.GetCache(id)
 	// fmt.Printf("%T\n", temp)
 
 	if temp == "" {
 		i := Db_query(id)
-		val = c.Set(id, i)
+		val = C.Set(id, i)
 
 		fmt.Println(val)
 		return val
