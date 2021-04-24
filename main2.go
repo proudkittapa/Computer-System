@@ -13,8 +13,8 @@ var cache cacheFile.Lru_cache
 
 func main() {
 	s := Kittapa.New()
-	// cacheFile.InitCache()
-	cacheFile.C = cacheFile.Cache_cons(10)
+	cacheFile.InitCache()
+	// cacheFile.C = cacheFile.Cache_cons(10)
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// s.GET("/products/:id", abc)
 	s.GET("/products/:id", productID)
