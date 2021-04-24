@@ -8,7 +8,9 @@ import (
 	"math"
 	"math/rand"
 	"net"
+	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -17,6 +19,10 @@ type Message struct {
 	Name     string
 	Quantity int
 	Price    int
+}
+type Rate struct {
+	Miss int `json:"miss"`
+	Hit  int `json:"hit"`
 }
 
 // type PayInfo struct {
@@ -46,6 +52,8 @@ func send(conn net.Conn, host string, m string, p string, userid int, quan int) 
 	}
 }
 
+var result Rate
+
 func recv(conn net.Conn) {
 	defer conn.Close()
 	// fmt.Println("reading")
@@ -58,12 +66,13 @@ func recv(conn net.Conn) {
 		count_Res++
 	}
 	fmt.Print(message)
+	result = getJson(message)
 }
 
 func client(m string, p string, quan int) {
 	// t0 := time.Now()
 	host := "178.128.94.63:8080"
-	conn, err := net.Dial("tcp", ":8080")
+	conn, err := net.Dial("tcp", host)
 	if err != nil {
 		count_Fail++
 		log.Fatalln(err)
@@ -111,28 +120,6 @@ func createHeaderPOST(u int, quan int) string {
 		method, path, host, contentLength, contentType, string(jsonData), userID)
 	return headers
 }
-
-// func createHPimg(conn net.Conn, u int) string {
-//  userID := u
-//  method := "POST"
-//  path := "/payment"
-//  host := "127.0.0.1:8080"
-
-//  contentType := "image/jpg"
-//  jsonStr := PayInfo{Name: "Kanga", Date: "20/02/21", Time: "12.00", imageName: img_name}
-//  jsonData, err := json.Marshal(jsonStr)
-//  if err != nil {
-//   fmt.Println(err)
-//  }
-//  contentLength := len(string(jsonData))
-
-//  headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
-//   method, path, host, contentLength, contentType, string(jsonData), userID)
-//  // send_file(conn)
-//  return headers
-// }
-
-//
 
 func onerun() {
 	// for i := 0; i < 200; i++ {
@@ -282,4 +269,20 @@ func main() {
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f", rate)
 	client("GET", "/hitmiss", 0)
+	fmt.Println("HIT:", result.Hit)
+	fmt.Println("Miss:", result.Miss)
+}
+
+func getJson(message string) Rate {
+	var result Rate
+	if strings.ContainsAny(string(message), "}") {
+
+		r, _ := regexp.Compile("{([^)]+)}")
+		match := r.FindString(message)
+		// fmt.Println(match)
+		fmt.Printf("%T\n", match)
+		json.Unmarshal([]byte(match), &result)
+		// fmt.Println("data", result)
+	}
+	return result
 }
