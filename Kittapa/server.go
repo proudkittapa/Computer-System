@@ -111,7 +111,7 @@ func (s *Server) req(conn net.Conn) {
 		if yes {
 			fmt.Println("yesssss")
 			fc = r.Name()
-			send(conn, fc, "application/json")
+			send(conn, fc, "text/html")
 		} else {
 			fmt.Println("no")
 			// a := fmt.Sprintf("HTTP/1.0 404 Nof Found\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", 14, "text/html", "404 not found")
@@ -163,8 +163,8 @@ func createHeader(d string, contentType string) string {
 	contentLength := len(d)
 	m := Message{Mess: d}
 	a, _ := json.Marshal(m)
-	// d = string(a)
-	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, a)
+	d = string(a)
+	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, d)
 	return headers
 }
 
