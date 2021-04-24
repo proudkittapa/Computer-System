@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"pin2pre/Kittapa"
 	"pin2pre/cacheFile"
@@ -45,5 +46,6 @@ func abc() string {
 }
 
 func hitmiss() string {
-	return "hitmiss"
+	a, _ := json.Marshal(cacheFile.SendHitMiss())
+	return string(a)
 }
