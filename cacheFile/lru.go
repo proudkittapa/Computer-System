@@ -11,7 +11,9 @@ import (
 
 var (
 	// db *sql.DB
-	C Lru_cache
+	C     Lru_cache
+	cMiss int = 0
+	cHit  int = 0
 )
 
 func CheckErr(err error) {
@@ -45,6 +47,11 @@ type JsonSave struct {
 	Limit         int   `json:"limit"`
 }
 
+type Pam struct {
+	Miss int `json:"miss"`
+	Hit  int `json:"hit"`
+}
+
 func InitCache() {
 	//C.limit = 10
 	C = Cache_cons(10)
@@ -52,6 +59,7 @@ func InitCache() {
 	// fmt.Println("last", C.last)
 	// C.Display()
 }
+
 func (list *Lru_cache) ReCache(id int) (val string) {
 	temp := C.GetCache(id)
 	// fmt.Printf("%T\n", temp)
@@ -80,11 +88,13 @@ func Cache_cons(cap int) Lru_cache {
 func (list *Lru_cache) GetCache(id int) string {
 	if node_val, ok := list.mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
+		cHit++
 		list.Move(node_val)
 		// fmt.Println(val.value)
 		return node_val.value
 	} else {
 		fmt.Println("-----------MISS-----------")
+		cMiss++
 		return ""
 	}
 
@@ -241,6 +251,12 @@ func (l *Lru_cache) Display() {
 		fmt.Printf("%+v <- ", node.id)
 		node = node.prev
 	}
+}
+
+func SendHitMiss() Pam {
+	result := Pam{Miss: cMiss, Hit: cHit}
+
+	return result
 }
 
 // func main() {
