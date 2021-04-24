@@ -20,8 +20,7 @@ var (
 	db        *sql.DB
 	mutex     sync.Mutex
 	totalTime float64
-	//c         Lru_cache
-	x Data
+	x         Data
 )
 
 type product struct {
@@ -34,7 +33,7 @@ type product struct {
 // 	c = Cache_cons(10)
 // }
 func InitDatabase() {
-	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
+	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 }
 
 func getJson(message string) product {
@@ -52,40 +51,27 @@ func getJson(message string) product {
 }
 
 func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
-	//query from cache (get)
-	a := C.GetCache(id)
-	if a == "" {
-		rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
-		var name string
-		var quantity int
-		var price int
-		err := rows.Scan(&name, &quantity, &price)
-		if err != nil {
-			//fmt.Println("get quantity fail")
-			transactionC <- "rollback"
-			tx.Rollback()
-			return
-		}
-		x = Data{Name: name, Quantity: quantity, Price: price}
-		C.Set(id, x)
-		//fmt.Printf("Name: %s, Quantity: %d\n", name, quantity)
-		//fmt.Println("done")
-		//fmt.Println(quantity)
-		t <- quantity
-
-	} else {
-		p := getJson(a)
-		fmt.Printf("Name: %s, Quantity: %d\n", p.Name, p.Quantity)
-		t <- p.Quantity
-		//fmt.Println("done")
+	fmt.Println("stop1")
+	rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
+	var name string
+	var quantity int
+	var price int
+	err := rows.Scan(&name, &quantity, &price)
+	if err != nil {
+		//fmt.Println("get quantity fail")
+		transactionC <- "rollback"
+		tx.Rollback()
+		return
 	}
-
-	//get return value
-	//if hit use the value
-	//if miss
-
-	//set cache
-	//fmt.Println("name: ", name, " quantity: ", quantity, " price: ", price)
+	x = Data{Name: name, Quantity: quantity, Price: price}
+	//val :=
+	//C.Set(id, x)
+	fmt.Println("stop2")
+	//fmt.Println(val)
+	//fmt.Printf("Name: %s, Quantity: %d\n", name, quantity)
+	//fmt.Println("done")
+	//fmt.Println(quantity)
+	t <- quantity
 }
 
 func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
@@ -106,8 +92,11 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 		transactionC <- "rollback"
 		return
 	}
+	fmt.Println("stop3")
 	x = Data{Quantity: newQuantity}
-	C.Set(id, x)
+	val := C.Set(id, x)
+	fmt.Println(val)
+	fmt.Println("stop4")
 	//fmt.Println("decrement 2")
 	transactionC <- "done"
 }
@@ -123,6 +112,7 @@ func Insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
 }
 
 func Preorder(end chan int, user string, productId int, orderQuantity int) {
+
 	ctx = context.Background()
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
@@ -132,7 +122,6 @@ func Preorder(end chan int, user string, productId int, orderQuantity int) {
 	t := make(chan int)
 	//start := time.Now()
 	go GetQuantity(tx, transactionC, t, productId)
-	//fmt.Println("hereee")
 	go Decrement(tx, t, transactionC, orderQuantity, productId)
 	if <-transactionC == "rollback" {
 		//fmt.Println("rollback")
