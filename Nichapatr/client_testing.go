@@ -70,7 +70,7 @@ func client6(m string, p string, quan int) {
 		count_Fail++
 		log.Fatalln(err)
 	}
-	send6(conn, host, m, p, userid, quan)
+	send6(conn, host, m, p, userid, quan) //check parameter quan
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
@@ -209,35 +209,38 @@ var num_user float64 = 100
 
 func user_model() {
 	go func() {
-	for i := 0.0; i < (num_user * 0.60); i++ {
-		go func() {
-			client6("GET", "/", 0)
-			client6("GET", "/products", 0)
-		}()
-	}
-	}
-	go func {
-	for i := 0.0; i < (num_user * 0.25); i++ {
-		go func() {
-			client6("GET", "/", 0)
-			client6("GET", "/products", 0)
-			client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-		}()
-	}
-	}
-	go func {
-	for i := 0.0; i < (num_user * 0.15); i++ {
-		go func() {
-			client6("GET", "/", 0)
-			client6("GET", "/products", 0)
-			client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-			client6("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
-		}()
-	}
-	}
+		for i := 0.0; i < (num_user * 0.60); i++ {
+			go func() {
+				client6("GET", "/", 0)
+				client6("GET", "/products", 0)
+			}()
+		}
+	}()
+	go func() {
+		for i := 0.0; i < (num_user * 0.25); i++ {
+			go func() {
+				client6("GET", "/", 0)
+				client6("GET", "/products", 0)
+				client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+			}()
+		}
+	}()
+
+	go func() {
+		for i := 0.0; i < (num_user * 0.15); i++ {
+			go func() {
+				client6("GET", "/", 0)
+				client6("GET", "/products", 0)
+				client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+				client6("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+			}()
+		}
+	}()
+
 }
 func check() {
-	var check1 = []string{"miss", "miss", "miss", "miss", "miss"}
+	//declare variables pid
+	check1 := []string{"miss", "miss", "miss", "miss", "miss"}
 	var check2 = []string{"miss", "miss", "miss", "miss", "miss"}
 	var check3 = []string{"hit", "hit", "hit", "hit", "hit"}
 
@@ -246,7 +249,7 @@ func check() {
 	}
 	//check
 	for i, v := range check1 {
-		if check1[1] =! 00 {
+		if check1[1] != 00 {
 			fmt.Printf("fail at %d", i)
 		} else {
 			return
