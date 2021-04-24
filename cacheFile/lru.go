@@ -99,13 +99,12 @@ func (list *Lru_cache) Set(id int, val Data) string {
 	if prod, ok := list.mp[id]; ok || len(list.mp) >= list.limit {
 		// fmt.Println("if 1")
 		if len(list.mp) >= list.limit {
-			// fmt.Println("if 2")
+			fmt.Println("cache full -> deleting last node -> add new node")
 			rm := list.Remove(list.last)
 			delete(list.mp, rm)
 
 		} else if _, ok := list.mp[id]; ok {
-			// fmt.Println("else")
-			// list.Move(prod)
+			fmt.Println("Same product ID -> deleting old -> add new")
 			rm := list.Remove(prod)
 			delete(list.mp, rm)
 
