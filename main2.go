@@ -16,7 +16,7 @@ func main() {
 	cacheFile.InitCache()
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
-	C.Display()
+	// .Display()
 	// cacheFile.C = cacheFile.Cache_cons(10)
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// s.GET("/products/:id", abc)
