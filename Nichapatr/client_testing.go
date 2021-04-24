@@ -20,11 +20,13 @@ type Message struct {
 	Quantity int
 	Price    int
 }
-type mess struct {
-	miss int
-	hit  int
+type Rate struct {
+	Miss int `json:"miss"`
+	Hit  int `json:"hit"`
 }
-
+type Mess struct {
+	Mess	string `json:"mess"`
+}
 // type PayInfo struct {
 //  Name      string
 //  ProductID int
@@ -130,7 +132,7 @@ func onerun() {
 	// client6("POST", "/payment", 0)
 	// }
 }
-func test_check() {
+func test_time_check() {
 	/*--------------------Cache check (2)--------------------*/
 	// t5 := time.Now()
 	// for i := 0; i < 1000; i++ {
@@ -142,7 +144,7 @@ func test_check() {
 	/*--------------------Cache check (1)--------------------*/
 	t1 := time.Now()
 	for i := 1; i < 6; i++ {
-		client("GET", "/products/"+strconv.Itoa(i), 0)
+		client("GET", "/"+strconv.Itoa(i), 0)
 	}
 	t01 := float64(time.Since(t1)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v ", t01)
@@ -223,47 +225,67 @@ func user_model() {
 	}()
 
 }
-func getJson(message string) data {
-	var result data
-	if strings.ContainsAny(string(message), "}") {
 
-		r, _ := regexp.Compile("{([^)]+)}")
-		match := r.FindString(message)
-		// fmt.Println(match)
-		fmt.Printf("%T\n", match)
-		json.Unmarshal([]byte(match), &result)
-		// fmt.Println("data", result)
+func check(expect struct, get struct) {
+	if get != expect {
+		fmt.Printf("smt wrong!, expected v ==== %v \n, get v ==== %v \n", expect, get)
+	} else {
+		fmt.Printf("success : v ==== %v \n", get)
 	}
-	return result
 }
-func check() {
+
+func hitmiss_check() {
 	//declare variables pid
-	check1 := []string{"miss", "miss", "miss", "miss", "miss"}
+	// check1 := []string{"miss", "miss", "miss", "miss", "miss"}
 	// check2 := []string{"miss", "miss", "miss", "miss", "miss"}
 	// check3 := []string{"hit", "hit", "hit", "hit", "hit"}
+	checkU1 := Rate{Miss: 0, Hit: 5}
+	for i := 1; i < 6; i++ {
+		client("GET", "/", 0)
+	}
+	j1 := getJson(message)
+	k1 := getJson2(j1.Mess)
+	check(checkU1, k1)//check miss, hit
+	
+	checkU2 := Rate{Miss: 0, Hit: 10}
+	for i := 6; i < 11; i++ {
+		client("GET", "/products/"+strconv.Itoa(i), 0)
+	}
+	j2 := getJson(message)
+	k2 := getJson2(j2.Mess)
+	check(checkU2, k2)
 
+	checkP3 := Rate{Miss: 5, Hit: 10}
+	for i := 6; i < 11; i++ {
+		client("GET", "/products/"+strconv.Itoa(i), 0)
+	}
+	j3 := getJson(message)
+	k3 := getJson2(j3.Mess)
+	check(checkU3, k3)
+	/*-------------check(2)-------------*/
+	checkP1 := Rate{Miss: 0, Hit: 5}
 	for i := 1; i < 6; i++ {
 		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	//check
-	for i := range check1 {
-		if check1[1] != "00" {
-			fmt.Printf("fail at %d", i)
-		} else {
-			return
-		}
-	}
-	fmt.Printf("success")
+	l1 := getJson(message)
+	m1 := getJson2(l1.Mess)
+	check(checkP1, m1)//check miss, hit
 
+	checkP2 := Rate{Miss: 0, Hit: 10}
 	for i := 6; i < 11; i++ {
 		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
+	l2 := getJson(message)
+	m2 := getJson2(l2.Mess)
+	check(checkP2, m2)
 
+	checkP3 := Rate{Miss: 5, Hit: 10}
 	for i := 6; i < 11; i++ {
 		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-
-	// check4 := []string{"miss", "hit", "hit", "hit", "hit"}
+	l3 := getJson(message)
+	m3 := getJson2(l3.Mess)
+	check(checkP3, m3)
 }
 
 func main() {
@@ -286,7 +308,20 @@ func main() {
 	fmt.Println("Miss:", result.Miss)
 }
 
-func getJson(message string) Rate {
+func getJson(message string) Mess {
+	var result Mess
+	if strings.ContainsAny(string(message), "}") {
+
+		r, _ := regexp.Compile("{([^)]+)}")
+		match := r.FindString(message)
+		// fmt.Println(match)
+		fmt.Printf("%T\n", match)
+		json.Unmarshal([]byte(match), &result)
+		// fmt.Println("data", result)
+	}
+	return result
+}
+func getJson2(message string) Rate {
 	var result Rate
 	if strings.ContainsAny(string(message), "}") {
 
