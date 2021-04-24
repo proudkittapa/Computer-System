@@ -10,10 +10,10 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var (
-	// db *sql.DB
-	C Lru_cache
-)
+// var (
+// 	// db *sql.DB
+// 	C Lru_cache
+// )
 
 func CheckErr(err error) {
 	if err != nil {
@@ -44,13 +44,6 @@ type Lru_cache struct {
 type JsonSave struct {
 	ProductIDList []int `json:"productIDList"`
 	Limit         int   `json:"limit"`
-}
-
-func InitCache() {
-	C = Cache_cons(10)
-	fmt.Println("head", C.head)
-	fmt.Println("last", C.last)
-	C.Display()
 }
 
 func (list *Lru_cache) ReCache(id int) (val string) {
