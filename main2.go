@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"pin2pre/Kittapa"
 	"pin2pre/cacheFile"
@@ -23,6 +24,7 @@ func main() {
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	s.GET("/", abc)
 	s.GET("/products/:id", productID)
+	s.GET("/hitmiss", hitmiss)
 	// cache.ReCache(1)
 	s.POST("/products/:id", postPreorder)
 	s.Start(":8080")
@@ -36,13 +38,15 @@ func productID() string {
 
 func postPreorder() string {
 	a := transaction.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
-	if a {
-		return "success"
-	} else {
-		return "not success"
-	}
+	return a
 }
 
 func abc() string {
 	return "abc"
+}
+
+func hitmiss() string {
+	a, _ := json.Marshal(cacheFile.SendHitMiss())
+	// return "{miss: 1, hit: 2}"
+	return string(a)
 }

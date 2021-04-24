@@ -6,20 +6,19 @@ import (
 	"fmt"
 	"strconv"
 	"sync"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
-	ctx context.Context
-	db  *sql.DB
-	//mutex sync.Mutex
+	ctx       context.Context
+	db        *sql.DB
+	mutex     sync.Mutex
 	totalTime float64
+	result    string
 )
 
 func getQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
-	fmt.Println("stop1")
 	rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
 	var name string
 	var quantity int
@@ -32,31 +31,26 @@ func getQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 		tx.Rollback()
 		return
 	}
-	fmt.Println("stop2")
 	t <- quantity
 	//fmt.Println("name: ", name, " quantity: ", quantity, " price: ", price)
 }
 
 func decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
-	fmt.Println("stop3")
 	quantity := <-t // channel from getQuantity
 	newQuantity := quantity - orderQuantity
 	if newQuantity < 0 {
-		//fmt.Println("the order is out of stock")
-		fmt.Println("stop4")
+		fmt.Println("the order is out of stock")
 		transactionC <- "not complete"
 		return
 	}
-	//fmt.Println(newQuantity)
+	//fmt.Printf("new q: %d\n", newQuantity)
 	_, err := tx.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(id))
-	fmt.Println("stop5")
 	if err != nil {
 		//fmt.Println("decrement fail")
 		tx.Rollback()
 		transactionC <- "rollback"
 		return
 	}
-	fmt.Println("stop6")
 	transactionC <- "done"
 }
 
@@ -67,28 +61,31 @@ func insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
 		tx.Rollback()
 		return
 	}
-	fmt.Println("stop7")
 	wg.Done()
 }
 
-func preorder(end chan int, user string, productId int, orderQuantity int) {
+func preorder(end chan string, user string, productId int, orderQuantity int) {
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
-	num, _ := strconv.Atoi(user)
+	//num, _ := strconv.Atoi(user)
+	result := "not complete"
 	if err != nil {
 		panic(err)
 	}
-	start := time.Now()
+	//start := time.Now()
 	transactionC := make(chan string)
 	t := make(chan int)
 	go getQuantity(tx, transactionC, t, productId)
 	go decrement(tx, t, transactionC, orderQuantity, productId)
-	if <-transactionC == "rollback" {
+	result2 := <-transactionC
+	if result2 == "rollback" {
 		//fmt.Println("rollback")
 		preorder(end, user, productId, orderQuantity)
 		return
 	}
-	if <-transactionC == "not complete" {
-		end <- num
+	if result2 == "not complete" {
+		result = "the order is out of stock"
+		//fmt.Println(result)
+		end <- result
 		return
 	}
 	fmt.Println("user:", user, "productId:", productId, "orderQuantity:", orderQuantity)
@@ -101,29 +98,36 @@ func preorder(end chan int, user string, productId int, orderQuantity int) {
 	}
 	//fmt.Println("success")
 	//fmt.Println("-----------------------------------")
-	elapsed := time.Since(start)
-	tt := float64(elapsed)
-	fmt.Printf("time: %v\n", elapsed)
-	fmt.Printf("tt: %v\n", tt)
-	totalTime += tt
-	fmt.Printf("total time: %v\n", totalTime)
+	// elapsed := time.Since(start)
+	// tt := float64(elapsed)
+	// fmt.Printf("time: %v\n", elapsed)
+	// fmt.Printf("tt: %v\n", tt)
+	// totalTime += tt
+	// fmt.Printf("total time: %v\n", totalTime)
+	result = "transaction successful"
+	//fmt.Println(result)
+	end <- result
 
-	end <- num
 	return
 }
-
-func main() {
+func postPreorder(id int) string {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	//db.SetMaxOpenConns(200000)
 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	ctx = context.Background()
-	n := 1
-	end := make(chan int)
+	n := 8
+	end := make(chan string)
 	for i := 1; i <= n; i++ {
-		go preorder(end, strconv.Itoa(i), 1, 5)
+		go preorder(end, strconv.Itoa(i), id, 300)
 	}
-	for i := 1; i <= n; i++ {
-		<-end
+	go preorder(end, strconv.Itoa(1), 1, 50)
+	go preorder(end, strconv.Itoa(1), 1, 40)
+	for i := 1; i <= 10; i++ {
+		result = <-end
 	}
-	return
+	return result
+}
+
+func main() {
+	fmt.Println(postPreorder(1))
 }

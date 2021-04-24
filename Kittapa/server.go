@@ -32,6 +32,10 @@ type data struct {
 	Price    int    `json:"price"`
 }
 
+type Message struct {
+	Mess string `json:"mess"`
+}
+
 var count = 0
 var Result data
 
@@ -107,7 +111,7 @@ func (s *Server) req(conn net.Conn) {
 		if yes {
 			fmt.Println("yesssss")
 			fc = r.Name()
-			send(conn, fc, "text/html")
+			send(conn, fc, "application/json")
 		} else {
 			fmt.Println("no")
 			// a := fmt.Sprintf("HTTP/1.0 404 Nof Found\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", 14, "text/html", "404 not found")
@@ -137,14 +141,6 @@ func getMessage(message string) (string, string, []string) {
 		ID, _ = strconv.Atoi(p[2])
 		path = "/" + p[1] + "/:id"
 	}
-	/*
-			for i := 0; i < len(p); i++ {
-				if strings.Contains(p[i], ":") {
-					fmt.Println(p[i])
-				}
-			}
-		}
-	*/
 	return method, path, p
 }
 
@@ -164,13 +160,53 @@ func send(conn net.Conn, d string, c string) {
 
 //create header function
 func createHeader(d string, contentType string) string {
-	contentLength := len(d)
-	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, d)
+	m := Message{Mess: d}
+	a, _ := json.Marshal(m)
+	// d = string(a)
+	var b Message = getJson3(string(a))
+	var c Pam = getJson2(b.Mess)
+	// json.Unmarshal(a, &b)
+	fmt.Println("cccc", c.Miss)
+	contentLength := len(a)
+	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, a)
 	return headers
 }
 
 func getJson(message string) data {
 	var result data
+	if strings.ContainsAny(string(message), "}") {
+
+		r, _ := regexp.Compile("{([^)]+)}")
+		match := r.FindString(message)
+		// fmt.Println(match)
+		fmt.Printf("%T\n", match)
+		json.Unmarshal([]byte(match), &result)
+		// fmt.Println("data", result)
+	}
+	return result
+}
+
+type Pam struct {
+	Miss int `json:"miss"`
+	Hit  int `json:"hit"`
+}
+
+func getJson2(message string) Pam {
+	var result Pam
+	if strings.ContainsAny(string(message), "}") {
+
+		r, _ := regexp.Compile("{([^)]+)}")
+		match := r.FindString(message)
+		// fmt.Println(match)
+		fmt.Printf("%T\n", match)
+		json.Unmarshal([]byte(match), &result)
+		// fmt.Println("data", result)
+	}
+	return result
+}
+
+func getJson3(message string) Message {
+	var result Message
 	if strings.ContainsAny(string(message), "}") {
 
 		r, _ := regexp.Compile("{([^)]+)}")

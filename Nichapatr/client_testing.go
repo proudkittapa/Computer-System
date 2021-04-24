@@ -4,50 +4,55 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"math"
 	"math/rand"
 	"net"
-	"os"
+	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
 
-type Messagee struct {
+type Message struct {
 	Name     string
 	Quantity int
 	Price    int
 }
-type PayInfo struct {
-	Name      string
-	ProductID int
-	Date      string
-	Time      string
-	imageName string
+type Rate struct {
+	Miss int `json:"miss"`
+	Hit  int `json:"hit"`
 }
+
+// type PayInfo struct {
+//  Name      string
+//  ProductID int
+//  Date      string
+//  Time      string
+//  imageName string
+// }
 
 var wg sync.WaitGroup
 
-var img_name string = "IMG_4.jpg"
-
-func send6(conn net.Conn, host string, m string, p string, userid int, quan int) {
+func send(conn net.Conn, host string, m string, p string, userid int, quan int) {
 	// fmt.Println("sent")
 	userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
-		fmt.Fprintf(conn, createHG(p, userid))
-	} else if m == "POSE" && p == "/payment" {
-		// fmt.Println("sent POST, img")
-		fmt.Fprintf(conn, createHPimg(conn, userid))
-		time.Sleep(1 * time.Millisecond)
-		send_file(conn)
+		fmt.Fprintf(conn, createHeaderGET(p, userid))
+		// } else if m == "POSE" && p == "/payment" {
+		//  // fmt.Println("sent POST, img")
+		//  fmt.Fprintf(conn, createHPimg(conn, userid))
+		//  time.Sleep(1 * time.Millisecond)
+		//  send_file(conn)
 	} else {
 		// fmt.Println("sent POST")
-		fmt.Fprintf(conn, createHP(userid, quan))
+		fmt.Fprintf(conn, createHeaderPOST(userid, quan))
 	}
 }
+
+var result Rate
 
 func recv(conn net.Conn) {
 	defer conn.Close()
@@ -61,20 +66,21 @@ func recv(conn net.Conn) {
 		count_Res++
 	}
 	fmt.Print(message)
+	result = getJson(message)
 }
 
-func client6(m string, p string, quan int) {
+func client(m string, p string, quan int) {
 	// t0 := time.Now()
-	host := "localhost:8080"
-	conn, err := net.Dial("tcp", ":8080")
+	host := "178.128.94.63:8080"
+	conn, err := net.Dial("tcp", host)
 	if err != nil {
 		count_Fail++
 		log.Fatalln(err)
 	}
-	send6(conn, host, m, p, userid, quan)
+	send(conn, host, m, p, userid, quan) //check parameter quan
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
-	wg.Done()
+	// wg.Done()
 	// <-ch
 }
 
@@ -84,11 +90,11 @@ var count_Fail = 0
 
 // var n = flag.Int("n", 5, "Number of goroutines to create")
 // var ch = make(chan byte)
-func createHG(pathh string, u int) string {
+func createHeaderGET(pathh string, u int) string {
 	userID := u
 	method := "GET"
 	path := pathh
-	host := "127.0.0.1:8080"
+	host := "178.128.94.63:8080"
 	contentLength := 0
 	contentType := "text"
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n userID:%d",
@@ -96,15 +102,15 @@ func createHG(pathh string, u int) string {
 	return headers
 }
 
-func createHP(u int, quan int) string {
+func createHeaderPOST(u int, quan int) string {
 
 	userID := u
 	method := "POST"
 	path := "/products/" + strconv.Itoa(rand.Intn(10))
-	host := "127.0.0.1:8080"
+	host := "178.128.94.63:8080"
 
 	contentType := "application/json"
-	jsonStr := Messagee{Name: "mos", Quantity: quan}
+	jsonStr := Message{Name: "mos", Quantity: quan}
 	jsonData, err := json.Marshal(jsonStr)
 	if err != nil {
 		fmt.Println(err)
@@ -113,82 +119,22 @@ func createHP(u int, quan int) string {
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
 		method, path, host, contentLength, contentType, string(jsonData), userID)
 	return headers
-}
-
-func createHPimg(conn net.Conn, u int) string {
-	userID := u
-	method := "POST"
-	path := "/payment"
-	host := "127.0.0.1:8080"
-
-	contentType := "image/jpg"
-	jsonStr := PayInfo{Name: "Kanga", ProductID: 1123, Date: "20/02/21", Time: "12.00", imageName: img_name}
-	jsonData, err := json.Marshal(jsonStr)
-	if err != nil {
-		fmt.Println(err)
-	}
-	contentLength := len(string(jsonData))
-
-	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
-		method, path, host, contentLength, contentType, string(jsonData), userID)
-	// send_file(conn)
-	return headers
-}
-
-const BUFFERSIZE = 1024
-
-func send_file(conn net.Conn) {
-	file, err := os.Open(img_name)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fileInfo, err := file.Stat()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fileSize := fillString(strconv.FormatInt(fileInfo.Size(), 10), 10)
-	fmt.Println("Send filesize!")
-	conn.Write([]byte(fileSize))
-	sendBuffer := make([]byte, BUFFERSIZE)
-	fmt.Println("Start sending file!")
-	for {
-		_, err = file.Read(sendBuffer)
-		if err == io.EOF {
-			break
-		}
-		conn.Write(sendBuffer)
-	}
-	fmt.Println("File has been sent")
-	return
-}
-func fillString(retunString string, toLength int) string {
-	for {
-		lengtString := len(retunString)
-		if lengtString < toLength {
-			retunString = retunString + ":"
-			continue
-		}
-		break
-	}
-	return retunString
 }
 
 func onerun() {
 	// for i := 0; i < 200; i++ {
-	client6("GET", "/", 0)
-	client6("GET", "/products", 0)
-	client6("GET", "/products/1", 0)
-	client6("POST", "/products/1", 2)
-	client6("POST", "/payment", 0)
+	// client("GET", "/", 0)
+	// client("GET", "/products", 0)
+	client("GET", "/products/1", 0)
+	// client("POST", "/products/1", 2)
+	// client6("POST", "/payment", 0)
 	// }
 }
 func test_check() {
 	/*--------------------Cache check (2)--------------------*/
 	// t5 := time.Now()
 	// for i := 0; i < 1000; i++ {
-	// 	client6("POST", "/products/1", 2) // stock must = 0
+	//  client6("POST", "/products/1", 2) // stock must = 0
 	// }
 	// t05 = float64(time.Since(t5)) / 1e6 / 5
 	// fmt.Printf("Latency Time:   %v ", t05)
@@ -196,21 +142,21 @@ func test_check() {
 	/*--------------------Cache check (1)--------------------*/
 	t1 := time.Now()
 	for i := 1; i < 6; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i), 0)
+		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t01 := float64(time.Since(t1)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v ", t01)
 
 	t2 := time.Now()
 	for i := 6; i < 11; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i), 0)
+		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t02 := float64(time.Since(t2)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t02)
 
 	t3 := time.Now()
 	for i := 6; i < 11; i++ {
-		client6("GET", "/products/"+strconv.Itoa(i), 0)
+		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t03 := float64(time.Since(t3)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t03)
@@ -228,17 +174,17 @@ func test_check() {
 	/*--------------------Cache check (2)--------------------*/
 	t4 := time.Now()
 	for i := 0; i < 2; i++ {
-		client6("POST", "/products/1", 2)    // stock must = 998
-		client6("POST", "/products/1", 3)    // stock must = 995
-		client6("POST", "/products/1", 5)    // stock must = 990
-		client6("POST", "/products/1", 1000) // stock must = 0
+		client("POST", "/products/1", 2)    // stock must = 998
+		client("POST", "/products/1", 3)    // stock must = 995
+		client("POST", "/products/1", 5)    // stock must = 990
+		client("POST", "/products/1", 1000) // stock must = 0
 	}
 	t04 := float64(time.Since(t4)) / 1e6 / 4
 	fmt.Printf("Latency Time:   %v ", t04)
 
 	t5 := time.Now()
 	for i := 0; i < 2; i++ {
-		client6("POST", "/products/2", 10000) // stock must = 0
+		client("POST", "/products/2", 10000) // stock must = 0
 	}
 	t05 := float64(time.Since(t5)) / 1e6 / 2
 	fmt.Printf("Latency Time:   %v ", t05)
@@ -247,40 +193,72 @@ func test_check() {
 var num_user float64 = 100
 
 func user_model() {
-	// go func() {
-	for i := 0.0; i < (num_user * 0.60); i++ {
-		go func() {
-			client6("GET", "/", 0)
-			client6("GET", "/products", 0)
-		}()
+	go func() {
+		for i := 0.0; i < (num_user * 0.60); i++ {
+			go func() {
+				client("GET", "/", 0)
+				client("GET", "/products", 0)
+			}()
+		}
+	}()
+	go func() {
+		for i := 0.0; i < (num_user * 0.25); i++ {
+			go func() {
+				client("GET", "/", 0)
+				client("GET", "/products", 0)
+				client("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+			}()
+		}
+	}()
+
+	go func() {
+		for i := 0.0; i < (num_user * 0.15); i++ {
+			go func() {
+				client("GET", "/", 0)
+				client("GET", "/products", 0)
+				client("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+				client("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+			}()
+		}
+	}()
+
+}
+func check() {
+	//declare variables pid
+	check1 := []string{"miss", "miss", "miss", "miss", "miss"}
+	// check2 := []string{"miss", "miss", "miss", "miss", "miss"}
+	// check3 := []string{"hit", "hit", "hit", "hit", "hit"}
+
+	for i := 1; i < 6; i++ {
+		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	// }
-	// go func {
-	for i := 0.0; i < (num_user * 0.25); i++ {
-		go func() {
-			client6("GET", "/", 0)
-			client6("GET", "/products", 0)
-			client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-		}()
+	//check
+	for i := range check1 {
+		if check1[1] != "00" {
+			fmt.Printf("fail at %d", i)
+		} else {
+			return
+		}
 	}
-	// }
-	// go func {
-	for i := 0.0; i < (num_user * 0.15); i++ {
-		go func() {
-			client6("GET", "/", 0)
-			client6("GET", "/products", 0)
-			client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-			client6("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
-		}()
+	fmt.Printf("success")
+
+	for i := 6; i < 11; i++ {
+		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	// }
+
+	for i := 6; i < 11; i++ {
+		client("GET", "/products/"+strconv.Itoa(i), 0)
+	}
+
+	// check4 := []string{"miss", "hit", "hit", "hit", "hit"}
 }
 
 func main() {
 	// flag.Parse()
 	start := time.Now()
 	// test_check()
-	user_model()
+	// user_model()
+	onerun()
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
@@ -290,4 +268,21 @@ func main() {
 	tt := float64(t) / 1e6
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f", rate)
+	client("GET", "/hitmiss", 0)
+	fmt.Println("HIT:", result.Hit)
+	fmt.Println("Miss:", result.Miss)
+}
+
+func getJson(message string) Rate {
+	var result Rate
+	if strings.ContainsAny(string(message), "}") {
+
+		r, _ := regexp.Compile("{([^)]+)}")
+		match := r.FindString(message)
+		// fmt.Println(match)
+		fmt.Printf("%T\n", match)
+		json.Unmarshal([]byte(match), &result)
+		// fmt.Println("data", result)
+	}
+	return result
 }
