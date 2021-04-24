@@ -120,7 +120,7 @@ func PostPreorder(id int, quantity int) string {
 	end := make(chan string)
 	go Preorder(end, "1", id, quantity)
 
-	<-end
+	result <- end
 	// fmt.Println("before return")
 	return result
 }
