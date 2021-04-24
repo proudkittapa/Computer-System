@@ -133,11 +133,6 @@ func (list *Lru_cache) Set(id int, val Data) string {
 	return reVal
 }
 
-// mind -> cache MISS
-// mind -> Query
-// mind -> set query
-// func set
-
 func (list *Lru_cache) Move(node *Node) {
 	if node == list.head {
 		return
@@ -253,10 +248,15 @@ func (l *Lru_cache) Display() {
 	}
 }
 
-func SendHitMiss() Pam {
+func SendMissHit() string {
 	result := Pam{Miss: cMiss, Hit: cHit}
 
-	return result
+	byteArray, err := json.Marshal(result)
+	CheckErr(err)
+
+	tmp := string(byteArray)
+
+	return tmp
 }
 
 // func main() {
