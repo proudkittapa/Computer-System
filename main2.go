@@ -9,15 +9,11 @@ import (
 
 var quan int = 0
 
-// var cache cacheFile.Lru_cache
-var (
-	// db *sql.DB
-	C cacheFile.Lru_cache
-)
+var cache cacheFile.Lru_cache
 
 func main() {
 	s := Kittapa.New()
-	InitCache()
+	cacheFile.InitCache()
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
 	C.Display()
@@ -28,14 +24,9 @@ func main() {
 	// cache.ReCache(1)
 	s.Start(":8080")
 }
-func InitCache() {
-	C = cacheFile.Cache_cons(10)
-	// fmt.Println("head", C.head)
-	// fmt.Println("last", C.last)
-	// C.Display()
-}
+
 func productID() string {
 	fmt.Println("ID:", Kittapa.ID)
-	a := C.ReCache(Kittapa.ID)
+	a := cache.ReCache(Kittapa.ID)
 	return a
 }
