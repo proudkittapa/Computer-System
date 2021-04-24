@@ -10,10 +10,10 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// var (
-// 	// db *sql.DB
-// 	C Lru_cache
-// )
+var (
+	// db *sql.DB
+	C Lru_cache
+)
 
 func CheckErr(err error) {
 	if err != nil {
@@ -46,6 +46,13 @@ type JsonSave struct {
 	Limit         int   `json:"limit"`
 }
 
+func InitCache() {
+	C.limit = 10
+	C = Cache_cons(C.limit)
+	// fmt.Println("head", C.head)
+	// fmt.Println("last", C.last)
+	// C.Display()
+}
 func (list *Lru_cache) ReCache(id int) (val string) {
 	temp := c.GetCache(id)
 	// fmt.Printf("%T\n", temp)
