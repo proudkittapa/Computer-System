@@ -47,7 +47,7 @@ type JsonSave struct {
 
 func InitCache() {
 	C.limit = 10
-	C = Cache_cons(C.limit)
+	C = *Cache_cons(C.limit)
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
 	// C.Display()
@@ -70,11 +70,11 @@ func (list *Lru_cache) ReCache(id int) (val string) {
 
 }
 
-func Cache_cons(cap int) Lru_cache {
+func Cache_cons(cap int) *Lru_cache {
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// // db.SetMaxIdleConns(200000)
 	// db.SetMaxOpenConns(200000)
-	return Lru_cache{limit: cap, mp: make(map[int]*Node, cap)}
+	return &Lru_cache{limit: cap, mp: make(map[int]*Node, cap)}
 }
 
 func (list *Lru_cache) GetCache(id int) string {
@@ -207,7 +207,7 @@ func SaveFile(mp map[int]*Node, lru Lru_cache) {
 
 // ref https://stackoverflow.com/questions/47898327/properly-create-a-json-file-and-read-from-it
 
-func ReadFile() Lru_cache {
+func ReadFile() *Lru_cache {
 
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
 	CheckErr(err)
