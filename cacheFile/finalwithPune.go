@@ -30,9 +30,9 @@ type product struct {
 	Price    int
 }
 
-func InitCache() {
-	c = Cache_cons(10)
-}
+// func InitCache() {
+// 	c = Cache_cons(10)
+// }
 func InitDatabase() {
 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 }
