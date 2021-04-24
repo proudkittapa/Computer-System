@@ -95,12 +95,14 @@ func main() {
 	// 	text += store[i]
 	// }
 	// fmt.Println(text)
-	fmt.Println(call_cache("index.html"))
+	call_cache("index.html")
 
 }
 
 func call_cache(filename string) string {
 	start := time.Now()
+	miss_num := 0
+	hit_num := 0
 	d, err := cacheObject.Check(filename)
 	if err != nil {
 		fmt.Println(err)
@@ -108,13 +110,16 @@ func call_cache(filename string) string {
 		cacheObject.Add(filename, a)
 		d, _ = cacheObject.Check(filename)
 		cacheObject.Display()
-
+		miss_num += 1
+		fmt.Println("Cache miss: ", miss_num)
 		fmt.Println("Time calling cache miss: ", time.Since(start))
 		return d
 	} else {
 		cacheObject.Display()
+		hit_num += 1
 
-		fmt.Println("Time calling cache hit: ", time.Since(start))
+		fmt.Println("Cache hit: ", hit_num)
+		fmt.Println("Time calling cache hit: %v\n ", (time.Since(start)))
 		return d
 	}
 
@@ -122,7 +127,7 @@ func call_cache(filename string) string {
 
 func getFile(filename string) string {
 	// call_cache("index.html")
-	const BufferSize = 2500
+	const BufferSize = 300
 	start := time.Now()
 	file, err := os.Open(filename)
 	if err != nil {
@@ -185,7 +190,7 @@ func getFile(filename string) string {
 	}
 
 	wg.Wait()
-	fmt.Printf("time: %v\n", time.Since(start))
+
 	// fmt.Printf("hello")
 	// fmt.Printf("time2: %v\n", time.Since(start2))
 
@@ -194,6 +199,6 @@ func getFile(filename string) string {
 		text += store[i]
 	}
 	// fmt.Println(text)
-
+	fmt.Printf("time: %v\n", time.Since(start))
 	return text
 }
