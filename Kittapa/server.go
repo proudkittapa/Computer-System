@@ -1,10 +1,12 @@
 package Kittapa
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -24,7 +26,14 @@ type (
 )
 type HandlerFunc func() string
 
+type data struct {
+	Name     string `json:"name"`
+	Quantity int    `json:"quantity"`
+	Price    int    `json:"price"`
+}
+
 var count = 0
+var Result data
 
 func (s *Server) GET(path string, h HandlerFunc) *Route {
 	m := "GET"
@@ -110,7 +119,7 @@ func (s *Server) req(conn net.Conn) {
 }
 
 func getMessage(message string) (string, string, []string) {
-
+	Result = getJson(message)
 	headers := strings.Split(message, "\n")
 	// fmt.Println("headers", headers)
 	// if len(headers) == 1 {
@@ -158,4 +167,18 @@ func createHeader(d string, contentType string) string {
 	contentLength := len(d)
 	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, d)
 	return headers
+}
+
+func getJson(message string) data {
+	var result data
+	if strings.ContainsAny(string(message), "}") {
+
+		r, _ := regexp.Compile("{([^)]+)}")
+		match := r.FindString(message)
+		// fmt.Println(match)
+		fmt.Printf("%T\n", match)
+		json.Unmarshal([]byte(match), &result)
+		// fmt.Println("data", result)
+	}
+	return result
 }
