@@ -12,7 +12,7 @@ import (
 
 var (
 	// db *sql.DB
-	c Lru_cache
+	C Lru_cache
 )
 
 func CheckErr(err error) {
@@ -47,8 +47,8 @@ type JsonSave struct {
 }
 
 func InitCache() {
-	c = Cache_cons(10)
-	c.Display()
+	C = Cache_cons(10)
+	C.Display()
 }
 
 func (list *Lru_cache) ReCache(id int) (val string) {
