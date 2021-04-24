@@ -160,10 +160,10 @@ func send(conn net.Conn, d string, c string) {
 
 //create header function
 func createHeader(d string, contentType string) string {
-	contentLength := len(d)
 	m := Message{Mess: d}
 	a, _ := json.Marshal(m)
 	d = string(a)
+	contentLength := len(d)
 	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, d)
 	return headers
 }
