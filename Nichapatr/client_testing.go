@@ -80,7 +80,7 @@ func client(m string, p string, quan int) {
 	send(conn, host, m, p, userid, quan) //check parameter quan
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
-	wg.Done()
+	// wg.Done()
 	// <-ch
 }
 
