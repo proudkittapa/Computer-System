@@ -62,7 +62,7 @@ func recv(conn net.Conn) {
 
 func client(m string, p string, quan int) {
 	// t0 := time.Now()
-	host := "localhost:8080"
+	host := "178.128.94.63:8080"
 	conn, err := net.Dial("tcp", ":8080")
 	if err != nil {
 		count_Fail++
