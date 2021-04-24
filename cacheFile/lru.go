@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	db *sql.DB
-	c  Lru_cache
+	// db *sql.DB
+	cache Lru_cache
 )
 
 func CheckErr(err error) {
@@ -47,7 +47,7 @@ type JsonSave struct {
 }
 
 func InitCache() {
-	c = Cache_cons(10)
+	cache = Cache_cons(10)
 }
 
 func (list *Lru_cache) ReCache(id int) (val string) {
@@ -69,7 +69,7 @@ func (list *Lru_cache) ReCache(id int) (val string) {
 }
 
 func Cache_cons(cap int) Lru_cache {
-	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
+	db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// // db.SetMaxIdleConns(200000)
 	// db.SetMaxOpenConns(200000)
 	return Lru_cache{limit: cap, mp: make(map[int]*Node, cap)}

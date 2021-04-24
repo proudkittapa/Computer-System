@@ -5,8 +5,11 @@ import (
 	"log"
 	"net"
 	"os"
+	"strconv"
 	"strings"
 )
+
+var ID int = 0
 
 type (
 	Server struct {
@@ -83,10 +86,17 @@ func (s *Server) req(conn net.Conn) {
 			fmt.Fprintln(os.Stderr, err)
 		}
 		fmt.Println(string(buffer[:n]))
+		if !strings.Contains(string(buffer[:n]), "HTTP") {
+			if _, err := conn.Write([]byte("Recieved\n")); err != nil {
+				log.Printf("failed to respond to client: %v\n", err)
+			}
+			break
+		}
 		method, path, _ := getMessage(string(buffer[:n]))
 		fmt.Println(method, path)
 		r, yes := s.check(method, path)
 		if yes {
+			fmt.Println("yesssss")
 			fc = r.Name()
 			send(conn, fc, "text/html")
 		} else {
@@ -99,6 +109,7 @@ func (s *Server) req(conn net.Conn) {
 }
 
 func getMessage(message string) (string, string, []string) {
+
 	headers := strings.Split(message, "\n")
 	// fmt.Println("headers", headers)
 	// if len(headers) == 1 {
@@ -108,8 +119,20 @@ func getMessage(message string) (string, string, []string) {
 	// fmt.Println("len:", len(headers))
 	// fmt.Println("headers[0]", headers[0])
 	path := (strings.Split(headers[0], " "))[1]
-	// path := "path"
 	p := strings.Split(path, "/")
+	if p[0] == "products" && len(p) == 2 {
+		fmt.Println("productsWithID")
+		ID, _ = strconv.Atoi(p[1])
+		path = p[0] + "/:id"
+	}
+	/*
+			for i := 0; i < len(p); i++ {
+				if strings.Contains(p[i], ":") {
+					fmt.Println(p[i])
+				}
+			}
+		}
+	*/
 	return method, path, p
 }
 

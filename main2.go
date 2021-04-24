@@ -2,22 +2,25 @@ package main
 
 import (
 	"pin2pre/Kittapa"
+	"pin2pre/cacheFile"
+	// "pin2pre/cacheFile"
 )
+
+var quan int = 0
+
+var cache cacheFile.Lru_cache
 
 func main() {
 	s := Kittapa.New()
+	cacheFile.InitCache()
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
-
-	s.GET("/", abc)
-	s.GET("/products", product)
+	// s.GET("/products/:id", abc)
+	s.GET("/products/:id", productID)
+	// cache.ReCache(1)
 	s.Start(":8080")
 }
 
-func abc() string {
-	a := "abc"
+func productID() string {
+	a := cache.ReCache(Kittapa.ID)
 	return a
-}
-
-func product() string {
-	return "all products"
 }
