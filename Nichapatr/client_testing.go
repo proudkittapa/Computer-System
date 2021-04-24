@@ -20,11 +20,11 @@ type Messagee struct {
 }
 
 // type PayInfo struct {
-// 	Name      string
-// 	ProductID int
-// 	Date      string
-// 	Time      string
-// 	imageName string
+//  Name      string
+//  ProductID int
+//  Date      string
+//  Time      string
+//  imageName string
 // }
 
 var wg sync.WaitGroup
@@ -38,10 +38,10 @@ func send6(conn net.Conn, host string, m string, p string, userid int, quan int)
 		// fmt.Println("sent GET")
 		fmt.Fprintf(conn, createHG(p, userid))
 		// } else if m == "POSE" && p == "/payment" {
-		// 	// fmt.Println("sent POST, img")
-		// 	fmt.Fprintf(conn, createHPimg(conn, userid))
-		// 	time.Sleep(1 * time.Millisecond)
-		// 	send_file(conn)
+		//  // fmt.Println("sent POST, img")
+		//  fmt.Fprintf(conn, createHPimg(conn, userid))
+		//  time.Sleep(1 * time.Millisecond)
+		//  send_file(conn)
 	} else {
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userid, quan))
@@ -115,23 +115,23 @@ func createHP(u int, quan int) string {
 }
 
 // func createHPimg(conn net.Conn, u int) string {
-// 	userID := u
-// 	method := "POST"
-// 	path := "/payment"
-// 	host := "127.0.0.1:8080"
+//  userID := u
+//  method := "POST"
+//  path := "/payment"
+//  host := "127.0.0.1:8080"
 
-// 	contentType := "image/jpg"
-// 	jsonStr := PayInfo{Name: "Kanga", Date: "20/02/21", Time: "12.00", imageName: img_name}
-// 	jsonData, err := json.Marshal(jsonStr)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-// 	contentLength := len(string(jsonData))
+//  contentType := "image/jpg"
+//  jsonStr := PayInfo{Name: "Kanga", Date: "20/02/21", Time: "12.00", imageName: img_name}
+//  jsonData, err := json.Marshal(jsonStr)
+//  if err != nil {
+//   fmt.Println(err)
+//  }
+//  contentLength := len(string(jsonData))
 
-// 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
-// 		method, path, host, contentLength, contentType, string(jsonData), userID)
-// 	// send_file(conn)
-// 	return headers
+//  headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
+//   method, path, host, contentLength, contentType, string(jsonData), userID)
+//  // send_file(conn)
+//  return headers
 // }
 
 //
@@ -149,7 +149,7 @@ func test_check() {
 	/*--------------------Cache check (2)--------------------*/
 	// t5 := time.Now()
 	// for i := 0; i < 1000; i++ {
-	// 	client6("POST", "/products/1", 2) // stock must = 0
+	//  client6("POST", "/products/1", 2) // stock must = 0
 	// }
 	// t05 = float64(time.Since(t5)) / 1e6 / 5
 	// fmt.Printf("Latency Time:   %v ", t05)
@@ -241,14 +241,14 @@ func user_model() {
 func check() {
 	//declare variables pid
 	check1 := []string{"miss", "miss", "miss", "miss", "miss"}
-	var check2 = []string{"miss", "miss", "miss", "miss", "miss"}
-	var check3 = []string{"hit", "hit", "hit", "hit", "hit"}
+	// check2 := []string{"miss", "miss", "miss", "miss", "miss"}
+	// check3 := []string{"hit", "hit", "hit", "hit", "hit"}
 
 	for i := 1; i < 6; i++ {
 		client6("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	//check
-	for i, v := range check1 {
+	for i := range check1 {
 		if check1[1] != "00" {
 			fmt.Printf("fail at %d", i)
 		} else {
@@ -265,7 +265,7 @@ func check() {
 		client6("GET", "/products/"+strconv.Itoa(i), 0)
 	}
 
-	var check4 = []string{"miss", "hit", "hit", "hit", "hit"}
+	// check4 := []string{"miss", "hit", "hit", "hit", "hit"}
 }
 
 func main() {
