@@ -279,4 +279,6 @@ func main() {
 	tt := float64(t) / 1e6
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f", rate)
+
+	client6("GET", "hit miss", 0)
 }
