@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"pin2pre/Kittapa"
 	"pin2pre/cacheFile"
+	"pin2pre/transaction"
 	// "pin2pre/cacheFile"
 )
 
@@ -13,7 +14,7 @@ var quan int = 0
 
 func main() {
 	s := Kittapa.New()
-	cacheFile.InitDatabase()
+	// cacheFile.InitDatabase()
 	cacheFile.C = cacheFile.Cache_cons(10)
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
@@ -23,6 +24,7 @@ func main() {
 	s.GET("/", abc)
 	s.GET("/products/:id", productID)
 	// cache.ReCache(1)
+	s.POST("/products/:id", postPreorder)
 	s.Start(":8080")
 }
 
@@ -30,6 +32,15 @@ func productID() string {
 	fmt.Println("ID:", Kittapa.ID)
 	a := cacheFile.C.ReCache(Kittapa.ID)
 	return a
+}
+
+func postPreorder() string {
+	a := transaction.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
+	if a {
+		return "success"
+	} else {
+		return "not success"
+	}
 }
 
 func abc() string {
