@@ -94,6 +94,8 @@ func (list *Lru_cache) Set(id int, val Data) string {
 
 	if prod, ok := list.mp[id]; ok || len(list.mp) >= list.limit {
 		// fmt.Println("if 1")
+		fmt.Println("len", len(list.mp))
+		fmt.Println("limit", list.limit)
 		if len(list.mp) >= list.limit {
 			fmt.Println("cache full -> deleting last node -> add new node")
 			rm := list.Remove(list.last)
