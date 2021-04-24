@@ -1,6 +1,7 @@
-package cacheFile
+package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,7 +11,7 @@ import (
 )
 
 var (
-	// db *sql.DB
+	db    *sql.DB
 	C     Lru_cache
 	cMiss int = 0
 	cHit  int = 0
@@ -133,6 +134,11 @@ func (list *Lru_cache) Set(id int, val Data) string {
 	return reVal
 }
 
+// mind -> cache MISS
+// mind -> Query
+// mind -> set query
+// func set
+
 func (list *Lru_cache) Move(node *Node) {
 	if node == list.head {
 		return
@@ -248,56 +254,64 @@ func (l *Lru_cache) Display() {
 	}
 }
 
-func SendMissHit() string {
+func SendHitMiss() Pam {
 	result := Pam{Miss: cMiss, Hit: cHit}
 
-	byteArray, err := json.Marshal(result)
-	CheckErr(err)
-
-	tmp := string(byteArray)
-
-	return tmp
+	return result
 }
 
-// func main() {
-// 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+func main() {
+	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 
-// 	InitCache()
-// 	c.ReCache(1)
-// 	c.ReCache(1)
-// 	c.ReCache(2)
-// 	c.ReCache(3)
-// 	c.ReCache(4)
-// 	// c.Display()
-// 	// defer profile.Start(profile.MemProfile).Stop()
+	InitCache()
+	fmt.Printf("Miss: %d Hit: %d\n", cMiss, cHit)
 
-// 	// ReadFile()
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.ReCache(1)
+	C.GetCache(1)
 
-// 	// c := Cache_cons(10)
+	fmt.Printf("Miss: %d Hit: %d\n", cMiss, cHit)
 
-// 	// temp := Data{Name: "pune", Quantity: 20, Price: 100}
-// 	// temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
-// 	// temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
+	a := SendHitMiss()
+	fmt.Println("sent: ", a)
 
-// 	// c.Set(1, temp)
-// 	// c.Set(1, temp2)
-// 	// c.Set(1, temp3)
-// 	// // c.Set(1, temp3)
-// 	// c.Display()
-// 	// fmt.Println(c.GetCache(1))
-// 	// fmt.Println("\nlast: ", c.last)
-// 	// fmt.Println("head: ", c.head)
+	// c.Display()
+	// defer profile.Start(profile.MemProfile).Stop()
 
-// 	// for i := 0; i < 10; i++ {
-// 	// 	for j := 0; j < 2; j++ {
-// 	// 		// start := time.Now()
-// 	// 		c.Set()
-// 	// end := time.Since(start)
-// 	// fmt.Printf("%v\n", end)
+	// ReadFile()
 
-// 	// t := c.cache(i)
-// 	// fmt.Println(t)
-// 	// fmt.Printf("%T\n", t)
-// 	// 	}
-// 	// }
-// }
+	// c := Cache_cons(10)
+
+	// temp := Data{Name: "pune", Quantity: 20, Price: 100}
+	// temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
+	// temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
+
+	// c.Set(1, temp)
+	// c.Set(1, temp2)
+	// c.Set(1, temp3)
+	// // c.Set(1, temp3)
+	// c.Display()
+	// fmt.Println(c.GetCache(1))
+	// fmt.Println("\nlast: ", c.last)
+	// fmt.Println("head: ", c.head)
+
+	// for i := 0; i < 10; i++ {
+	// 	for j := 0; j < 2; j++ {
+	// 		// start := time.Now()
+	// 		c.Set()
+	// end := time.Since(start)
+	// fmt.Printf("%v\n", end)
+
+	// t := c.cache(i)
+	// fmt.Println(t)
+	// fmt.Printf("%T\n", t)
+	// 	}
+	// }
+}
