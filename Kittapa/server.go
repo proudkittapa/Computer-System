@@ -145,6 +145,7 @@ func (s *Server) check(method, path string) (*Route, bool) {
 }
 
 func (s *Server) Start(port string) {
+	fmt.Println(s)
 	s.listen(port)
 }
 
