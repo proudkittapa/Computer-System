@@ -215,7 +215,7 @@ func ReadFile() *Lru_cache {
 	var temp JsonSave
 	err = json.Unmarshal(fromFile, &temp)
 
-	c := Cache_cons(temp.Limit)
+	c := *Cache_cons(temp.Limit)
 
 	t := temp.ProductIDList
 	// fmt.Println(t[0])
@@ -227,7 +227,7 @@ func ReadFile() *Lru_cache {
 
 	}
 	c.Display()
-	return c
+	return &c
 }
 
 // ref https://tutorialedge.net/golang/parsing-json-with-golang/
