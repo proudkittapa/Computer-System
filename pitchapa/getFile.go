@@ -95,14 +95,20 @@ func main() {
 	// 	text += store[i]
 	// }
 	// fmt.Println(text)
+	// call_cache("index.html")
+	// call_cache("index.html")
+	// call_cache("index.html")
+	// call_cache("index.html")
 	call_cache("index.html")
-
 }
+
+var miss_num int
+
+var hit_num int
 
 func call_cache(filename string) string {
 	start := time.Now()
-	miss_num := 0
-	hit_num := 0
+
 	d, err := cacheObject.Check(filename)
 	if err != nil {
 		fmt.Println(err)
@@ -119,7 +125,7 @@ func call_cache(filename string) string {
 		hit_num += 1
 
 		fmt.Println("Cache hit: ", hit_num)
-		fmt.Println("Time calling cache hit: %v\n ", (time.Since(start)))
+		fmt.Println("Time calling cache hit: ", (time.Since(start)))
 		return d
 	}
 
