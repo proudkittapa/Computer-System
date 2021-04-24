@@ -249,7 +249,7 @@ func check() {
 	}
 	//check
 	for i, v := range check1 {
-		if check1[1] != 00 {
+		if check1[1] != "00" {
 			fmt.Printf("fail at %d", i)
 		} else {
 			return
