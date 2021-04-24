@@ -46,5 +46,5 @@ func abc() string {
 
 func hitmiss() string {
 	// a, _ := json.Marshal(cacheFile.SendHitMiss())
-	return "{miss: 1, hit: 2}"
+	return "{Miss: 1, Hit: 2}"
 }
