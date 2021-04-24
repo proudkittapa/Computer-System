@@ -65,7 +65,7 @@ func Insert(tx *sql.Tx, wg *sync.WaitGroup, user string, id int, q int) {
 	wg.Done()
 }
 
-func Preorder(end chan bool, user string, productId int, orderQuantity int) {
+func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	result := "not complete"
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
@@ -74,7 +74,7 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 	//start := time.Now()
 	transactionC := make(chan string)
 	t := make(chan int)
-	go GetQuantity(tx, t, productId)
+	go GetQuantity(tx, transactionC, t, productId)
 	go Decrement(tx, t, transactionC, orderQuantity, productId)
 	result2 := <-transactionC
 	if result2 == "rollback" {
@@ -110,8 +110,8 @@ func Preorder(end chan bool, user string, productId int, orderQuantity int) {
 	end <- result
 }
 func PostPreorder(id int, quantity int) string {
-	db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
-	db.SetMaxOpenConns(2)
+	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
+	// db.SetMaxOpenConns(2)
 
 	// db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	//db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
