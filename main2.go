@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"pin2pre/Kittapa"
 	"pin2pre/cacheFile"
-	"pin2pre/transaction"
+	// "pin2pre/transaction"
 	// "pin2pre/cacheFile"
 )
 
@@ -35,8 +35,8 @@ func productID() string {
 }
 
 func postPreorder() string {
-	a := transaction.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
-	return a
+	// a := transaction.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
+	return "a"
 }
 
 func abc() string {
