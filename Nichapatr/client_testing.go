@@ -136,10 +136,10 @@ func createHeaderPOST(u int, quan int) string {
 
 func onerun() {
 	// for i := 0; i < 200; i++ {
-	client("GET", "/", 0)
-	client("GET", "/products", 0)
+	// client("GET", "/", 0)
+	// client("GET", "/products", 0)
 	client("GET", "/products/1", 0)
-	client("POST", "/products/1", 2)
+	// client("POST", "/products/1", 2)
 	// client6("POST", "/payment", 0)
 	// }
 }
@@ -280,6 +280,5 @@ func main() {
 	tt := float64(t) / 1e6
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f", rate)
-
 	client("GET", "/hitmiss", 0)
 }
