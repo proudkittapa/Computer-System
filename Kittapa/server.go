@@ -126,7 +126,7 @@ func getMessage(message string) (string, string, []string) {
 	if p[1] == "products" && len(p) == 3 {
 		fmt.Println("productsWithID")
 		ID, _ = strconv.Atoi(p[2])
-		path = p[1] + "/:id"
+		path = "/" + p[1] + "/:id"
 	}
 	/*
 			for i := 0; i < len(p); i++ {
