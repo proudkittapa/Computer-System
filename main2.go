@@ -36,11 +36,7 @@ func productID() string {
 
 func postPreorder() string {
 	a := transaction.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
-	if a {
-		return "success"
-	} else {
-		return "not success"
-	}
+	return a
 }
 
 func abc() string {
