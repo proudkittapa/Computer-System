@@ -9,7 +9,7 @@ import (
 
 var quan int = 0
 
-var cache cacheFile.Lru_cache
+// var cache cacheFile.Lru_cache
 
 func main() {
 	s := Kittapa.New()
@@ -27,6 +27,6 @@ func main() {
 
 func productID() string {
 	fmt.Println("ID:", Kittapa.ID)
-	a := cache.ReCache(Kittapa.ID)
+	a := cacheFile.C.ReCache(Kittapa.ID)
 	return a
 }
