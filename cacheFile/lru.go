@@ -11,7 +11,7 @@ import (
 
 var (
 	// db *sql.DB
-	C Lru_cache
+	C *Lru_cache
 )
 
 func CheckErr(err error) {
@@ -46,8 +46,7 @@ type JsonSave struct {
 }
 
 func InitCache() {
-	C.limit = 10
-	C = *Cache_cons(C.limit)
+	C = *Cache_cons(10)
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
 	// C.Display()
