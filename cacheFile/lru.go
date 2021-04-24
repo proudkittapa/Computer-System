@@ -230,6 +230,9 @@ func ReadFile() Lru_cache {
 
 func (l *Lru_cache) Display() {
 	node := l.last
+	if node == nil {
+		fmt.Println("empty")
+	}
 	for node != nil {
 		fmt.Printf("%+v <- ", node.id)
 		node = node.prev
