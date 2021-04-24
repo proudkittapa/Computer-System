@@ -121,6 +121,8 @@ func getMessage(message string) (string, string, []string) {
 	// fmt.Println("headers[0]", headers[0])
 	path := (strings.Split(headers[0], " "))[1]
 	p := strings.Split(path, "/")
+	fmt.Println("len p:", len(p))
+	fmt.Println("p[0]:", p[0])
 	if p[0] == "products" && len(p) == 2 {
 		fmt.Println("productsWithID")
 		ID, _ = strconv.Atoi(p[1])
