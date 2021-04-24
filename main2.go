@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"pin2pre/Kittapa"
 	"pin2pre/cacheFile"
 	// "pin2pre/cacheFile"
@@ -21,6 +22,7 @@ func main() {
 }
 
 func productID() string {
+	fmt.Println("ID:", Kittapa.ID)
 	a := cache.ReCache(Kittapa.ID)
 	return a
 }
