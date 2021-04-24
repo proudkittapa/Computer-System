@@ -163,10 +163,10 @@ func createHeader(d string, contentType string) string {
 	m := Message{Mess: d}
 	a, _ := json.Marshal(m)
 	// d = string(a)
-	var b Message = getJson2(string(a))
+	var b Pam = getJson2(string(a))
 
 	// json.Unmarshal(a, &b)
-	fmt.Println("bbbbbb", b)
+	fmt.Println("bbbbbb", b.Hit)
 	contentLength := len(a)
 	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, a)
 	return headers
@@ -186,8 +186,13 @@ func getJson(message string) data {
 	return result
 }
 
-func getJson2(message string) Message {
-	var result Message
+type Pam struct {
+	Miss int `json:"miss"`
+	Hit  int `json:"hit"`
+}
+
+func getJson2(message string) Pam {
+	var result Pam
 	if strings.ContainsAny(string(message), "}") {
 
 		r, _ := regexp.Compile("{([^)]+)}")
