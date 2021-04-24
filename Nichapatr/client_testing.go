@@ -98,7 +98,7 @@ func createHeaderPOST(u int, quan int) string {
 	userID := u
 	method := "POST"
 	path := "/products/" + strconv.Itoa(rand.Intn(10))
-	host := "127.0.0.1:8080"
+	host := "178.128.94.63:8080"
 
 	contentType := "application/json"
 	jsonStr := Message{Name: "mos", Quantity: quan}
@@ -270,7 +270,8 @@ func main() {
 	// flag.Parse()
 	start := time.Now()
 	// test_check()
-	user_model()
+	// user_model()
+	onerun()
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
