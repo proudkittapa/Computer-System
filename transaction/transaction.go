@@ -114,13 +114,13 @@ func PostPreorder(id int, quantity int) string {
 	// db.SetMaxOpenConns(2)
 
 	// db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
-	//db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
+	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	ctx = context.Background()
 	//n := 100
 	end := make(chan string)
 	go Preorder(end, "1", id, quantity)
 
-	result = <-end
+	<-end
 	// fmt.Println("before return")
 	return result
 }
