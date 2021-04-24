@@ -47,8 +47,8 @@ type JsonSave struct {
 }
 
 func InitCache() {
-	C.limit = 10
-	C = Cache_cons(C.limit)
+	// C.limit = 10
+	C = Cache_cons(10)
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
 	// C.Display()
