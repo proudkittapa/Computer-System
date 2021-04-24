@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-type Messagee struct {
+type Message struct {
 	Name     string
 	Quantity int
 	Price    int
@@ -29,14 +29,12 @@ type Messagee struct {
 
 var wg sync.WaitGroup
 
-var img_name string = "IMG_4.jpg"
-
-func send6(conn net.Conn, host string, m string, p string, userid int, quan int) {
+func send(conn net.Conn, host string, m string, p string, userid int, quan int) {
 	// fmt.Println("sent")
 	userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
-		fmt.Fprintf(conn, createHG(p, userid))
+		fmt.Fprintf(conn, createHeaderGET(p, userid))
 		// } else if m == "POSE" && p == "/payment" {
 		//  // fmt.Println("sent POST, img")
 		//  fmt.Fprintf(conn, createHPimg(conn, userid))
@@ -44,7 +42,7 @@ func send6(conn net.Conn, host string, m string, p string, userid int, quan int)
 		//  send_file(conn)
 	} else {
 		// fmt.Println("sent POST")
-		fmt.Fprintf(conn, createHP(userid, quan))
+		fmt.Fprintf(conn, createHeaderPOST(userid, quan))
 	}
 }
 
@@ -70,7 +68,7 @@ func client(m string, p string, quan int) {
 		count_Fail++
 		log.Fatalln(err)
 	}
-	send6(conn, host, m, p, userid, quan) //check parameter quan
+	send(conn, host, m, p, userid, quan) //check parameter quan
 	recv(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	wg.Done()
@@ -83,7 +81,7 @@ var count_Fail = 0
 
 // var n = flag.Int("n", 5, "Number of goroutines to create")
 // var ch = make(chan byte)
-func createHG(pathh string, u int) string {
+func createHeaderGET(pathh string, u int) string {
 	userID := u
 	method := "GET"
 	path := pathh
@@ -95,7 +93,7 @@ func createHG(pathh string, u int) string {
 	return headers
 }
 
-func createHP(u int, quan int) string {
+func createHeaderPOST(u int, quan int) string {
 
 	userID := u
 	method := "POST"
@@ -103,7 +101,7 @@ func createHP(u int, quan int) string {
 	host := "127.0.0.1:8080"
 
 	contentType := "application/json"
-	jsonStr := Messagee{Name: "mos", Quantity: quan}
+	jsonStr := Message{Name: "mos", Quantity: quan}
 	jsonData, err := json.Marshal(jsonStr)
 	if err != nil {
 		fmt.Println(err)
@@ -263,7 +261,7 @@ func check() {
 
 	for i := 6; i < 11; i++ {
 		client("GET", "/products/"+strconv.Itoa(i), 0)
-	}[a]
+	}
 
 	// check4 := []string{"miss", "hit", "hit", "hit", "hit"}
 }
@@ -283,5 +281,5 @@ func main() {
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f", rate)
 
-	client("GET", "hit miss", 0)
+	client("GET", "/hitmiss", 0)
 }
