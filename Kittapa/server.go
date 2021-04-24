@@ -111,7 +111,7 @@ func (s *Server) req(conn net.Conn) {
 		if yes {
 			fmt.Println("yesssss")
 			fc = r.Name()
-			send(conn, fc, "text/html")
+			send(conn, fc, "application/json")
 		} else {
 			fmt.Println("no")
 			// a := fmt.Sprintf("HTTP/1.0 404 Nof Found\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", 14, "text/html", "404 not found")
