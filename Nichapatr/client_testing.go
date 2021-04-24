@@ -4,12 +4,10 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"math"
 	"math/rand"
 	"net"
-	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -20,13 +18,14 @@ type Messagee struct {
 	Quantity int
 	Price    int
 }
-type PayInfo struct {
-	Name      string
-	ProductID int
-	Date      string
-	Time      string
-	imageName string
-}
+
+// type PayInfo struct {
+// 	Name      string
+// 	ProductID int
+// 	Date      string
+// 	Time      string
+// 	imageName string
+// }
 
 var wg sync.WaitGroup
 
@@ -38,11 +37,11 @@ func send6(conn net.Conn, host string, m string, p string, userid int, quan int)
 	if m == "GET" {
 		// fmt.Println("sent GET")
 		fmt.Fprintf(conn, createHG(p, userid))
-	} else if m == "POSE" && p == "/payment" {
-		// fmt.Println("sent POST, img")
-		fmt.Fprintf(conn, createHPimg(conn, userid))
-		time.Sleep(1 * time.Millisecond)
-		send_file(conn)
+		// } else if m == "POSE" && p == "/payment" {
+		// 	// fmt.Println("sent POST, img")
+		// 	fmt.Fprintf(conn, createHPimg(conn, userid))
+		// 	time.Sleep(1 * time.Millisecond)
+		// 	send_file(conn)
 	} else {
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHP(userid, quan))
@@ -115,65 +114,27 @@ func createHP(u int, quan int) string {
 	return headers
 }
 
-func createHPimg(conn net.Conn, u int) string {
-	userID := u
-	method := "POST"
-	path := "/payment"
-	host := "127.0.0.1:8080"
+// func createHPimg(conn net.Conn, u int) string {
+// 	userID := u
+// 	method := "POST"
+// 	path := "/payment"
+// 	host := "127.0.0.1:8080"
 
-	contentType := "image/jpg"
-	jsonStr := PayInfo{Name: "Kanga", ProductID: 1123, Date: "20/02/21", Time: "12.00", imageName: img_name}
-	jsonData, err := json.Marshal(jsonStr)
-	if err != nil {
-		fmt.Println(err)
-	}
-	contentLength := len(string(jsonData))
+// 	contentType := "image/jpg"
+// 	jsonStr := PayInfo{Name: "Kanga", Date: "20/02/21", Time: "12.00", imageName: img_name}
+// 	jsonData, err := json.Marshal(jsonStr)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// 	contentLength := len(string(jsonData))
 
-	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
-		method, path, host, contentLength, contentType, string(jsonData), userID)
-	// send_file(conn)
-	return headers
-}
+// 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s userID:%d",
+// 		method, path, host, contentLength, contentType, string(jsonData), userID)
+// 	// send_file(conn)
+// 	return headers
+// }
 
-const BUFFERSIZE = 1024
-
-func send_file(conn net.Conn) {
-	file, err := os.Open(img_name)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fileInfo, err := file.Stat()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fileSize := fillString(strconv.FormatInt(fileInfo.Size(), 10), 10)
-	fmt.Println("Send filesize!")
-	conn.Write([]byte(fileSize))
-	sendBuffer := make([]byte, BUFFERSIZE)
-	fmt.Println("Start sending file!")
-	for {
-		_, err = file.Read(sendBuffer)
-		if err == io.EOF {
-			break
-		}
-		conn.Write(sendBuffer)
-	}
-	fmt.Println("File has been sent")
-	return
-}
-func fillString(retunString string, toLength int) string {
-	for {
-		lengtString := len(retunString)
-		if lengtString < toLength {
-			retunString = retunString + ":"
-			continue
-		}
-		break
-	}
-	return retunString
-}
+//
 
 func onerun() {
 	// for i := 0; i < 200; i++ {
@@ -181,7 +142,7 @@ func onerun() {
 	client6("GET", "/products", 0)
 	client6("GET", "/products/1", 0)
 	client6("POST", "/products/1", 2)
-	client6("POST", "/payment", 0)
+	// client6("POST", "/payment", 0)
 	// }
 }
 func test_check() {
@@ -247,15 +208,15 @@ func test_check() {
 var num_user float64 = 100
 
 func user_model() {
-	// go func() {
+	go func() {
 	for i := 0.0; i < (num_user * 0.60); i++ {
 		go func() {
 			client6("GET", "/", 0)
 			client6("GET", "/products", 0)
 		}()
 	}
-	// }
-	// go func {
+	}
+	go func {
 	for i := 0.0; i < (num_user * 0.25); i++ {
 		go func() {
 			client6("GET", "/", 0)
@@ -263,8 +224,8 @@ func user_model() {
 			client6("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
 		}()
 	}
-	// }
-	// go func {
+	}
+	go func {
 	for i := 0.0; i < (num_user * 0.15); i++ {
 		go func() {
 			client6("GET", "/", 0)
@@ -273,7 +234,35 @@ func user_model() {
 			client6("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
 		}()
 	}
-	// }
+	}
+}
+func check() {
+	var check1 = []string{"miss", "miss", "miss", "miss", "miss"}
+	var check2 = []string{"miss", "miss", "miss", "miss", "miss"}
+	var check3 = []string{"hit", "hit", "hit", "hit", "hit"}
+
+	for i := 1; i < 6; i++ {
+		client6("GET", "/products/"+strconv.Itoa(i), 0)
+	}
+	//check
+	for i, v := range check1 {
+		if check1[1] =! 00 {
+			fmt.Printf("fail at %d", i)
+		} else {
+			return
+		}
+	}
+	fmt.Printf("success")
+
+	for i := 6; i < 11; i++ {
+		client6("GET", "/products/"+strconv.Itoa(i), 0)
+	}
+
+	for i := 6; i < 11; i++ {
+		client6("GET", "/products/"+strconv.Itoa(i), 0)
+	}
+
+	var check4 = []string{"miss", "hit", "hit", "hit", "hit"}
 }
 
 func main() {
