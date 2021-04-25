@@ -39,9 +39,9 @@ func InitDatabase() {
 	db.SetMaxOpenConns(32000)
 	db.SetMaxIdleConns(32000)
 	db.SetConnMaxLifetime(10 * time.Second)
-	for i := 1; i <= 5; i++ {
-		db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, i)
-	}
+	// for i := 1; i <= 5; i++ {
+	// 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, i)
+	// }
 
 }
 
