@@ -234,7 +234,7 @@ func main() {
 		// go onerun(i)
 		// 	go client(&wg, "GET", "/", i)
 		// 	wg.Add(1)
-		client(&wg, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
+		go client(&wg, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
 		// 	wg.Add(1)
 		// 	go client(&wg, "GET", "/products/1", i)
 		// 	wg.Add(1)
@@ -243,7 +243,7 @@ func main() {
 	}
 	wg.Wait()
 
-	user_model(wg)
+	// user_model(wg)
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
