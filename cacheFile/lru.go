@@ -80,7 +80,7 @@ func DisplayAllPro() (val string) {
 
 func InitCache() {
 	//C.limit = 10
-	C = Cache_cons(10)
+	C = Cache_cons(10000)
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
 	// C.Display()
