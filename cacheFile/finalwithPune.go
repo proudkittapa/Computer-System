@@ -35,6 +35,7 @@ type product struct {
 func InitDatabase() {
 	// db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
+	db.SetMaxOpenConns(2)
 
 }
 
