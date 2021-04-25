@@ -163,10 +163,10 @@ func createHeader(d string, contentType string) string {
 	m := Message{Mess: d}
 	a, _ := json.Marshal(m)
 	// d = string(a)
-	var b Message = getJson3(string(a))
-	var c Pam = getJson2(b.Mess)
+	// var b Message = getJson3(string(a))
+	// var c Pam = getJson2(b.Mess)
 	// json.Unmarshal(a, &b)
-	fmt.Println("cccc", c.Miss)
+	// fmt.Println("cccc", c.Miss)
 	contentLength := len(a)
 	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, a)
 	return headers
