@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"regexp"
@@ -121,10 +120,10 @@ func Insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
 
 func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	ctx = context.Background()
-	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
-	if err != nil {
-		log.Println(err)
-	}
+	tx, _ := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	// if err != nil {
+	// 	log.Println(err)
+	// }
 	transactionC := make(chan string)
 	t := make(chan int)
 	//start := time.Now()
