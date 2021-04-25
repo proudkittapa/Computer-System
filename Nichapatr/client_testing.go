@@ -60,7 +60,7 @@ func receive(conn net.Conn) string {
 	} else {
 		count_Res++
 	}
-	fmt.Print(message)
+	fmt.Print("message", message)
 	return message
 	// result = getJson(message)
 }
