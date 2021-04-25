@@ -49,7 +49,7 @@ func send(conn net.Conn, host string, m string, p string, userid int, quan int) 
 
 var result Rate
 
-func recv(conn net.Conn) string {
+func receive(conn net.Conn) string {
 	defer conn.Close()
 	// fmt.Println("reading")
 	message, err := bufio.NewReader(conn).ReadString('\n')
@@ -74,7 +74,7 @@ func client(m string, p string, quan int) string {
 		log.Fatalln(err)
 	}
 	send(conn, host, m, p, userid, quan) //check parameter quan
-	return recv(conn)
+	return receive(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	// wg.Done()
 	// <-ch
@@ -238,6 +238,8 @@ func misshit_check() {
 	j1 := getJson(m)
 	k1 := getJson2(j1.Mess)
 	check(checkU1, k1) //check miss, hit
+	fmt.Println("Hit for /", k1.Hit)
+	fmt.Println("Miss for /", k1.Miss)
 
 	/*-------------check(2)-------------*/
 	checkP1 := Rate{Miss: 5, Hit: 0}
@@ -248,6 +250,8 @@ func misshit_check() {
 	l1 := getJson(m1)
 	n1 := getJson2(l1.Mess)
 	check(checkP1, n1) //check miss, hit
+	fmt.Println("Hit for /products/:id", n1.Hit)
+	fmt.Println("Miss for /products/:id", n1.Miss)
 
 	checkP2 := Rate{Miss: 10, Hit: 0}
 	for i := 6; i < 11; i++ {
@@ -257,6 +261,8 @@ func misshit_check() {
 	l2 := getJson(m2)
 	n2 := getJson2(l2.Mess)
 	check(checkP2, n2)
+	fmt.Println("Hit for /products/:id", n1.Hit)
+	fmt.Println("Miss for /products/:id", n1.Miss)
 
 	checkP3 := Rate{Miss: 10, Hit: 5}
 	for i := 6; i < 11; i++ {
@@ -266,6 +272,8 @@ func misshit_check() {
 	l3 := getJson(m3)
 	n3 := getJson2(l3.Mess)
 	check(checkP3, n3)
+	fmt.Println("Hit for /products/:id", n1.Hit)
+	fmt.Println("Miss for /products/:id", n1.Miss)
 }
 
 func main() {
@@ -284,9 +292,9 @@ func main() {
 	tt := float64(t) / 1e6
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f", rate)
-	client("GET", "/hitmiss", 0)
-	fmt.Println("HIT:", result.Hit)
-	fmt.Println("Miss:", result.Miss)
+	// client("GET", "/hitmiss", 0)
+	// fmt.Println("HIT:", result.Hit)
+	// fmt.Println("Miss:", result.Miss)
 }
 
 func getJson(message string) Mess {
