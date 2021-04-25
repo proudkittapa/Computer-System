@@ -134,15 +134,13 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		//fmt.Println("rollback")
 		Preorder(end, user, productId, orderQuantity)
 		return
-	}
-	if result2 == "not complete" {
+	} else if result2 == "not complete" {
 		result = "order more than stock quantity"
 		fmt.Println(result)
 		tx.Commit()
 		end <- result
 		return
-	}
-	if result2 == "out of stock" {
+	} else if result2 == "out of stock" {
 		result = "The order is out of stock"
 		fmt.Println(result)
 		tx.Commit()
