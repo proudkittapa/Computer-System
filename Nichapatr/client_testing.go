@@ -132,7 +132,9 @@ func onerun2(wg2 *sync.WaitGroup) {
 
 	for i := 0; i < 1000; i++ {
 		wg2.Add(1)
-		client(&wg1, "GET", "/products/1", 0)
+		go func() {
+			client(&wg1, "GET", "/products/1", 0)
+		}()
 	}
 	wg2.Wait()
 	// client(&wg, "GET", "/", 0)
@@ -208,38 +210,30 @@ func test_time_check() {
 var num_user float64 = 100
 
 func user_model() {
-	wg1.Add(3)
-	go func() {
-		for i := 0.0; i < (num_user * 0.60); i++ {
-			wg1.Add(1)
-			go func() {
-				client(&wg1, "GET", "/", 0)
-				client(&wg1, "GET", "/products", 0)
-			}()
-		}
-	}()
-	go func() {
-		for i := 0.0; i < (num_user * 0.25); i++ {
-			wg1.Add(1)
-			go func() {
-				client(&wg1, "GET", "/", 0)
-				client(&wg1, "GET", "/products", 0)
-				client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-			}()
-		}
-	}()
-	go func() {
-		for i := 0.0; i < (num_user * 0.15); i++ {
-			wg1.Add(1)
-			go func() {
-				client(&wg1, "GET", "/", 0)
-				client(&wg1, "GET", "/products", 0)
-				client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-				client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
-			}()
-		}
-	}()
-
+	for i := 0.0; i < (num_user * 0.60); i++ {
+		wg1.Add(2)
+		go func() {
+			client(&wg1, "GET", "/", 0)
+			client(&wg1, "GET", "/products", 0)
+		}()
+	}
+	for i := 0.0; i < (num_user * 0.25); i++ {
+		wg1.Add(2)
+		go func() {
+			client(&wg1, "GET", "/", 0)
+			client(&wg1, "GET", "/products", 0)
+			client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+		}()
+	}
+	for i := 0.0; i < (num_user * 0.15); i++ {
+		wg1.Add(2)
+		go func() {
+			client(&wg1, "GET", "/", 0)
+			client(&wg1, "GET", "/products", 0)
+			client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+			client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+		}()
+	}
 }
 
 func check(expect Rate, get Rate) {
@@ -323,7 +317,7 @@ func main() {
 	// 	// wg1.Add(1)
 	// 	// go client(&wg1, "GET", "/products/1", 0)
 	// wg1.Add(1000)
-	go onerun2(&wg1)
+	onerun2(&wg1)
 	// }
 	// wg1.Wait()
 	// time.Sleep(100 * time.Millisecond)
