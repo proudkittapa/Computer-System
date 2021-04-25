@@ -1,13 +1,13 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"math"
 	"math/rand"
 	"net"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -24,14 +24,9 @@ type Rate struct {
 	Miss int `json:"miss"`
 	Hit  int `json:"hit"`
 }
-
-// type PayInfo struct {
-//  Name      string
-//  ProductID int
-//  Date      string
-//  Time      string
-//  imageName string
-// }
+type Mess struct {
+	Mess string `json:"mess"`
+}
 
 var wg sync.WaitGroup
 
@@ -54,22 +49,42 @@ func send(conn net.Conn, host string, m string, p string, userid int, quan int) 
 
 var result Rate
 
-func recv(conn net.Conn) {
+func receive(conn net.Conn) string {
 	defer conn.Close()
 	// fmt.Println("reading")
-	message, err := bufio.NewReader(conn).ReadString('\n')
-	if err != nil {
-		count_Fail++
-		log.Println("failed to read contents", message)
-		return
-	} else {
-		count_Res++
+	message := ""
+	buffer := make([]byte, 1024)
+	for {
+		n, err := conn.Read(buffer)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
+		fmt.Println(string(buffer[:n]))
+		if !strings.Contains(string(buffer[:n]), "HTTP") {
+			if _, err := conn.Write([]byte("Recieved\n")); err != nil {
+				log.Printf("failed to respond to client: %v\n", err)
+			}
+			break
+		}
+		message = string(buffer[:n])
 	}
-	fmt.Print(message)
-	result = getJson(message)
+	/*
+		message, err := bufio.NewReader(conn).ReadString('\n')
+		if err != nil {
+			count_Fail++
+			log.Println("failed to read contents", message)
+			return ""
+		} else {
+			count_Res++
+		}
+		fmt.Print("message", message)
+	*/
+
+	return message
+	// result = getJson(message)
 }
 
-func client(m string, p string, quan int) {
+func client(m string, p string, quan int) string {
 	// t0 := time.Now()
 	host := "178.128.94.63:8080"
 	conn, err := net.Dial("tcp", host)
@@ -78,7 +93,7 @@ func client(m string, p string, quan int) {
 		log.Fatalln(err)
 	}
 	send(conn, host, m, p, userid, quan) //check parameter quan
-	recv(conn)
+	return receive(conn)
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	// wg.Done()
 	// <-ch
@@ -88,8 +103,6 @@ var userid = 0
 var count_Res = 0
 var count_Fail = 0
 
-// var n = flag.Int("n", 5, "Number of goroutines to create")
-// var ch = make(chan byte)
 func createHeaderGET(pathh string, u int) string {
 	userID := u
 	method := "GET"
@@ -122,15 +135,14 @@ func createHeaderPOST(u int, quan int) string {
 }
 
 func onerun() {
-	// for i := 0; i < 200; i++ {
-	// client("GET", "/", 0)
-	// client("GET", "/products", 0)
-	client("GET", "/products/1", 0)
-	// client("POST", "/products/1", 2)
-	// client6("POST", "/payment", 0)
-	// }
+	for i := 0; i < 1000; i++ {
+		// client("GET", "/", 0)
+		// client("GET", "/products", 0)
+		go client("GET", "/products/1", 0)
+		// client("POST", "/products/1", 2)
+	}
 }
-func test_check() {
+func test_time_check() {
 	/*--------------------Cache check (2)--------------------*/
 	// t5 := time.Now()
 	// for i := 0; i < 1000; i++ {
@@ -142,7 +154,7 @@ func test_check() {
 	/*--------------------Cache check (1)--------------------*/
 	t1 := time.Now()
 	for i := 1; i < 6; i++ {
-		client("GET", "/products/"+strconv.Itoa(i), 0)
+		client("GET", "/"+strconv.Itoa(i), 0)
 	}
 	t01 := float64(time.Since(t1)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v ", t01)
@@ -223,40 +235,80 @@ func user_model() {
 	}()
 
 }
-func check() {
+
+func check(expect Rate, get Rate) {
+	/*
+		if get != expect {
+			fmt.Printf("smt wrong!, expected v ==== %v \n, get v ==== %v \n", expect, get)
+		} else {
+			fmt.Printf("success : v ==== %v \n", get)
+		}
+	*/
+	fmt.Println("expect:", expect)
+	fmt.Println("get:", get)
+}
+
+func misshit_check() {
 	//declare variables pid
-	check1 := []string{"miss", "miss", "miss", "miss", "miss"}
+	// check1 := []string{"miss", "miss", "miss", "miss", "miss"}
 	// check2 := []string{"miss", "miss", "miss", "miss", "miss"}
 	// check3 := []string{"hit", "hit", "hit", "hit", "hit"}
 
+	checkU1 := Rate{Miss: 1, Hit: 4}
+	for i := 1; i < 6; i++ {
+		client("GET", "/", 0)
+	}
+	m := client("GET", "/hitmissFile", 0)
+	j1 := getJson(m)
+	fmt.Println("j1:", j1)
+	k1 := getJson2(j1.Mess)
+	fmt.Println("k1:", k1)
+	check(checkU1, k1) //check miss, hit
+	fmt.Println("Hit for /", k1.Hit)
+	fmt.Println("Miss for /", k1.Miss)
+
+	/*-------------check(2)-------------*/
+
+	checkP1 := Rate{Miss: 5, Hit: 0}
 	for i := 1; i < 6; i++ {
 		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	//check
-	for i := range check1 {
-		if check1[1] != "00" {
-			fmt.Printf("fail at %d", i)
-		} else {
-			return
-		}
-	}
-	fmt.Printf("success")
+	m1 := client("GET", "/hitmiss", 0)
+	l1 := getJson(m1)
+	n1 := getJson2(l1.Mess)
+	check(checkP1, n1) //check miss, hit
+	fmt.Println("Hit for /products/:id", n1.Hit)
+	fmt.Println("Miss for /products/:id", n1.Miss)
 
+	checkP2 := Rate{Miss: 10, Hit: 0}
 	for i := 6; i < 11; i++ {
 		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
+	m2 := client("GET", "/hitmiss", 0)
+	l2 := getJson(m2)
+	n2 := getJson2(l2.Mess)
+	check(checkP2, n2)
+	fmt.Println("Hit for /products/:id", n1.Hit)
+	fmt.Println("Miss for /products/:id", n1.Miss)
 
+	checkP3 := Rate{Miss: 10, Hit: 5}
 	for i := 6; i < 11; i++ {
 		client("GET", "/products/"+strconv.Itoa(i), 0)
 	}
+	m3 := client("GET", "/hitmiss", 0)
+	l3 := getJson(m3)
+	n3 := getJson2(l3.Mess)
+	check(checkP3, n3)
+	fmt.Println("Hit for /products/:id", n1.Hit)
+	fmt.Println("Miss for /products/:id", n1.Miss)
 
-	// check4 := []string{"miss", "hit", "hit", "hit", "hit"}
 }
 
 func main() {
 	// flag.Parse()
 	start := time.Now()
-	// test_check()
+	// misshit_check()
+	// test_time_check()
 	// user_model()
 	onerun()
 	// wg.Wait()
@@ -268,12 +320,25 @@ func main() {
 	tt := float64(t) / 1e6
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f", rate)
-	client("GET", "/hitmiss", 0)
-	fmt.Println("HIT:", result.Hit)
-	fmt.Println("Miss:", result.Miss)
+	// client("GET", "/hitmiss", 0)
+	// fmt.Println("HIT:", result.Hit)
+	// fmt.Println("Miss:", result.Miss)
 }
 
-func getJson(message string) Rate {
+func getJson(message string) Mess {
+	var result Mess
+	if strings.ContainsAny(string(message), "}") {
+
+		r, _ := regexp.Compile("{([^)]+)}")
+		match := r.FindString(message)
+		// fmt.Println(match)
+		fmt.Printf("%T\n", match)
+		json.Unmarshal([]byte(match), &result)
+		// fmt.Println("data", result)
+	}
+	return result
+}
+func getJson2(message string) Rate {
 	var result Rate
 	if strings.ContainsAny(string(message), "}") {
 

@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"pin2pre/cacheFile"
 	"strconv"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -19,15 +18,14 @@ var (
 
 func main() {
 	cacheFile.InitDatabase()
-	cacheFile.C = cacheFile.Cache_cons(10)
-
+	cacheFile.InitCache()
 	//db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 
-	n := 10
+	n := 5
 	end := make(chan int)
 	for i := 1; i <= n; i++ {
 		go cacheFile.Preorder(end, strconv.Itoa(i), 1, 1)
-		time.Sleep(1 * time.Second)
+		//time.Sleep(1 * time.Second)
 	}
 
 	for i := 1; i <= n; i++ {

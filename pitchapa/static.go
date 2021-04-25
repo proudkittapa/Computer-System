@@ -20,8 +20,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io"
-	"log"
 	"os"
 )
 
@@ -135,25 +133,27 @@ func main() {
 	f, err := os.Open("index.html")
 
 	if err != nil {
-		fmt.Println("can't open file", err)
-		return
-	}
-	chunksize := 1024
-	reader := bufio.NewReader(f)
-	buffer := bytes.NewBuffer(make([]byte, 0))
-	part := make([]byte, chunksize)
+		fmt.Println("File reading error", err)
 
+	}
+	defer func() {
+		if err := f.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	chunksize := 512
+	reader := bufio.NewReader(f)
+	part := make([]byte, chunksize)
+	buffer := bytes.NewBuffer(make([]byte, 0))
+	var bufferLen int
 	for {
-		if count, err := reader.Read(part); err != nil {
+		count, err := reader.Read(part)
+		if err != nil {
 			break
 		}
+		bufferLen += count
 		buffer.Write(part[:count])
-
 	}
-	if err != io.EOF {
-		log.Fatal("ERROR Reader", err)
-
-	} else {
-		err = nil
-	}
+	fmt.Println("home")
+	// return buffer.String()
 }

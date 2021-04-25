@@ -22,10 +22,14 @@ func main() {
 	// .Display()
 	// cacheFile.C = cacheFile.Cache_cons(10)
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
-	s.GET("/", abc)
+	// s.GET("/", abc)
+	s.GET("/", getCacheFile)
+	s.GET("/products", abc)
 	s.GET("/products/:id", productID)
 	s.GET("/hitmiss", hitmiss)
+	s.GET("/hitmissFile", hitmissFile)
 	// cache.ReCache(1)
+	s.POST("/products2/:id", postPreorder2)
 	s.POST("/products/:id", postPreorder)
 	s.Start(":8080")
 }
@@ -46,7 +50,23 @@ func abc() string {
 }
 
 func hitmiss() string {
-	a, _ := json.Marshal(cacheFile.SendHitMiss())
+	a, _ := json.Marshal(cacheFile.SendMissHit())
+	// return "{miss: 1, hit: 2}"
+	return string(a)
+}
+
+func postPreorder2() string {
+	a := cacheFile.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
+	return a
+}
+
+func getCacheFile() string {
+	a := cacheFile.Call_cache("index.html")
+	return a
+}
+
+func hitmissFile() string {
+	a, _ := json.Marshal(cacheFile.SendMissHitFile())
 	// return "{miss: 1, hit: 2}"
 	return string(a)
 }
