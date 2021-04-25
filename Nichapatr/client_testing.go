@@ -70,17 +70,6 @@ func receive2(conn net.Conn) string {
 
 	}
 	fmt.Println("out of loop")
-	/*
-		message, err := bufio.NewReader(conn).ReadString('\n')
-		if err != nil {
-			count_Fail++
-			log.Println("failed to read contents", message)
-			return ""
-		} else {
-			count_Res++
-		}
-		fmt.Print("message", message)
-	*/
 
 	return message
 }
@@ -106,11 +95,12 @@ var count_Res = 0
 var count_Fail = 0
 
 func createHeaderGET(pathh string, u int) string {
+	fmt.Println("headerGET")
 	userID := u
 	method := "GET"
 	path := pathh
 	host := "178.128.94.63:8080"
-	contentLength := 0
+	contentLength := len("userID:" + string(userID))
 	contentType := "text"
 	headers := fmt.Sprintf("%s %s HTTP/1.1\r\nHost: %s\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n userID:%d",
 		method, path, host, contentLength, contentType, userID)
