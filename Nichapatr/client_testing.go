@@ -259,7 +259,7 @@ func misshit_check(wg2 *sync.WaitGroup) {
 		wg2.Add(1)
 		go client(&wg1, "GET", "/", 0)
 	}
-	wg2.Wait()
+	// wg2.Wait()
 	fmt.Println("before hitmissFile")
 	m := client(&wg1, "GET", "/hitmissFile", 0)
 	j1 := getJson(m)
@@ -277,7 +277,7 @@ func misshit_check(wg2 *sync.WaitGroup) {
 		wg2.Add(1)
 		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	wg2.Wait()
+	// wg2.Wait()
 	m1 := client(&wg1, "GET", "/hitmiss", 0)
 	l1 := getJson(m1)
 	n1 := getJson2(l1.Mess)
@@ -290,7 +290,7 @@ func misshit_check(wg2 *sync.WaitGroup) {
 		wg2.Add(1)
 		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	wg2.Wait()
+	// wg2.Wait()
 	m2 := client(&wg1, "GET", "/hitmiss", 0)
 	l2 := getJson(m2)
 	n2 := getJson2(l2.Mess)
@@ -310,7 +310,6 @@ func misshit_check(wg2 *sync.WaitGroup) {
 	check(checkP3, n3)
 	fmt.Println("Hit for /products/:id", n1.Hit)
 	fmt.Println("Miss for /products/:id", n1.Miss)
-
 }
 
 func main() {
