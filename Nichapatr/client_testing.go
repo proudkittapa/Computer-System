@@ -277,8 +277,8 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 			defer wg1.Done()
 		}()
 	}
-	wg1.Wait()
-	wg1.Add(1)
+	// wg1.Wait()
+	// wg1.Add(1)
 	fmt.Println("case 1 done")
 	a := client(&wg1, "POST", "/products/1", 100)
 	wg1.Wait()
