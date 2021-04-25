@@ -76,7 +76,7 @@ func receive2(conn net.Conn) string {
 	return message
 }
 
-func client(m string, p string, quan int) string {
+func client(wg *sync.WaitGroup, m string, p string, quan int) string {
 	// t0 := time.Now()
 	host := "178.128.94.63:8080"
 	conn, err := net.Dial("tcp", host)
@@ -88,7 +88,7 @@ func client(m string, p string, quan int) string {
 	a := receive2(conn)
 	return a
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
-	// wg.Done()
+	wg.Done()
 	// <-ch
 }
 
@@ -128,13 +128,11 @@ func createHeaderPOST(u int, quan int) string {
 	return headers
 }
 
-func onerun2() {
-	for i := 0; i < 1000; i++ {
-		// client("GET", "/", 0)
-		// client("GET", "/products", 0)
-		client("GET", "/products/1", 0)
-		// client("POST", "/products/1", 2)
-	}
+func onerun2(wg *sync.WaitGroup) {
+	// client(&wg, "GET", "/", 0)
+	// client(&wg, "GET", "/products", 0)
+	client(&wg, "GET", "/products/1", 0)
+	// client(&wg, "POST", "/products/1", 2)
 }
 func test_time_check() {
 	/*--------------------Cache check (2)--------------------*/
@@ -198,32 +196,37 @@ func test_time_check() {
 
 var num_user float64 = 100
 
-func user_model() {
+func user_model(wg *sync.WaitGroup) {
+	wg.Add(3)
 	go func() {
 		for i := 0.0; i < (num_user * 0.60); i++ {
+			wg.Add(1)
 			go func() {
-				client("GET", "/", 0)
-				client("GET", "/products", 0)
+				client(&wg, "GET", "/", 0)
+				client(&wg, "GET", "/products", 0)
 			}()
 		}
 	}()
 	go func() {
 		for i := 0.0; i < (num_user * 0.25); i++ {
+			wg.Add(1)
 			go func() {
-				client("GET", "/", 0)
-				client("GET", "/products", 0)
-				client("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+				client(&wg, "GET", "/", 0)
+				client(&wg, "GET", "/products", 0)
+				client(&wg, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
 			}()
 		}
 	}()
 
 	go func() {
 		for i := 0.0; i < (num_user * 0.15); i++ {
+			wg.Add(1)
 			go func() {
-				client("GET", "/", 0)
-				client("GET", "/products", 0)
-				client("GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-				client("POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+				wg.Add(1)
+				client(&wg, "GET", "/", 0)
+				client(&wg, "GET", "/products", 0)
+				client(&wg, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+				client(&wg, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
 			}()
 		}
 	}()
@@ -301,12 +304,16 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
+	var wg sync.WaitGroup
 	start := time.Now()
 	// misshit_check()
 	// test_time_check()
-	// user_model()
-	onerun2()
-	// wg.Wait()
+	// user_model(&wg)
+	for i := 0; i < 1000; i++ {
+		wg.Add(1)
+		onerun2(&wg)
+	}
+	wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
