@@ -162,16 +162,7 @@ func onerun2(wg1 sync.WaitGroup) {
 	// client(&wg, "POST", "/products/1", 2)
 }
 func test_time_check(wg1 sync.WaitGroup) {
-	/*--------------------Cache check (2)--------------------*/
-	// t5 := time.Now()
-	// for i := 0; i < 1000; i++ {
-	//  client6("POST", "/products/1", 2) // stock must = 0
-	// }
-	// t05 = float64(time.Since(t5)) / 1e6 / 5
-	// fmt.Printf("Latency Time:   %v ", t05)
-	// fmt.Printf("Number Response: %d\nIf number of Responses = 1000, is it success or not since it out of stock at Order500?", count_Res)
-	/*--------------------Cache check (1)--------------------*/
-	t1 := time.Now()
+	t1 := time.Now() //Uye
 	for i := 1; i < 6; i++ {
 		wg1.Add(1)
 		go client(&wg1, "GET", "/", 0)
@@ -182,7 +173,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 	t2 := time.Now()
 	for i := 6; i < 11; i++ {
 		wg1.Add(1)
-		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		go client(&wg1, "GET", "/", 0)
 	}
 	t02 := float64(time.Since(t2)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t02)
@@ -190,29 +181,29 @@ func test_time_check(wg1 sync.WaitGroup) {
 	t3 := time.Now()
 	for i := 6; i < 11; i++ {
 		wg1.Add(1)
-		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		go client(&wg1, "GET", "/", 0)
 	}
 	t03 := float64(time.Since(t3)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t03)
 	if math.Abs(t01-t02) <= 1 {
-		fmt.Println("miss?")
+		fmt.Println("Both are Miss, so time is similar (success)") // t01 ad t02 are both miss, so time must be similar
 	} else {
 		fmt.Println("something is not right(1) :")
 		fmt.Println(t01 - t02)
 	}
 	if t03 <= t02 {
-		fmt.Println("faster")
+		fmt.Println("it is faster, case3 Hit (success)") // t03 is time when it's hit; t02 is time when it's miss
 	} else {
 		fmt.Println("cache not make faster maybe not hit")
 	}
-	/*--------------------Cache check (2)--------------------*/
-	t4 := time.Now()
+	/*--------------------time check (2)--------------------*/
+	t4 := time.Now() //Mind
 	for i := 0; i < 2; i++ {
 		wg1.Add(4)
-		go client(&wg1, "POST", "/products/1", 2)    // stock must = 998
-		go client(&wg1, "POST", "/products/1", 3)    // stock must = 995
-		go client(&wg1, "POST", "/products/1", 5)    // stock must = 990
-		go client(&wg1, "POST", "/products/1", 1000) // stock must = 0
+		go client(&wg1, "POST", "/products/1", 2)     // stock must = 998
+		go client(&wg1, "POST", "/products/1", 3)     // stock must = 995
+		go client(&wg1, "POST", "/products/1", 5)     // stock must = 990
+		go client(&wg1, "POST", "/products/1", 10000) // stock must = 990 mess: the order is out of stock
 	}
 	t04 := float64(time.Since(t4)) / 1e6 / 4
 	fmt.Printf("Latency Time:   %v ", t04)
@@ -225,6 +216,79 @@ func test_time_check(wg1 sync.WaitGroup) {
 	t05 := float64(time.Since(t5)) / 1e6 / 2
 	fmt.Printf("Latency Time:   %v ", t05)
 	wg1.Wait()
+}
+func random(x int, y int) int {
+	min := x
+	max := y
+	randomNum := min + rand.Intn(max-min+1)
+	return randomNum
+}
+func quantity_check(wg1 sync.WaitGroup) { //Mind
+	// 10 users && 10,000 products in database (/product/3)
+	// "The order is out of stock"
+	for i := 0; i < 5; i++ {
+		wg1.Add(1)
+		go func() {
+			a := client(&wg1, "POST", "/products/501", 2000)
+			mes1 := getJson(a)
+			fmt.Println(qcheck(mes1.Mess, "transaction successful"))
+		}()
+	}
+	a := client(&wg1, "POST", "/products/501", 100)
+	mes1 := getJson(a)
+	fmt.Println(qcheck(mes1.Mess, "The order is out of stock"))
+	// 10 users && 10,000 products in database (/product/4) && random quantity in first Fifth orders, last order's quantity is more than stock quantity
+	// "order more than stock quantity"
+	for i := 0; i < 5; i++ {
+		wg1.Add(1)
+		go func() {
+			a := client(&wg1, "POST", "/products/502", random(1000, 2000))
+			mes1 := getJson(a)
+			fmt.Println(qcheck(mes1.Mess, "transaction successful"))
+		}()
+	}
+	a = client(&wg1, "POST", "/products/502", 6000)
+	mes1 = getJson(a)
+	fmt.Println(qcheck(mes1.Mess, "order more than stock quantity"))
+	// unpredict result numer of "transaction successful"&"The order is out of stock"
+	suc := 0
+	for i := 0; i < 5; i++ {
+		wg1.Add(1)
+		go func() {
+			a := client(&wg1, "POST", "/products/503", 1000)
+			mes1 := getJson(a)
+			if qcheck(mes1.Mess, "transaction successful") == "success" {
+				suc++
+			}
+		}()
+		go func() {
+			a := client(&wg1, "POST", "/products/503", 2000)
+			mes1 := getJson(a)
+			if qcheck(mes1.Mess, "transaction successful") == "success" {
+				suc++
+			}
+		}()
+		unpredictcheck(suc)
+	}
+	wg1.Wait()
+}
+
+func qcheck(message string, expect string) string {
+	if message == "" {
+		fmt.Println("No message")
+	} else if message == expect {
+		return "success"
+	} else {
+		fmt.Printf("Fail, expect: %s, get %s\n", expect, message)
+		return "fail"
+	}
+}
+func unpredictcheck(success int) {
+	if success == 7 || success == 5 {
+		fmt.Println("Succes")
+	} else {
+		fmt.Println("Fail")
+	}
 }
 
 var num_user float64 = 100
