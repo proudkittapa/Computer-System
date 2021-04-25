@@ -124,20 +124,20 @@ func InitCache() {
 }
 
 func (list *Lru_cache) ReCache(id int) (val string) {
-	// temp := C.GetCache(id)
+	temp := C.GetCache(id)
 	// fmt.Printf("%T\n", temp)
 
-	// if temp == "" {
-	i := Db_query(id)
-	val = C.Set(id, i)
+	if temp == "" {
+		i := Db_query(id)
+		val = C.Set(id, i)
 
-	fmt.Println(val)
-	return val
+		fmt.Println(val)
+		return val
 
-	// } else {
-	// fmt.Println(temp)
-	// return temp
-	// }
+	} else {
+		fmt.Println(temp)
+		return temp
+	}
 
 }
 
