@@ -1,7 +1,6 @@
 package final2
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -54,8 +53,8 @@ func ReCache(id int) string {
 }
 
 func db_query(id int) string {
-	db, err := sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
-	checkErr(err)
+	//db, err := sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+	//checkErr(err)
 
 	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 	checkErr(err)
