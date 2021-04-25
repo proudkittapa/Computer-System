@@ -138,7 +138,7 @@ func onerun() {
 	for i := 0; i < 1000; i++ {
 		// client("GET", "/", 0)
 		// client("GET", "/products", 0)
-		client("GET", "/products/1", 0)
+		go client("GET", "/products/1", 0)
 		// client("POST", "/products/1", 2)
 	}
 }
