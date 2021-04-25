@@ -88,6 +88,7 @@ func client(wg1 *sync.WaitGroup, m string, p string, quan int) string {
 	send(conn, host, m, p, userid, quan) //check parameter quan
 	a := receive2(conn)
 	wg1.Done()
+	fmt.Println("client done")
 	return a
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	// <-ch
