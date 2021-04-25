@@ -312,9 +312,11 @@ func main() {
 	// flag.Parse()
 	// var wg1 sync.WaitGroup
 	start := time.Now()
-	// misshit_check()
+	misshit_check()
 	// test_time_check()
-	user_model(&wg1)
+	// onerun2(&wg1)
+	// start := time.Now()
+	// user_model(&wg1)
 	// for i := 0; i < 1000; i++ {
 	// 	// wg1.Add(1)
 	// 	// go client(&wg1, "GET", "/products/1", 0)
