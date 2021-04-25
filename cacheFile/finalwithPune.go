@@ -172,6 +172,7 @@ func PostPreorder(id int, quantity int) string {
 	//n := 5
 	end := make(chan string)
 	go Preorder(end, strconv.Itoa(1), id, quantity)
+	fmt.Printf("quantityyyy: %d\n", quantity)
 	result = <-end
 	fmt.Println("hererreerere")
 	return result
