@@ -226,6 +226,7 @@ func random(x int, y int) int {
 func quantity_check(wg1 sync.WaitGroup) { //Mind
 	// 10 users && 10,000 products in database (/product/3)
 	// "The order is out of stock"
+	fmt.Println("case1")
 	for i := 0; i < 5; i++ {
 		wg1.Add(1)
 		go func() {
@@ -239,6 +240,7 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 	fmt.Println(qcheck(mes1.Mess, "The order is out of stock"))
 	// 10 users && 10,000 products in database (/product/4) && random quantity in first Fifth orders, last order's quantity is more than stock quantity
 	// "order more than stock quantity"
+	fmt.Println("case2")
 	for i := 0; i < 5; i++ {
 		wg1.Add(1)
 		go func() {
