@@ -67,7 +67,7 @@ func receive2(conn net.Conn) string {
 			break
 		}
 		message = string(buffer[:n])
-
+		fmt.Println("before out of loop")
 	}
 	fmt.Println("out of loop")
 
