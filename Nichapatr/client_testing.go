@@ -51,7 +51,7 @@ var result Rate
 
 func receive(conn net.Conn) string {
 	defer conn.Close()
-	// fmt.Println("reading"
+	// fmt.Println("reading")
 	message := ""
 	buffer := make([]byte, 1024)
 	for {
@@ -59,7 +59,7 @@ func receive(conn net.Conn) string {
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 		}
-		// fmt.Println(string(buffer[:n]))
+		fmt.Println(string(buffer[:n]))
 		if !strings.Contains(string(buffer[:n]), "HTTP") {
 			if _, err := conn.Write([]byte("Recieved\n")); err != nil {
 				log.Printf("failed to respond to client: %v\n", err)
