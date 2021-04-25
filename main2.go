@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"pin2pre/Kittapa"
 	"pin2pre/cacheFile"
-	"pin2pre/transaction"
+	// "pin2pre/transaction"
 	// "pin2pre/cacheFile"
 )
 
@@ -40,11 +40,6 @@ func productID() string {
 	return a
 }
 
-func postPreorder() string {
-	a := transaction.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
-	return a
-}
-
 func abc() string {
 	return "abc"
 }
@@ -72,7 +67,7 @@ func hitmissFile() string {
 }
 
 func displayProducts() string {
-	fmt.Println(Kittapa.LF)
-	// a := cacheFile.DisplayAllPro()
-	return ""
+	// fmt.Println(Kittapa.LF)
+	a := cacheFile.DisplayAllPro(Kittapa.LF.Limit, Kittapa.LF.Offset)
+	return a
 }

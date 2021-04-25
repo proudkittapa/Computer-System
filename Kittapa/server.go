@@ -25,8 +25,8 @@ type (
 	}
 
 	LimitOffset struct {
-		limit  int
-		offset int
+		Limit  int
+		Offset int
 	}
 )
 type HandlerFunc func() string
@@ -150,9 +150,9 @@ func getMessage(message string) (string, string, []string) {
 			fmt.Println("J: ", qString[j])
 		}
 		k := strings.Split(qString[0], "=")[1]
-		LF.limit, _ = strconv.Atoi(k)
+		LF.Limit, _ = strconv.Atoi(k)
 		k = strings.Split(qString[1], "=")[1]
-		LF.offset, _ = strconv.Atoi(k)
+		LF.Offset, _ = strconv.Atoi(k)
 		path = "/products"
 	} else if p[1] == "products" && len(p) == 3 {
 		fmt.Println("productsWithID")
