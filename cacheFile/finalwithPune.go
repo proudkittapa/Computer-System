@@ -148,37 +148,42 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		tx.Commit()
 		end <- result
 		return
+	} else {
+		fmt.Println("user:", user, "productId:", productId, "orderQuantity:", orderQuantity)
+		var wg sync.WaitGroup
+		wg.Add(1)
+		go Insert(&wg, tx, user, productId, orderQuantity)
+		wg.Wait()
+		if err := tx.Commit(); err != nil {
+			//fmt.Printf("Failed to commit tx: %v\n", err)
+		}
+
+		result = "transaction successful"
+		end <- result
 	}
-	fmt.Println("user:", user, "productId:", productId, "orderQuantity:", orderQuantity)
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go Insert(&wg, tx, user, productId, orderQuantity)
-	wg.Wait()
-	if err := tx.Commit(); err != nil {
-		//fmt.Printf("Failed to commit tx: %v\n", err)
-	}
-	//fmt.Println("success")
-	//fmt.Println("-----------------------------------")
-	//elapsed := time.Since(start)
-	//tt := float64(elapsed)
-	//fmt.Printf("time: %v\n", elapsed)
-	//fmt.Printf("tt: %v\n", tt)
-	//totalTime += tt
-	//fmt.Printf("total time: %v\n", totalTime)
-	//num, _ := strconv.Atoi(user)
-	result = "transaction successful"
-	end <- result
+
 	C.Display()
 	return
 }
 func PostPreorder(id int, quantity int) string {
-	//InitDatabase()
+	InitDatabase()
 	InitCache()
 	//db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	//n := 5
 	end := make(chan string)
 	go Preorder(end, strconv.Itoa(1), id, quantity)
+	fmt.Printf("quantityyyy: %d\n", quantity)
 	result = <-end
 	fmt.Println("hererreerere")
 	return result
 }
+
+//fmt.Println("success")
+//fmt.Println("-----------------------------------")
+//elapsed := time.Since(start)
+//tt := float64(elapsed)
+//fmt.Printf("time: %v\n", elapsed)
+//fmt.Printf("tt: %v\n", tt)
+//totalTime += tt
+//fmt.Printf("total time: %v\n", totalTime)
+//num, _ := strconv.Atoi(user)
