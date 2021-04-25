@@ -56,6 +56,19 @@ type Dis struct {
 	Product []string
 }
 
+func Mile1(id int) string {
+	tmp := Db_query(id)
+
+	byteArray, err := json.Marshal(tmp)
+	CheckErr(err)
+	// fmt.Println(len(byteArray))
+
+	temp := string(byteArray)
+	fmt.Println(temp)
+	return temp
+
+}
+
 func DisplayAllPro() (val string) {
 	var l []string
 	for i := 1; i <= 100; i++ {
