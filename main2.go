@@ -24,6 +24,7 @@ func main() {
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// s.GET("/", abc)
 	s.GET("/", getCacheFile)
+	s.GET("/products", abc)
 	s.GET("/products/:id", productID)
 	s.GET("/hitmiss", hitmiss)
 	s.GET("/hitmissFile", hitmissFile)
