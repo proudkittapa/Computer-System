@@ -124,20 +124,20 @@ func InitCache() {
 }
 
 func (list *Lru_cache) ReCache(id int) (val string) {
-	temp := C.GetCache(id)
+	// temp := C.GetCache(id)
 	// fmt.Printf("%T\n", temp)
 
-	if temp == "" {
-		i := Db_query(id)
-		val = C.Set(id, i)
+	// if temp == "" {
+	i := Db_query(id)
+	val = C.Set(id, i)
 
-		fmt.Println(val)
-		return val
+	fmt.Println(val)
+	return val
 
-	} else {
-		fmt.Println(temp)
-		return temp
-	}
+	// } else {
+	// fmt.Println(temp)
+	// return temp
+	// }
 
 }
 
@@ -318,7 +318,6 @@ func SendMissHit() Pam {
 
 // func main() {
 // 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
-// saveFile(c.mp, c)
 
 // 	InitCache()
 // 	c.ReCache(1)
