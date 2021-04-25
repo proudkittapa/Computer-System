@@ -307,10 +307,10 @@ func misshit_check() {
 func main() {
 	// flag.Parse()
 	start := time.Now()
-	// misshit_check()
+	misshit_check()
 	// test_time_check()
 	// user_model()
-	onerun2()
+	// onerun2()
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
