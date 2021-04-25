@@ -72,17 +72,27 @@ func Mile1(id int) string {
 func DisplayAllPro(limit int, offset int) (val string) {
 	var l []string
 	a := (limit * offset) + 1
+	fmt.Println(a)
 	b := limit - 1
 	c := a + b
-	fmt.Println(a, b, c)
-	for i := a; i <= c; i++ {
-		tmp := Db_query(i)
-		byArr, err := json.Marshal(tmp)
+
+	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id BETWEEN ? AND ?", strconv.Itoa(a), strconv.Itoa(c))
+	CheckErr(err)
+
+	for rows.Next() {
+		var name string
+		var quantity int
+		var price int
+		err = rows.Scan(&name, &quantity, &price)
+
+		result := Data{Name: name, Quantity: quantity, Price: price}
+		byArr, err := json.Marshal(result)
 		CheckErr(err)
+		tmp := string(byArr)
+		// fmt.Println(len(byteArray))
 
-		temp := string(byArr)
+		l = append(l, tmp)
 
-		l = append(l, temp)
 	}
 
 	result := Dis{Product: l}
