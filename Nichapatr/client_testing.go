@@ -174,7 +174,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 	t1 := time.Now()
 	for i := 1; i < 6; i++ {
 		wg1.Add(1)
-		go client(&wg1, "GET", "/"+strconv.Itoa(i), 0)
+		go client(&wg1, "GET", "/", 0)
 	}
 	t01 := float64(time.Since(t1)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v ", t01)
