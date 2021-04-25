@@ -34,7 +34,7 @@ func Call_cache(filename string) string {
 	d, err := cacheObject.Check(filename)
 	if err != nil {
 		fmt.Println(err)
-		a := getFile("index.html")
+		a := getFile(filename)
 		cacheObject.Add(filename, a)
 		d, _ = cacheObject.Check(filename)
 		cacheObject.Display()
