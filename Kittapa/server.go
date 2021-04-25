@@ -166,6 +166,7 @@ func getMessage(message string) (string, string, []string) {
 func queryString(m string) (string, bool) {
 	index := 0
 	b := false
+	a := ""
 	for i := 0; i < len(m); i++ {
 		if m[i] == 63 {
 			// fmt.Println("?")
@@ -174,7 +175,10 @@ func queryString(m string) (string, bool) {
 		}
 		// fmt.Println(m[i])
 	}
-	a := m[index+1:]
+	if index+1 <= len(m)-1 {
+		a = m[index+1:]
+	}
+
 	return a, b
 	// match, _ := regexp.MatchString(, m)
 	// fmt.Println(match)
