@@ -48,7 +48,7 @@ type respond struct {
 
 func main() {
 	db, _ = sql.Open("mysql", "root:62011139@tcp(178.128.94.63:3306)/prodj")
-	li, err := net.Listen("tcp", ":8080")
+	li, err := net.Listen("tcp", "178.128.94.63:8080")
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
