@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -78,7 +79,7 @@ func DisplayAllPro(limit int, offset int) (val string) {
 
 	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id BETWEEN ? AND ?", strconv.Itoa(a), strconv.Itoa(c))
 	CheckErr(err)
-	// defer rows.Close()
+	defer rows.Close()
 	for rows.Next() {
 		var name string
 		var quantity int
@@ -86,7 +87,7 @@ func DisplayAllPro(limit int, offset int) (val string) {
 		err = rows.Scan(&name, &quantity, &price)
 		if err != nil {
 			fmt.Println("hererererer")
-			panic(err)
+			log.Fatal(err)
 		}
 		result := Data{Name: name, Quantity: quantity, Price: price}
 		fmt.Println("result", result)
@@ -98,7 +99,13 @@ func DisplayAllPro(limit int, offset int) (val string) {
 		l = append(l, tmp)
 
 	}
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
 
+	if err := rows.Close(); err != nil {
+		log.Fatal(err)
+	}
 	result := Dis{Product: l}
 
 	byteArray, err := json.Marshal(result)
