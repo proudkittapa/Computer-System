@@ -120,10 +120,11 @@ func Insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
 
 func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	ctx = context.Background()
-	tx, _ := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
-	// if err != nil {
-	// 	log.Println(err)
-	// }
+	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		// log.Println(err)
+		panic(err)
+	}
 	transactionC := make(chan string)
 	t := make(chan int)
 	//start := time.Now()
@@ -153,7 +154,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		go Insert(&wg, tx, user, productId, orderQuantity)
 		wg.Wait()
 		if err := tx.Commit(); err != nil {
-			//fmt.Printf("Failed to commit tx: %v\n", err)
+			// fmt.Printf("Failed to commit tx: %v\n", err)
 		}
 
 		result = "transaction successful"
