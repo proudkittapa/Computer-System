@@ -242,18 +242,19 @@ func test_time_check(wg1 sync.WaitGroup) {
 		go client(&wg1, "POST", "/products/1", 2)     // stock must = 998
 		go client(&wg1, "POST", "/products/1", 3)     // stock must = 995
 		go client(&wg1, "POST", "/products/1", 5)     // stock must = 990
-		go client(&wg1, "POST", "/products/1", 10000) // stock must = 990 mess: the order is out of stock
+		go client(&wg1, "POST", "/products/1", 10000) // stock must = 990 mess: the order more than stock quantity
 	}
-	t04 := float64(time.Since(t4)) / 1e6 / 4
-	fmt.Printf("Latency Time:   %v ", t04)
+	t04 := float64(time.Since(t4)) / 1e6
+	fmt.Printf("Time:   %v ", t04)
+	fmt.Printf("Latency Time:   %v ", (t04 / 8))
 
-	t5 := time.Now()
-	for i := 0; i < 2; i++ {
-		wg1.Add(1)
-		go client(&wg1, "POST", "/products/2", 10000) // stock must = 0
-	}
-	t05 := float64(time.Since(t5)) / 1e6 / 2
-	fmt.Printf("Latency Time:   %v ", t05)
+	// t5 := time.Now()
+	// for i := 0; i < 2; i++ {
+	// 	wg1.Add(1)
+	// 	go client(&wg1, "POST", "/products/2", 10000) // stock must = 0
+	// }
+	// t05 := float64(time.Since(t5)) / 1e6 / 2
+	// fmt.Printf("Latency Time:   %v ", t05)
 	wg1.Wait()
 }
 func random(x int, y int) int {
