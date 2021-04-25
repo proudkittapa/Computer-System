@@ -31,7 +31,7 @@ type Mess struct {
 // var wg1 sync.WaitGroup
 
 func send(conn net.Conn, host string, m string, p string, userid int, quan int) {
-	fmt.Println("send")
+	// fmt.Println("send")
 	userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
@@ -45,7 +45,7 @@ func send(conn net.Conn, host string, m string, p string, userid int, quan int) 
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHeaderPOST(userid, quan))
 	}
-	fmt.Println("send done")
+	// fmt.Println("send done")
 }
 
 var result Rate
@@ -72,14 +72,14 @@ func receive2(conn net.Conn) string {
 		// fmt.Println("before out of loop")
 		break
 	}
-	fmt.Println("out of loop")
+	// fmt.Println("out of loop")
 
 	return message
 }
 
 func client(wg1 *sync.WaitGroup, m string, p string, quan int) string {
 	// t0 := time.Now()
-	fmt.Println("client", userid)
+	// fmt.Println("client", userid)
 	host := "178.128.94.63:8080"
 	conn, err := net.Dial("tcp", host)
 	if err != nil {
@@ -89,7 +89,7 @@ func client(wg1 *sync.WaitGroup, m string, p string, quan int) string {
 	send(conn, host, m, p, userid, quan) //check parameter quan
 	a := receive2(conn)
 	wg1.Done()
-	fmt.Println("client done")
+	// fmt.Println("client done")
 	return a
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	// <-ch
