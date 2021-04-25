@@ -96,17 +96,6 @@ func DisplayAllPro(limit int, offset int) (val string) {
 
 	}
 
-	// fmt.Println(a, b, c)
-	// for i := a; i <= c; i++ {
-	// 	tmp := Db_query(i)
-	// 	byArr, err := json.Marshal(tmp)
-	// 	CheckErr(err)
-
-	// 	temp := string(byArr)
-
-	// 	l = append(l, temp)
-	// }
-
 	result := Dis{Product: l}
 
 	byteArray, err := json.Marshal(result)
