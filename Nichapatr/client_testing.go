@@ -218,7 +218,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	tp01 := float64(time.Since(tp1)) / 1e6 / 5
-	fmt.Printf("Latency Time:   %v ", tp01)
+	fmt.Printf("Latency Time MISS:   %v \n", tp01)
 
 	tp2 := time.Now()
 	for i := 6; i < 11; i++ {
@@ -226,7 +226,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	tp02 := float64(time.Since(tp2)) / 1e6 / 5
-	fmt.Printf("Latency Time:   %v \n", tp02)
+	fmt.Printf("Latency Time MISS:   %v \n", tp02)
 
 	tp3 := time.Now()
 	for i := 6; i < 11; i++ {
@@ -234,7 +234,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	tp03 := float64(time.Since(tp3)) / 1e6 / 5
-	fmt.Printf("Latency Time:   %v \n", tp03)
+	fmt.Printf("Latency Time HIT:   %v \n", tp03)
 	tcheckp(tp01, tp02, tp03)
 
 	/*--------------------time check (2)--------------------*/
