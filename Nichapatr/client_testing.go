@@ -139,7 +139,7 @@ func onerun() {
 		// client("GET", "/", 0)
 		// client("GET", "/products", 0)
 		client("GET", "/products/1", 0)
-		client("POST", "/products/1", 2)
+		// client("POST", "/products/1", 2)
 	}
 }
 func test_time_check() {
