@@ -72,7 +72,7 @@ func receive2(conn net.Conn) string {
 		// fmt.Println("before out of loop")
 		break
 	}
-	// fmt.Println("out of loop")
+	fmt.Println("out of loop")
 
 	return message
 }
