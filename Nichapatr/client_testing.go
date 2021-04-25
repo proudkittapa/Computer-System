@@ -169,7 +169,7 @@ func tchecku(t01 float64, t02 float64, t03 float64) {
 		fmt.Println(t01 - t02)
 	}
 	if t03 < t01 && t02 < t01 {
-		fmt.Println("it is faster, case3 and 2 Hit (success)") // t03 is time when it's hit; t01 is time when it's miss
+		fmt.Println("t02 & t03 is faster, case3 and 2 Hit (success)") // t03 is time when it's hit; t01 is time when it's miss
 	} else {
 		fmt.Println("cache not make faster maybe not hit")
 	}
