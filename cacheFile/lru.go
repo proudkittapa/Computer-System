@@ -248,15 +248,15 @@ func (l *Lru_cache) Display() {
 	}
 }
 
-func SendMissHit() string {
+func SendMissHit() Pam {
 	result := Pam{Miss: cMiss, Hit: cHit}
 
-	byteArray, err := json.Marshal(result)
-	CheckErr(err)
+	// byteArray, err := json.Marshal(result)
+	// CheckErr(err)
 
-	tmp := string(byteArray)
+	// tmp := string(byteArray)
 
-	return tmp
+	return result
 }
 
 // func main() {
