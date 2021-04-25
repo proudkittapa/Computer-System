@@ -229,21 +229,21 @@ func main() {
 	defer profile.Start().Stop()
 	var wg sync.WaitGroup
 	start := time.Now()
-	for i := 0; i < users; i++ {
-		wg.Add(1)
-		// go onerun(i)
-		// 	go client(&wg, "GET", "/", i)
-		// 	wg.Add(1)
-		go client(&wg, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
-		// 	wg.Add(1)
-		// 	go client(&wg, "GET", "/products/1", i)
-		// 	wg.Add(1)
-		// 	go client(&wg, "POST", "/products/1", i)
+	// for i := 0; i < users; i++ {
+	// wg.Add(1)
+	// go onerun(i)
+	// 	go client(&wg, "GET", "/", i)
+	// 	wg.Add(1)
+	// go client(&wg, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
+	// 	wg.Add(1)
+	// 	go client(&wg, "GET", "/products/1", i)
+	// 	wg.Add(1)
+	// 	go client(&wg, "POST", "/products/1", i)
 
-	}
-	wg.Wait()
+	// }
+	// wg.Wait()
 
-	// user_model(wg)
+	user_model(wg)
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
