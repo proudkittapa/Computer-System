@@ -66,7 +66,7 @@ func receive(conn net.Conn) string {
 			}
 			break
 		}
-		message = string(buffer[:n])
+		// message = string(buffer[:n])
 	}
 	/*
 		message, err := bufio.NewReader(conn).ReadString('\n')
