@@ -128,13 +128,13 @@ func createHeaderPOST(u int, quan int) string {
 	return headers
 }
 
-func onerun2(wg1 sync.WaitGroup) {
+func onerun2(wg2 sync.WaitGroup) {
 
 	for i := 0; i < 1000; i++ {
-		wg1.Add(1)
+		wg2.Add(1)
 		client(&wg1, "GET", "/products/1", 0)
 	}
-	wg1.Wait()
+	wg2.Wait()
 	// client(&wg, "GET", "/", 0)
 	// client(&wg, "GET", "/products", 0)
 	// client(&wg1, "GET", "/products/1", 0)
