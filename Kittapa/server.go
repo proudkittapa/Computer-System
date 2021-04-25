@@ -23,6 +23,11 @@ type (
 		Path   string      `json:"path"`
 		Name   HandlerFunc `json:"name"`
 	}
+
+	LimitOffset struct {
+		limit  int
+		offset int
+	}
 )
 type HandlerFunc func() string
 
@@ -38,6 +43,7 @@ type Message struct {
 
 var count = 0
 var Result data
+var LF LimitOffset
 
 func (s *Server) GET(path string, h HandlerFunc) *Route {
 	m := "GET"
@@ -136,12 +142,42 @@ func getMessage(message string) (string, string, []string) {
 	p := strings.Split(path, "/")
 	fmt.Println("len p:", len(p))
 	fmt.Println("p[1]:", p[1])
-	if p[1] == "products" && len(p) == 3 {
+	a, b := queryString(p[1])
+	if b {
+		fmt.Println(a)
+		qString := strings.Split(a, "&")
+		for j := 0; j < len(qString); j++ {
+			fmt.Println("J: ", qString[j])
+		}
+		k := strings.Split(qString[0], "=")[1]
+		LF.limit, _ = strconv.Atoi(k)
+		k = strings.Split(qString[1], "=")[1]
+		LF.offset, _ = strconv.Atoi(k)
+		path = "/products"
+	} else if p[1] == "products" && len(p) == 3 {
 		fmt.Println("productsWithID")
 		ID, _ = strconv.Atoi(p[2])
 		path = "/" + p[1] + "/:id"
 	}
+	fmt.Println("path", path)
 	return method, path, p
+}
+
+func queryString(m string) (string, bool) {
+	index := 0
+	b := false
+	for i := 0; i < len(m); i++ {
+		if m[i] == 63 {
+			// fmt.Println("?")
+			b = true
+			index = i
+		}
+		// fmt.Println(m[i])
+	}
+	a := m[index+1:]
+	return a, b
+	// match, _ := regexp.MatchString(, m)
+	// fmt.Println(match)
 }
 
 func (s *Server) check(method, path string) (*Route, bool) {
@@ -162,7 +198,6 @@ func send(conn net.Conn, d string, c string) {
 func createHeader(d string, contentType string) string {
 	m := Message{Mess: d}
 	a, _ := json.Marshal(m)
-
 	contentLength := len(a)
 	headers := fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", contentLength, contentType, a)
 	return headers

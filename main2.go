@@ -72,6 +72,7 @@ func hitmissFile() string {
 }
 
 func displayProducts() string {
-	a := cacheFile.DisplayAllPro()
-	return a
+	fmt.Println(Kittapa.LF)
+	// a := cacheFile.DisplayAllPro()
+	return ""
 }
