@@ -255,7 +255,7 @@ func random(x int, y int) int {
 func quantity_check(wg1 sync.WaitGroup) { //Mind
 	// 10 users && 1000 products in database (/product/3)
 	// "The order is out of stock"
-	fmt.Println("case1")
+	fmt.Println("-----------------case1------------------------")
 	for i := 0; i < 5; i++ {
 		wg1.Add(1)
 		go func() {
@@ -269,7 +269,7 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 	fmt.Println(qcheck(mes1.Mess, "The order is out of stock"))
 	// 10 users && 10,000 products in database (/product/4) && random quantity in first Fifth orders, last order's quantity is more than stock quantity
 	// "order more than stock quantity"
-	fmt.Println("case2")
+	fmt.Println("-----------------case2------------------------")
 	for i := 0; i < 5; i++ {
 		wg1.Add(1)
 		go func() {
@@ -282,7 +282,7 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 	mes1 = getJson(a)
 	fmt.Println(qcheck(mes1.Mess, "order more than stock quantity"))
 	// unpredict result numer of "transaction successful"&"The order is out of stock"
-	fmt.Println("case3")
+	fmt.Println("-----------------case3------------------------")
 	suc := 0
 	for i := 0; i < 5; i++ {
 		wg1.Add(2)
@@ -309,6 +309,7 @@ func qcheck(message string, expect string) string {
 	if message == "" {
 		fmt.Println("No message")
 	} else if message == expect {
+		fmt.Printf("-------success------ expect: %s, \nget: %s\n", expect, message)
 		return "success"
 	} else {
 		fmt.Printf("-------Fail------ expect: %s, \nget: %s\n", expect, message)
@@ -319,9 +320,9 @@ func qcheck(message string, expect string) string {
 
 func unpredictcheck(success int) {
 	if success == 7 || success == 5 {
-		fmt.Println("Succes")
+		fmt.Println("-------success------")
 	} else {
-		fmt.Println("Fail")
+		fmt.Println("-------fail------")
 	}
 }
 
