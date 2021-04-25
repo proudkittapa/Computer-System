@@ -135,9 +135,9 @@ func createHeaderPOST(u int, quan int) string {
 }
 
 func onerun() {
-	for i := 0; i < 200; i++ {
-		client("GET", "/", 0)
-		client("GET", "/products", 0)
+	for i := 0; i < 1; i++ {
+		// client("GET", "/", 0)
+		// client("GET", "/products", 0)
 		client("GET", "/products/1", 0)
 		client("POST", "/products/1", 2)
 	}
@@ -253,6 +253,7 @@ func misshit_check() {
 	// check1 := []string{"miss", "miss", "miss", "miss", "miss"}
 	// check2 := []string{"miss", "miss", "miss", "miss", "miss"}
 	// check3 := []string{"hit", "hit", "hit", "hit", "hit"}
+
 	checkU1 := Rate{Miss: 1, Hit: 4}
 	for i := 1; i < 6; i++ {
 		client("GET", "/", 0)
@@ -267,49 +268,49 @@ func misshit_check() {
 	fmt.Println("Miss for /", k1.Miss)
 
 	/*-------------check(2)-------------*/
-	/*
-		checkP1 := Rate{Miss: 5, Hit: 0}
-		for i := 1; i < 6; i++ {
-			client("GET", "/products/"+strconv.Itoa(i), 0)
-		}
-		m1 := client("GET", "/hitmiss", 0)
-		l1 := getJson(m1)
-		n1 := getJson2(l1.Mess)
-		check(checkP1, n1) //check miss, hit
-		fmt.Println("Hit for /products/:id", n1.Hit)
-		fmt.Println("Miss for /products/:id", n1.Miss)
 
-		checkP2 := Rate{Miss: 10, Hit: 0}
-		for i := 6; i < 11; i++ {
-			client("GET", "/products/"+strconv.Itoa(i), 0)
-		}
-		m2 := client("GET", "/hitmiss", 0)
-		l2 := getJson(m2)
-		n2 := getJson2(l2.Mess)
-		check(checkP2, n2)
-		fmt.Println("Hit for /products/:id", n1.Hit)
-		fmt.Println("Miss for /products/:id", n1.Miss)
+	checkP1 := Rate{Miss: 5, Hit: 0}
+	for i := 1; i < 6; i++ {
+		client("GET", "/products/"+strconv.Itoa(i), 0)
+	}
+	m1 := client("GET", "/hitmiss", 0)
+	l1 := getJson(m1)
+	n1 := getJson2(l1.Mess)
+	check(checkP1, n1) //check miss, hit
+	fmt.Println("Hit for /products/:id", n1.Hit)
+	fmt.Println("Miss for /products/:id", n1.Miss)
 
-		checkP3 := Rate{Miss: 10, Hit: 5}
-		for i := 6; i < 11; i++ {
-			client("GET", "/products/"+strconv.Itoa(i), 0)
-		}
-		m3 := client("GET", "/hitmiss", 0)
-		l3 := getJson(m3)
-		n3 := getJson2(l3.Mess)
-		check(checkP3, n3)
-		fmt.Println("Hit for /products/:id", n1.Hit)
-		fmt.Println("Miss for /products/:id", n1.Miss)
-	*/
+	checkP2 := Rate{Miss: 10, Hit: 0}
+	for i := 6; i < 11; i++ {
+		client("GET", "/products/"+strconv.Itoa(i), 0)
+	}
+	m2 := client("GET", "/hitmiss", 0)
+	l2 := getJson(m2)
+	n2 := getJson2(l2.Mess)
+	check(checkP2, n2)
+	fmt.Println("Hit for /products/:id", n1.Hit)
+	fmt.Println("Miss for /products/:id", n1.Miss)
+
+	checkP3 := Rate{Miss: 10, Hit: 5}
+	for i := 6; i < 11; i++ {
+		client("GET", "/products/"+strconv.Itoa(i), 0)
+	}
+	m3 := client("GET", "/hitmiss", 0)
+	l3 := getJson(m3)
+	n3 := getJson2(l3.Mess)
+	check(checkP3, n3)
+	fmt.Println("Hit for /products/:id", n1.Hit)
+	fmt.Println("Miss for /products/:id", n1.Miss)
+
 }
 
 func main() {
 	// flag.Parse()
 	start := time.Now()
-	misshit_check()
+	// misshit_check()
 	// test_time_check()
 	// user_model()
-	// onerun()
+	onerun()
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
