@@ -35,7 +35,7 @@ type data struct {
 // 	}
 // }
 
-func GetCache(id int) string {
+func ReCache(id int) string {
 	db, err := sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 	checkErr(err)
 
