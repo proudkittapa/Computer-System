@@ -285,7 +285,7 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 	fmt.Println("case3")
 	suc := 0
 	for i := 0; i < 5; i++ {
-		wg1.Add(1)
+		wg1.Add(2)
 		go func() {
 			a := client(&wg1, "POST", "/products/503", 100)
 			mes1 := getJson(a)
@@ -428,7 +428,9 @@ func main() {
 	var wg1 sync.WaitGroup
 	start := time.Now()
 	// misshit_check()
+	fmt.Println("before quantity_check")
 	quantity_check(wg1)
+	fmt.Println("after quantity_check")
 	// test_time_check(wg1)
 	// onerun2(wg1)
 	// start := time.Now()
