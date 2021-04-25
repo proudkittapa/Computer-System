@@ -26,6 +26,7 @@ func main() {
 	s.GET("/", getCacheFile)
 	s.GET("/products/:id", productID)
 	s.GET("/hitmiss", hitmiss)
+	s.GET("/hitmissFile", hitmissFile)
 	// cache.ReCache(1)
 	s.POST("/products2/:id", postPreorder2)
 	s.POST("/products/:id", postPreorder)
@@ -61,4 +62,10 @@ func postPreorder2() string {
 func getCacheFile() string {
 	a := cacheFile.Call_cache("preorder/index.html")
 	return a
+}
+
+func hitmissFile() string {
+	a, _ := json.Marshal(cacheFile.SendMissHitFile())
+	// return "{miss: 1, hit: 2}"
+	return string(a)
 }
