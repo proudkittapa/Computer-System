@@ -234,6 +234,7 @@ func user_model(wg2 *sync.WaitGroup) {
 			client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
 		}()
 	}
+	wg2.Wait()
 }
 
 func check(expect Rate, get Rate) {
