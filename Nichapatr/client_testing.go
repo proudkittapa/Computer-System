@@ -135,7 +135,7 @@ func createHeaderPOST(u int, quan int) string {
 }
 
 func onerun() {
-	for i := 0; i < 800; i++ {
+	for i := 0; i < 1000; i++ {
 		// client("GET", "/", 0)
 		// client("GET", "/products", 0)
 		client("GET", "/products/1", 0)
