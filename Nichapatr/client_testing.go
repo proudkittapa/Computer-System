@@ -240,7 +240,9 @@ func misshit_check() {
 	}
 	m := client("GET", "/hitmissFile", 0)
 	j1 := getJson(m)
+	fmt.Println("j1:", j1)
 	k1 := getJson2(j1.Mess)
+	fmt.Println("k1:", k1)
 	check(checkU1, k1) //check miss, hit
 	fmt.Println("Hit for /", k1.Hit)
 	fmt.Println("Miss for /", k1.Miss)
