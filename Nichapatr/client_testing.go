@@ -239,10 +239,10 @@ func test_time_check(wg1 sync.WaitGroup) {
 	t4 := time.Now() //Mind
 	for i := 0; i < 2; i++ {
 		wg1.Add(4)
-		go client(&wg1, "POST", "/products/1", 2)     // stock must = 998
-		go client(&wg1, "POST", "/products/1", 3)     // stock must = 995
-		go client(&wg1, "POST", "/products/1", 5)     // stock must = 990
-		go client(&wg1, "POST", "/products/1", 10000) // stock must = 990 mess: the order more than stock quantity
+		go client(&wg1, "POST", "/products/4", 2)     // stock must = 998
+		go client(&wg1, "POST", "/products/4", 3)     // stock must = 995
+		go client(&wg1, "POST", "/products/4", 5)     // stock must = 990
+		go client(&wg1, "POST", "/products/4", 10000) // stock must = 990 mess: the order more than stock quantity
 	}
 	t04 := float64(time.Since(t4)) / 1e6
 	fmt.Printf("Time:   %v ", t04)
@@ -289,7 +289,7 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 			fmt.Println(qcheck(mes1.Mess, "transaction successful"))
 		}()
 	}
-	a = client(&wg1, "POST", "/products/502", 500)
+	a = client(&wg1, "POST", "/products/2", 500)
 	mes1 = getJson(a)
 	fmt.Println(qcheck(mes1.Mess, "order more than stock quantity"))
 	// unpredict result numer of "transaction successful"&"The order is out of stock"
@@ -298,14 +298,14 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 	for i := 0; i < 5; i++ {
 		wg1.Add(2)
 		go func() {
-			a := client(&wg1, "POST", "/products/503", 100)
+			a := client(&wg1, "POST", "/products/3", 100)
 			mes1 := getJson(a)
 			if qcheck(mes1.Mess, "transaction successful") == "success" {
 				suc++
 			}
 		}()
 		go func() {
-			a := client(&wg1, "POST", "/products/503", 200)
+			a := client(&wg1, "POST", "/products/3", 200)
 			mes1 := getJson(a)
 			if qcheck(mes1.Mess, "transaction successful") == "success" {
 				suc++
