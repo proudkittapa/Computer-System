@@ -219,7 +219,7 @@ func user_model(wg1 sync.WaitGroup) {
 		}()
 	}
 	for i := 0.0; i < (num_user * 0.25); i++ {
-		wg1.Add(2)
+		wg1.Add(3)
 		go func() {
 			client(&wg1, "GET", "/", 0)
 			client(&wg1, "GET", "/products", 0)
@@ -227,7 +227,7 @@ func user_model(wg1 sync.WaitGroup) {
 		}()
 	}
 	for i := 0.0; i < (num_user * 0.15); i++ {
-		wg1.Add(2)
+		wg1.Add(4)
 		go func() {
 			client(&wg1, "GET", "/", 0)
 			client(&wg1, "GET", "/products", 0)
