@@ -43,7 +43,7 @@ var c = 0
 
 //209.97.165.170
 //178.128.94.63:3306
-var host = "178.128.94.63:8080"
+var host = "178.128.94.63:8081"
 
 // var host = "localhost:8080"
 
@@ -259,7 +259,7 @@ func user_model(wg1 sync.WaitGroup) {
 		wg1.Add(2)
 		go func() {
 			client(&wg1, "GET", "/", 0)
-			// client(&wg1, "GET", "/products", 0)
+			client(&wg1, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
 		}()
 	}
 	fmt.Println("here")
@@ -267,7 +267,7 @@ func user_model(wg1 sync.WaitGroup) {
 		wg1.Add(3)
 		go func() {
 			client(&wg1, "GET", "/", 0)
-			// client(&wg1, "GET", "/products", 0)
+			client(&wg1, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
 			client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
 		}()
 	}
@@ -275,7 +275,7 @@ func user_model(wg1 sync.WaitGroup) {
 		wg1.Add(4)
 		go func() {
 			client(&wg1, "GET", "/", 0)
-			// client(&wg1, "GET", "/products", 0)
+			client(&wg1, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
 			client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
 			client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
 		}()
