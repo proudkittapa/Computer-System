@@ -36,6 +36,9 @@ func InitDatabase() {
 	// db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
 	db.SetMaxOpenConns(2)
+	for i := 1; i <= 5; i++ {
+		db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, i)
+	}
 
 }
 
@@ -78,16 +81,17 @@ func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 }
 
 func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
-	//fmt.Println("start decrement func")
 	quantity := <-t // channel from getQuantity
 	newQuantity := quantity - orderQuantity
+	if quantity == 0 {
+		transactionC <- "out of stock"
+		return
+	}
 	if newQuantity < 0 {
 		//fmt.Println("the order is out of stock")
 		transactionC <- "not complete"
 		return
 	}
-	//fmt.Println(newQuantity)
-	//fmt.Println("decrement 1")
 	_, err := tx.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(id))
 	if err != nil {
 		//fmt.Println("decrement fail")
@@ -95,12 +99,9 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 		transactionC <- "rollback"
 		return
 	}
-	//fmt.Println("stop3")
 	x = Data{Quantity: newQuantity}
 	val := C.Set(id, x)
 	fmt.Println(val)
-	//fmt.Println("stop4")
-	//fmt.Println("decrement 2")
 	transactionC <- "done"
 }
 
@@ -115,7 +116,6 @@ func Insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
 }
 
 func Preorder(end chan string, user string, productId int, orderQuantity int) {
-	result = "not complete"
 	ctx = context.Background()
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
@@ -133,7 +133,14 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		return
 	}
 	if result2 == "not complete" {
-		result = "the order is out of stock"
+		result = "order more than stock quantity"
+		fmt.Println(result)
+		tx.Commit()
+		end <- result
+		return
+	}
+	if result2 == "out of stock" {
+		result = "The order is out of stock"
 		fmt.Println(result)
 		tx.Commit()
 		end <- result
