@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 
 	"regexp"
 	"strconv"
@@ -37,9 +36,9 @@ type product struct {
 func InitDatabase() {
 	// db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
-	db.SetMaxOpenConns(32000)
-	db.SetMaxIdleConns(32000)
-	db.SetConnMaxLifetime(10 * time.Second)
+	db.SetMaxOpenConns(0)
+	// db.SetMaxIdleConns(32000)
+	// db.SetConnMaxLifetime(10 * time.Second)
 	for i := 1; i <= 5; i++ {
 		db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, i)
 	}
