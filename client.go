@@ -82,7 +82,7 @@ func recv(conn net.Conn) {
 
 }
 
-func client(m string, p string, userId int) {
+func client(wg *sync.WaitGroup, m string, p string, userId int) {
 	// t0 := time.Now()
 
 	conn, err := net.Dial("tcp", host)
@@ -100,6 +100,7 @@ func client(m string, p string, userId int) {
 	fmt.Println("response time:", t)
 	c--
 	fmt.Println("current con:", c)
+	wg.Done()
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	// <-ch
 }
@@ -212,25 +213,32 @@ func fillString(retunString string, toLength int) string {
 	}
 	return retunString
 }
-func onerun(u int) {
-	// client("GET", "/", u)
-	// client("GET", "/products", u)
-	client("GET", "/products/1", u)
-	// client("POST", "/products/1", u)
-	// client("POST", "/payment", u)
-}
+
+// func onerun(u int) {
+// 	client("GET", "/", u)
+// 	client("GET", "/products", u)
+// 	client("GET", "/products/1", u)
+// 	client("POST", "/products/1", u)
+// }
 
 func main() {
 	// flag.Parse()
 	defer profile.Start().Stop()
-	// var wg sync.WaitGroup
+	var wg sync.WaitGroup
 	start := time.Now()
 	for i := 0; i < users; i++ {
-		go onerun(i)
-		// wg.Add(1)
+		wg.Add(1)
+		// go onerun(i)
+		go client(&wg, "GET", "/", i)
+		wg.Add(1)
+		go client(&wg, "GET", "/products", i)
+		wg.Add(1)
+		go client(&wg, "GET", "/products/1", i)
+		wg.Add(1)
+		go client(&wg, "POST", "/products/1", i)
 
 	}
-	// wg.Wait()
+	wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
