@@ -22,7 +22,8 @@ func main() {
 	// .Display()
 	// cacheFile.C = cacheFile.Cache_cons(10)
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
-	s.GET("/", abc)
+	// s.GET("/", abc)
+	s.GET("/", getCacheFile)
 	s.GET("/products/:id", productID)
 	s.GET("/hitmiss", hitmiss)
 	// cache.ReCache(1)
@@ -54,5 +55,10 @@ func hitmiss() string {
 
 func postPreorder2() string {
 	a := cacheFile.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
+	return a
+}
+
+func getCacheFile() string {
+	a := cacheFile.Call_cache("preorder/index.html")
 	return a
 }
