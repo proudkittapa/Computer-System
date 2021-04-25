@@ -241,7 +241,7 @@ func main() {
 		// 	go client(&wg, "POST", "/products/1", i)
 
 	}
-	// wg.Wait()
+	wg.Wait()
 
 	user_model(wg)
 	// time.Sleep(100 * time.Millisecond)
