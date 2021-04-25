@@ -344,7 +344,7 @@ func qcheck(message string, expect string) string {
 }
 
 func unpredictcheck(success int) {
-	if success == 7 || success == 5 {
+	if success == 7 || success == 5 || success == 6 {
 		fmt.Println("-------success------")
 	} else {
 		fmt.Println("-------fail------")
