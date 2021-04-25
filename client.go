@@ -457,7 +457,7 @@ func main() {
 	// start := time.Now()
 	// user_model(wg1)
 	// fmt.Println("after usermodel")
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 1000; i++ {
 		wg1.Add(1)
 		// go client(&wg1, "GET", "/", 0)
 		// go client(&wg1, "GET", "/products?limit=10&offset=0", 0)
