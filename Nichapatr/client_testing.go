@@ -51,7 +51,7 @@ var result Rate
 
 func receive2(conn net.Conn) string {
 	defer conn.Close()
-	fmt.Println("reading")
+	// fmt.Println("reading")
 	message := ""
 	buffer := make([]byte, 1024)
 	for {
@@ -71,7 +71,7 @@ func receive2(conn net.Conn) string {
 		fmt.Println("before out of loop")
 		break
 	}
-	fmt.Println("out of loop")
+	// fmt.Println("out of loop")
 
 	return message
 }
@@ -129,7 +129,7 @@ func createHeaderPOST(u int, quan int) string {
 	return headers
 }
 
-func onerun2(wg *sync.WaitGroup) {
+func onerun2() {
 	// client(&wg, "GET", "/", 0)
 	// client(&wg, "GET", "/products", 0)
 	client(&wg1, "GET", "/products/1", 0)
@@ -147,21 +147,24 @@ func test_time_check() {
 	/*--------------------Cache check (1)--------------------*/
 	t1 := time.Now()
 	for i := 1; i < 6; i++ {
-		client("GET", "/"+strconv.Itoa(i), 0)
+		wg1.Add(1)
+		go client(&wg1, "GET", "/"+strconv.Itoa(i), 0)
 	}
 	t01 := float64(time.Since(t1)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v ", t01)
 
 	t2 := time.Now()
 	for i := 6; i < 11; i++ {
-		client("GET", "/products/"+strconv.Itoa(i), 0)
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t02 := float64(time.Since(t2)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t02)
 
 	t3 := time.Now()
 	for i := 6; i < 11; i++ {
-		client("GET", "/products/"+strconv.Itoa(i), 0)
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t03 := float64(time.Since(t3)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t03)
@@ -179,17 +182,19 @@ func test_time_check() {
 	/*--------------------Cache check (2)--------------------*/
 	t4 := time.Now()
 	for i := 0; i < 2; i++ {
-		client("POST", "/products/1", 2)    // stock must = 998
-		client("POST", "/products/1", 3)    // stock must = 995
-		client("POST", "/products/1", 5)    // stock must = 990
-		client("POST", "/products/1", 1000) // stock must = 0
+		wg1.Add(4)
+		go client(&wg1, "POST", "/products/1", 2)    // stock must = 998
+		go client(&wg1, "POST", "/products/1", 3)    // stock must = 995
+		go client(&wg1, "POST", "/products/1", 5)    // stock must = 990
+		go client(&wg1, "POST", "/products/1", 1000) // stock must = 0
 	}
 	t04 := float64(time.Since(t4)) / 1e6 / 4
 	fmt.Printf("Latency Time:   %v ", t04)
 
 	t5 := time.Now()
 	for i := 0; i < 2; i++ {
-		client("POST", "/products/2", 10000) // stock must = 0
+		wg1.Add(1)
+		go client(&wg1, "POST", "/products/2", 10000) // stock must = 0
 	}
 	t05 := float64(time.Since(t5)) / 1e6 / 2
 	fmt.Printf("Latency Time:   %v ", t05)
@@ -197,37 +202,35 @@ func test_time_check() {
 
 var num_user float64 = 100
 
-func user_model(wg *sync.WaitGroup) {
-	wg.Add(3)
+func user_model() {
+	wg1.Add(3)
 	go func() {
 		for i := 0.0; i < (num_user * 0.60); i++ {
-			wg.Add(1)
+			wg1.Add(1)
 			go func() {
-				client(&wg, "GET", "/", 0)
-				client(&wg, "GET", "/products", 0)
+				client(&wg1, "GET", "/", 0)
+				client(&wg1, "GET", "/products", 0)
 			}()
 		}
 	}()
 	go func() {
 		for i := 0.0; i < (num_user * 0.25); i++ {
-			wg.Add(1)
+			wg1.Add(1)
 			go func() {
-				client(&wg, "GET", "/", 0)
-				client(&wg, "GET", "/products", 0)
-				client(&wg, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+				client(&wg1, "GET", "/", 0)
+				client(&wg1, "GET", "/products", 0)
+				client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
 			}()
 		}
 	}()
-
 	go func() {
 		for i := 0.0; i < (num_user * 0.15); i++ {
-			wg.Add(1)
+			wg1.Add(1)
 			go func() {
-				wg.Add(1)
-				client(&wg, "GET", "/", 0)
-				client(&wg, "GET", "/products", 0)
-				client(&wg, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-				client(&wg, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+				client(&wg1, "GET", "/", 0)
+				client(&wg1, "GET", "/products", 0)
+				client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+				client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
 			}()
 		}
 	}()
@@ -235,13 +238,11 @@ func user_model(wg *sync.WaitGroup) {
 }
 
 func check(expect Rate, get Rate) {
-	/*
-		if get != expect {
-			fmt.Printf("smt wrong!, expected v ==== %v \n, get v ==== %v \n", expect, get)
-		} else {
-			fmt.Printf("success : v ==== %v \n", get)
-		}
-	*/
+	if get != expect {
+		fmt.Printf("smt wrong!") //("expected v ==== %v \n, get v ==== %v \n", expect, get)
+	} else {
+		fmt.Printf("success : v ==== %v \n", get)
+	}
 	fmt.Println("expect:", expect)
 	fmt.Println("get:", get)
 }
@@ -254,10 +255,10 @@ func misshit_check() {
 
 	checkU1 := Rate{Miss: 1, Hit: 4}
 	for i := 1; i < 6; i++ {
-		client("GET", "/", 0)
+		go client(&wg1, "GET", "/", 0)
 	}
 	fmt.Println("before hitmissFile")
-	m := client("GET", "/hitmissFile", 0)
+	m := client(&wg1, "GET", "/hitmissFile", 0)
 	j1 := getJson(m)
 	fmt.Println("j1:", j1)
 	k1 := getJson2(j1.Mess)
@@ -270,9 +271,10 @@ func misshit_check() {
 
 	checkP1 := Rate{Miss: 5, Hit: 0}
 	for i := 1; i < 6; i++ {
-		client("GET", "/products/"+strconv.Itoa(i), 0)
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	m1 := client("GET", "/hitmiss", 0)
+	m1 := client(&wg1, "GET", "/hitmiss", 0)
 	l1 := getJson(m1)
 	n1 := getJson2(l1.Mess)
 	check(checkP1, n1) //check miss, hit
@@ -281,9 +283,10 @@ func misshit_check() {
 
 	checkP2 := Rate{Miss: 10, Hit: 0}
 	for i := 6; i < 11; i++ {
-		client("GET", "/products/"+strconv.Itoa(i), 0)
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	m2 := client("GET", "/hitmiss", 0)
+	m2 := client(&wg1, "GET", "/hitmiss", 0)
 	l2 := getJson(m2)
 	n2 := getJson2(l2.Mess)
 	check(checkP2, n2)
@@ -292,9 +295,10 @@ func misshit_check() {
 
 	checkP3 := Rate{Miss: 10, Hit: 5}
 	for i := 6; i < 11; i++ {
-		client("GET", "/products/"+strconv.Itoa(i), 0)
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	m3 := client("GET", "/hitmiss", 0)
+	m3 := client(&wg1, "GET", "/hitmiss", 0)
 	l3 := getJson(m3)
 	n3 := getJson2(l3.Mess)
 	check(checkP3, n3)
@@ -305,16 +309,16 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
-	var wg sync.WaitGroup
+	var wg1 sync.WaitGroup
 	start := time.Now()
 	// misshit_check()
 	// test_time_check()
-	// user_model(&wg)
+	// user_model()
 	for i := 0; i < 1000; i++ {
-		wg.Add(1)
-		onerun2(&wg)
+		wg1.Add(1)
+		go onerun2()
 	}
-	wg.Wait()
+	wg1.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
