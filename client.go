@@ -234,7 +234,7 @@ func main() {
 		// go onerun(i)
 		// 	go client(&wg, "GET", "/", i)
 		// 	wg.Add(1)
-		go client(&wg, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
+		client(&wg, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
 		// 	wg.Add(1)
 		// 	go client(&wg, "GET", "/products/1", i)
 		// 	wg.Add(1)
