@@ -276,6 +276,7 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 		}()
 	}
 	wg1.Wait()
+	wg1.Add(1)
 	a := client(&wg1, "POST", "/products/1", 100)
 	mes1 := getJson(a)
 	fmt.Println(qcheck(mes1.Mess, "The order is out of stock"))
@@ -291,6 +292,7 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 		}()
 	}
 	wg1.Wait()
+	wg1.Add(1)
 	a = client(&wg1, "POST", "/products/2", 500)
 	mes1 = getJson(a)
 	fmt.Println(qcheck(mes1.Mess, "order more than stock quantity"))
