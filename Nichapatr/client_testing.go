@@ -315,7 +315,7 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
-	var wg1 sync.WaitGroup
+	// var wg1 sync.WaitGroup
 	start := time.Now()
 	// misshit_check()
 	// test_time_check()
