@@ -389,11 +389,6 @@ func check(expect Rate, get Rate) {
 }
 
 func misshit_check() {
-	//declare variables pid
-	// check1 := []string{"miss", "miss", "miss", "miss", "miss"}
-	// check2 := []string{"miss", "miss", "miss", "miss", "miss"}
-	// check3 := []string{"hit", "hit", "hit", "hit", "hit"}
-
 	checkU1 := Rate{Miss: 1, Hit: 4}
 	for i := 1; i < 6; i++ {
 		clientNoGo("GET", "/", 0)
