@@ -267,7 +267,6 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 	// 10 users && 1000 products in database (/product/3)
 	// "The order is out of stock"
 	fmt.Println("-----------------case1------------------------")
-
 	for i := 0; i < 5; i++ {
 		wg1.Add(1)
 		go func() {
@@ -277,8 +276,8 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 			defer wg1.Done()
 		}()
 	}
-	// wg1.Wait()
-	// wg1.Add(1)
+	wg1.Wait()
+	wg1.Add(1)
 	fmt.Println("case 1 done")
 	a := client(&wg1, "POST", "/products/1", 100)
 	wg1.Wait()
