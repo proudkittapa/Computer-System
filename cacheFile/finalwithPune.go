@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	//"pin2pre/cacheFile"
 	"regexp"
 	"strconv"
 	"strings"
@@ -21,6 +20,7 @@ var (
 	mutex     sync.Mutex
 	totalTime float64
 	x         Data
+	result    string
 )
 
 type product struct {
@@ -51,7 +51,7 @@ func getJson(message string) product {
 }
 
 func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
-	fmt.Println("stop1")
+	//fmt.Println("stop1")
 	rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
 	var name string
 	var quantity int
@@ -64,9 +64,9 @@ func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 		return
 	}
 	x = Data{Name: name, Quantity: quantity, Price: price}
-	//val :=
+
 	//C.Set(id, x)
-	fmt.Println("stop2")
+	//fmt.Println("stop2")
 	//fmt.Println(val)
 	//fmt.Printf("Name: %s, Quantity: %d\n", name, quantity)
 	//fmt.Println("done")
@@ -92,11 +92,11 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 		transactionC <- "rollback"
 		return
 	}
-	fmt.Println("stop3")
+	//fmt.Println("stop3")
 	x = Data{Quantity: newQuantity}
 	val := C.Set(id, x)
 	fmt.Println(val)
-	fmt.Println("stop4")
+	//fmt.Println("stop4")
 	//fmt.Println("decrement 2")
 	transactionC <- "done"
 }
@@ -111,7 +111,7 @@ func Insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
 	wg.Done()
 }
 
-func Preorder(end chan int, user string, productId int, orderQuantity int) {
+func Preorder(end chan string, user string, productId int, orderQuantity int) {
 
 	ctx = context.Background()
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
@@ -123,12 +123,20 @@ func Preorder(end chan int, user string, productId int, orderQuantity int) {
 	//start := time.Now()
 	go GetQuantity(tx, transactionC, t, productId)
 	go Decrement(tx, t, transactionC, orderQuantity, productId)
-	if <-transactionC == "rollback" {
+	result2 := <-transactionC
+	if result2 == "rollback" {
 		//fmt.Println("rollback")
 		Preorder(end, user, productId, orderQuantity)
 		return
 	}
-	// fmt.Println("user:", user, "productId:", productId, "orderQuantity:", orderQuantity)
+	if result2 == "not complete" {
+		result = "the order is out of stock"
+		fmt.Println(result)
+		tx.Commit()
+		end <- result
+		return
+	}
+	fmt.Println("user:", user, "productId:", productId, "orderQuantity:", orderQuantity)
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go Insert(&wg, tx, user, productId, orderQuantity)
@@ -144,23 +152,19 @@ func Preorder(end chan int, user string, productId int, orderQuantity int) {
 	//fmt.Printf("tt: %v\n", tt)
 	//totalTime += tt
 	//fmt.Printf("total time: %v\n", totalTime)
-	num, _ := strconv.Atoi(user)
-	end <- num
+	//num, _ := strconv.Atoi(user)
+	result = "transaction successful"
+	end <- result
 	C.Display()
 	return
 }
-
-// func main() {
-// 	db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
-// 	db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
-// 	ctx = context.Background()
-// 	n := 100
-// 	end := make(chan int)
-// 	for i := 1; i <= n; i++ {
-// 		go preorder(end, strconv.Itoa(i), 1, 5)
-// 	}
-// 	for i := 1; i <= n; i++ {
-// 		<-end
-// 	}
-// 	return
-// }
+func PostPreorder(id int, quantity int) string {
+	InitDatabase()
+	InitCache()
+	//db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
+	//n := 5
+	end := make(chan string)
+	Preorder(end, strconv.Itoa(1), id, quantity)
+	result = <-end
+	return result
+}
