@@ -19,7 +19,7 @@ func main() {
 	s := Kittapa.New()
 	cacheFile.InitDatabase()
 	cacheFile.InitCache()
-	cacheFile.ReadFile()
+	cacheFile.C = cacheFile.ReadFile()
 	c := cron.New()
 	// cacheFile.SaveFile(cacheFile.C.Mp, cacheFile.C)
 	c.AddFunc("* */1 * * *", saveFile)
