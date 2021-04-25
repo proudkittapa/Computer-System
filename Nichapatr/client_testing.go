@@ -142,7 +142,7 @@ func onerun2(wg2 *sync.WaitGroup) {
 	// client(&wg1, "GET", "/products/1", 0)
 	// client(&wg, "POST", "/products/1", 2)
 }
-func test_time_check() {
+func test_time_check(wg2 *sync.WaitGroup) {
 	/*--------------------Cache check (2)--------------------*/
 	// t5 := time.Now()
 	// for i := 0; i < 1000; i++ {
@@ -154,7 +154,7 @@ func test_time_check() {
 	/*--------------------Cache check (1)--------------------*/
 	t1 := time.Now()
 	for i := 1; i < 6; i++ {
-		wg1.Add(1)
+		wg2.Add(1)
 		go client(&wg1, "GET", "/"+strconv.Itoa(i), 0)
 	}
 	t01 := float64(time.Since(t1)) / 1e6 / 5
@@ -162,7 +162,7 @@ func test_time_check() {
 
 	t2 := time.Now()
 	for i := 6; i < 11; i++ {
-		wg1.Add(1)
+		wg2.Add(1)
 		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t02 := float64(time.Since(t2)) / 1e6 / 5
@@ -170,7 +170,7 @@ func test_time_check() {
 
 	t3 := time.Now()
 	for i := 6; i < 11; i++ {
-		wg1.Add(1)
+		wg2.Add(1)
 		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t03 := float64(time.Since(t3)) / 1e6 / 5
@@ -189,7 +189,7 @@ func test_time_check() {
 	/*--------------------Cache check (2)--------------------*/
 	t4 := time.Now()
 	for i := 0; i < 2; i++ {
-		wg1.Add(4)
+		wg2.Add(4)
 		go client(&wg1, "POST", "/products/1", 2)    // stock must = 998
 		go client(&wg1, "POST", "/products/1", 3)    // stock must = 995
 		go client(&wg1, "POST", "/products/1", 5)    // stock must = 990
@@ -200,11 +200,12 @@ func test_time_check() {
 
 	t5 := time.Now()
 	for i := 0; i < 2; i++ {
-		wg1.Add(1)
+		wg2.Add(1)
 		go client(&wg1, "POST", "/products/2", 10000) // stock must = 0
 	}
 	t05 := float64(time.Since(t5)) / 1e6 / 2
 	fmt.Printf("Latency Time:   %v ", t05)
+	wg2.Wait()
 }
 
 var num_user float64 = 100
