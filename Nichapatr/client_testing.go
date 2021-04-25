@@ -1,13 +1,13 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"math"
 	"math/rand"
 	"net"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -51,16 +51,35 @@ var result Rate
 
 func receive(conn net.Conn) string {
 	defer conn.Close()
-	// fmt.Println("reading")
-	message, err := bufio.NewReader(conn).ReadString('\n')
-	if err != nil {
-		count_Fail++
-		log.Println("failed to read contents", message)
-		return ""
-	} else {
-		count_Res++
+	// fmt.Println("reading"
+	message := ""
+	buffer := make([]byte, 1024)
+	for {
+		n, err := conn.Read(buffer)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
+		fmt.Println(string(buffer[:n]))
+		if !strings.Contains(string(buffer[:n]), "HTTP") {
+			if _, err := conn.Write([]byte("Recieved\n")); err != nil {
+				log.Printf("failed to respond to client: %v\n", err)
+			}
+			break
+		}
+		message = string(buffer[:n])
 	}
-	fmt.Print("message", message)
+	/*
+		message, err := bufio.NewReader(conn).ReadString('\n')
+		if err != nil {
+			count_Fail++
+			log.Println("failed to read contents", message)
+			return ""
+		} else {
+			count_Res++
+		}
+		fmt.Print("message", message)
+	*/
+
 	return message
 	// result = getJson(message)
 }
