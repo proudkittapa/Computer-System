@@ -89,7 +89,6 @@ func client(wg1 *sync.WaitGroup, m string, p string, quan int) string {
 	wg1.Done()
 	return a
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
-
 	// <-ch
 }
 
@@ -316,7 +315,7 @@ func main() {
 	// user_model()
 	for i := 0; i < 1000; i++ {
 		wg1.Add(1)
-		go client(&wg1, "GET", "/products/1", i)
+		go client(&wg1, "GET", "/products/1", 0)
 		// go onerun2()
 	}
 	wg1.Wait()
