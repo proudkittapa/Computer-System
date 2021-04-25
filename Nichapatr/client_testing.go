@@ -311,7 +311,7 @@ func qcheck(message string, expect string) string {
 	} else if message == expect {
 		return "success"
 	} else {
-		fmt.Printf("Fail, expect: %s, get %s\n", expect, message)
+		fmt.Printf("-------Fail------ expect: %s, \nget: %s\n", expect, message)
 		return "fail"
 	}
 	return "fail"
