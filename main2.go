@@ -52,6 +52,7 @@ func hitmiss() string {
 
 func postPreorder2() string {
 	// cacheFile.InitDatabase()
+	fmt.Println("ID", Kittapa.ID)
 	a := cacheFile.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
 	return a
 }
