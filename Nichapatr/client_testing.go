@@ -161,6 +161,19 @@ func onerun2(wg1 sync.WaitGroup) {
 	// client(&wg1, "GET", "/products/1", 0)
 	// client(&wg, "POST", "/products/1", 2)
 }
+func tcheck(t01 float64, t02 float64, t03 float64) {
+	if math.Abs(t01-t02) <= 1 {
+		fmt.Println("Both are Miss, so time is similar (success)") // t01 ad t02 are both miss, so time must be similar
+	} else {
+		fmt.Println("something is not right(1) :")
+		fmt.Println(t01 - t02)
+	}
+	if t03 <= t02 {
+		fmt.Println("it is faster, case3 Hit (success)") // t03 is time when it's hit; t02 is time when it's miss
+	} else {
+		fmt.Println("cache not make faster maybe not hit")
+	}
+}
 func test_time_check(wg1 sync.WaitGroup) {
 	t1 := time.Now() //Uye
 	for i := 1; i < 6; i++ {
@@ -185,17 +198,33 @@ func test_time_check(wg1 sync.WaitGroup) {
 	}
 	t03 := float64(time.Since(t3)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t03)
-	if math.Abs(t01-t02) <= 1 {
-		fmt.Println("Both are Miss, so time is similar (success)") // t01 ad t02 are both miss, so time must be similar
-	} else {
-		fmt.Println("something is not right(1) :")
-		fmt.Println(t01 - t02)
+	tcheck(t01, t02, t03)
+
+	tp1 := time.Now() //Pune
+	for i := 1; i < 6; i++ {
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	if t03 <= t02 {
-		fmt.Println("it is faster, case3 Hit (success)") // t03 is time when it's hit; t02 is time when it's miss
-	} else {
-		fmt.Println("cache not make faster maybe not hit")
+	tp01 := float64(time.Since(tp1)) / 1e6 / 5
+	fmt.Printf("Latency Time:   %v ", tp01)
+
+	tp2 := time.Now()
+	for i := 6; i < 11; i++ {
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
+	tp02 := float64(time.Since(tp2)) / 1e6 / 5
+	fmt.Printf("Latency Time:   %v \n", tp02)
+
+	tp3 := time.Now()
+	for i := 6; i < 11; i++ {
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+	}
+	tp03 := float64(time.Since(tp3)) / 1e6 / 5
+	fmt.Printf("Latency Time:   %v \n", tp03)
+	tcheck(tp01, tp02, tp03)
+
 	/*--------------------time check (2)--------------------*/
 	t4 := time.Now() //Mind
 	for i := 0; i < 2; i++ {
