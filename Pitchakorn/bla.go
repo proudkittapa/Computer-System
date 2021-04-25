@@ -53,6 +53,32 @@ type Pam struct {
 	Hit  int `json:"hit"`
 }
 
+type Dis struct {
+	Product []string
+}
+
+func display_pro() (val string) {
+	var l []string
+	for i := 1; i <= 100; i++ {
+		tmp := Db_query(i)
+		byArr, err := json.Marshal(tmp)
+		CheckErr(err)
+
+		temp := string(byArr)
+
+		l = append(l, temp)
+	}
+
+	result := Dis{Product: l}
+
+	byteArray, err := json.Marshal(result)
+	CheckErr(err)
+
+	val = string(byteArray)
+	fmt.Println(val)
+	return
+}
+
 func InitCache() {
 	//C.limit = 10
 	C = Cache_cons(10)
@@ -133,11 +159,6 @@ func (list *Lru_cache) Set(id int, val Data) string {
 	reVal := node.value
 	return reVal
 }
-
-// mind -> cache MISS
-// mind -> Query
-// mind -> set query
-// func set
 
 func (list *Lru_cache) Move(node *Node) {
 	if node == list.head {
@@ -254,34 +275,27 @@ func (l *Lru_cache) Display() {
 	}
 }
 
-func SendHitMiss() Pam {
+func SendMissHit() string {
 	result := Pam{Miss: cMiss, Hit: cHit}
 
-	return result
+	byteArray, err := json.Marshal(result)
+	CheckErr(err)
+
+	tmp := string(byteArray)
+
+	return tmp
 }
 
 func main() {
 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 
-	InitCache()
-	fmt.Printf("Miss: %d Hit: %d\n", cMiss, cHit)
-
-	C.ReCache(1)
-	C.ReCache(1)
-	C.ReCache(1)
-	C.ReCache(1)
-	C.ReCache(1)
-	C.ReCache(1)
-	C.ReCache(1)
-	C.ReCache(1)
-	C.ReCache(1)
-	C.GetCache(1)
-
-	fmt.Printf("Miss: %d Hit: %d\n", cMiss, cHit)
-
-	a := SendHitMiss()
-	fmt.Println("sent: ", a)
-
+	display_pro()
+	// InitCache()
+	// c.ReCache(1)
+	// c.ReCache(1)
+	// c.ReCache(2)
+	// c.ReCache(3)
+	// c.ReCache(4)
 	// c.Display()
 	// defer profile.Start(profile.MemProfile).Stop()
 
