@@ -61,7 +61,7 @@ func postPreorder2() string {
 }
 
 func getCacheFile() string {
-	a := cacheFile.Call_cache("preorder/index.html")
+	a := cacheFile.Call_cache("../preorder/index.html")
 	return a
 }
 
