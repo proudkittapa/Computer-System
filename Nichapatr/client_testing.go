@@ -252,6 +252,7 @@ func user_model(wg1 sync.WaitGroup) {
 		}()
 	}
 	wg1.Wait()
+	fmt.Println("after wait group")
 }
 
 func check(expect Rate, get Rate) {
@@ -329,6 +330,7 @@ func main() {
 	// onerun2(wg1)
 	// start := time.Now()
 	user_model(wg1)
+	fmt.Println("after usermodel")
 	// for i := 0; i < 1000; i++ {
 	// 	wg1.Add(1)
 	// 	go client(&wg1, "GET", "/products/1", 0)
