@@ -31,7 +31,7 @@ type Mess struct {
 // var wg1 sync.WaitGroup
 
 func send(conn net.Conn, host string, m string, p string, userid int, quan int) {
-	// fmt.Println("sent")
+	fmt.Println("send")
 	userid++
 	if m == "GET" {
 		// fmt.Println("sent GET")
@@ -45,6 +45,7 @@ func send(conn net.Conn, host string, m string, p string, userid int, quan int) 
 		// fmt.Println("sent POST")
 		fmt.Fprintf(conn, createHeaderPOST(userid, quan))
 	}
+	fmt.Println("send done")
 }
 
 var result Rate
