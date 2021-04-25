@@ -59,7 +59,7 @@ func receive2(conn net.Conn) string {
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 		}
-		fmt.Println(string(buffer[:n]))
+		// fmt.Println(string(buffer[:n]))
 		if !strings.Contains(string(buffer[:n]), "HTTP") {
 			if _, err := conn.Write([]byte("Recieved\n")); err != nil {
 				log.Printf("failed to respond to client: %v\n", err)
@@ -67,7 +67,9 @@ func receive2(conn net.Conn) string {
 			break
 		}
 		message = string(buffer[:n])
+
 	}
+	fmt.Println("out of loop")
 	/*
 		message, err := bufio.NewReader(conn).ReadString('\n')
 		if err != nil {
