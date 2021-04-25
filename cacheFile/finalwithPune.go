@@ -166,7 +166,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	return
 }
 func PostPreorder(id int, quantity int) string {
-	//InitDatabase()
+	InitDatabase()
 	//InitCache()
 	//db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	//n := 5
