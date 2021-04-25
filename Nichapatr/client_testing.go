@@ -454,7 +454,7 @@ func main() {
 	// fmt.Println("before quantity_check")
 	quantity_check(wg1)
 	// fmt.Println("after quantity_check")
-	test_time_check(wg1)
+	//test_time_check(wg1)
 	// onerun2(wg1)
 	// user_model(wg1)
 	// fmt.Println("after usermodel")
