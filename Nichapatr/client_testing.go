@@ -317,7 +317,7 @@ func main() {
 	// flag.Parse()
 	// var wg1 sync.WaitGroup
 	start := time.Now()
-	misshit_check()
+	misshit_check(&wg1)
 	// test_time_check()
 	// onerun2(&wg1)
 	// start := time.Now()
