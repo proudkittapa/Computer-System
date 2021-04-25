@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	"regexp"
@@ -122,8 +123,8 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	ctx = context.Background()
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
-		// log.Println(err)
-		panic(err)
+		log.Println(err)
+		// panic(err)
 	}
 	transactionC := make(chan string)
 	t := make(chan int)
