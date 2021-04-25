@@ -257,7 +257,7 @@ func misshit_check(wg1 sync.WaitGroup) {
 	checkU1 := Rate{Miss: 1, Hit: 4}
 	for i := 1; i < 6; i++ {
 		wg1.Add(1)
-		client(&wg1, "GET", "/", 0)
+		go client(&wg1, "GET", "/", 0)
 	}
 	wg1.Wait()
 	fmt.Println("before hitmissFile")
@@ -275,7 +275,7 @@ func misshit_check(wg1 sync.WaitGroup) {
 	checkP1 := Rate{Miss: 5, Hit: 0}
 	for i := 1; i < 6; i++ {
 		wg1.Add(1)
-		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	wg1.Wait()
 	m1 := client(&wg1, "GET", "/hitmiss", 0)
@@ -288,7 +288,7 @@ func misshit_check(wg1 sync.WaitGroup) {
 	checkP2 := Rate{Miss: 10, Hit: 0}
 	for i := 6; i < 11; i++ {
 		wg1.Add(1)
-		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	wg1.Wait()
 	m2 := client(&wg1, "GET", "/hitmiss", 0)
@@ -301,7 +301,7 @@ func misshit_check(wg1 sync.WaitGroup) {
 	checkP3 := Rate{Miss: 10, Hit: 5}
 	for i := 6; i < 11; i++ {
 		wg1.Add(1)
-		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	wg1.Wait()
 	m3 := client(&wg1, "GET", "/hitmiss", 0)
@@ -316,16 +316,16 @@ func main() {
 	// flag.Parse()
 	var wg1 sync.WaitGroup
 	start := time.Now()
-	// misshit_check(wg1)
+	misshit_check(wg1)
 	// test_time_check(wg1)
 	// onerun2(wg1)
 	// start := time.Now()
-	user_model(wg1)
+	// user_model(wg1)
 	// for i := 0; i < 1000; i++ {
-	// 	// wg1.Add(1)
-	// 	// go client(&wg1, "GET", "/products/1", 0)
-	// wg1.Add(1000)
-	// onerun2(&wg1)
+	// 	wg1.Add(1)
+	// 	go client(&wg1, "GET", "/products/1", 0)
+	// // wg1.Add(1000)
+	// // onerun2(wg1)
 	// }
 	// wg1.Wait()
 	// time.Sleep(100 * time.Millisecond)
