@@ -19,7 +19,7 @@ import (
 	"github.com/pkg/profile"
 )
 
-var num_user float64 = 10000
+var num_user float64 = 5000
 
 type Messagee struct {
 	Name     string
