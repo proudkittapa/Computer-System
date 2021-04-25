@@ -18,10 +18,10 @@ func checkErr(err error) {
 }
 
 func main() {
-	db, err := sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+	db, err := sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
 	checkErr(err)
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1; i++ {
 		insert, err := db.Query("INSERT INTO products (name, quantity_in_stock, unit_price) VALUE ('Shirt', '10000', 20) ")
 		insert, err = db.Query("INSERT INTO products (name, quantity_in_stock, unit_price) VALUE ('Swater', '10000', 30) ")
 		insert, err = db.Query("INSERT INTO products (name, quantity_in_stock, unit_price) VALUE ('Hoodie', '10000', 25) ")
