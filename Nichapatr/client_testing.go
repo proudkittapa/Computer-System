@@ -134,7 +134,7 @@ func createHeaderPOST(u int, quan int) string {
 	return headers
 }
 
-func onerun() {
+func onerun2() {
 	for i := 0; i < 1000; i++ {
 		// client("GET", "/", 0)
 		// client("GET", "/products", 0)
@@ -310,7 +310,7 @@ func main() {
 	// misshit_check()
 	// test_time_check()
 	// user_model()
-	onerun()
+	onerun2()
 	// wg.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
