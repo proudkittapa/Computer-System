@@ -284,45 +284,47 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 	fmt.Println("case 1 done")
 	// 10 users && 10,000 products in database (/product/4) && random quantity in first Fifth orders, last order's quantity is more than stock quantity
 	// "order more than stock quantity"
-	fmt.Println("-----------------case2------------------------")
+	/*
+		fmt.Println("-----------------case2------------------------")
 
-	for i := 0; i < 5; i++ {
+		for i := 0; i < 5; i++ {
+			wg1.Add(1)
+			go func() {
+				a := client(&wg1, "POST", "/products/2", random(100, 150))
+				mes1 := getJson(a)
+				fmt.Println(qcheck(mes1.Mess, "transaction successful"))
+			}()
+		}
+		wg1.Wait()
+		fmt.Println("case 2 done")
 		wg1.Add(1)
-		go func() {
-			a := client(&wg1, "POST", "/products/2", random(100, 150))
-			mes1 := getJson(a)
-			fmt.Println(qcheck(mes1.Mess, "transaction successful"))
-		}()
-	}
-	wg1.Wait()
-	fmt.Println("case 2 done")
-	wg1.Add(1)
-	a = client(&wg1, "POST", "/products/2", 500)
+		a = client(&wg1, "POST", "/products/2", 500)
 
-	mes1 = getJson(a)
-	fmt.Println(qcheck(mes1.Mess, "order more than stock quantity"))
-	// // unpredict result numer of "transaction successful"&"The order is out of stock"
-	fmt.Println("-----------------case3------------------------")
-	suc := 0
-	for i := 0; i < 5; i++ {
-		wg1.Add(2)
-		go func() {
-			a := client(&wg1, "POST", "/products/3", 100)
-			mes1 := getJson(a)
-			if qcheck(mes1.Mess, "transaction successful") == "success" {
-				suc++
-			}
-		}()
-		go func() {
-			a := client(&wg1, "POST", "/products/3", 200)
-			mes1 := getJson(a)
-			if qcheck(mes1.Mess, "transaction successful") == "success" {
-				suc++
-			}
-		}()
-	}
-	unpredictcheck(suc)
-	wg1.Wait()
+		mes1 = getJson(a)
+		fmt.Println(qcheck(mes1.Mess, "order more than stock quantity"))
+		// // unpredict result numer of "transaction successful"&"The order is out of stock"
+		fmt.Println("-----------------case3------------------------")
+		suc := 0
+		for i := 0; i < 5; i++ {
+			wg1.Add(2)
+			go func() {
+				a := client(&wg1, "POST", "/products/3", 100)
+				mes1 := getJson(a)
+				if qcheck(mes1.Mess, "transaction successful") == "success" {
+					suc++
+				}
+			}()
+			go func() {
+				a := client(&wg1, "POST", "/products/3", 200)
+				mes1 := getJson(a)
+				if qcheck(mes1.Mess, "transaction successful") == "success" {
+					suc++
+				}
+			}()
+		}
+		unpredictcheck(suc)
+		wg1.Wait()
+	*/
 }
 
 func qcheck(message string, expect string) string {
