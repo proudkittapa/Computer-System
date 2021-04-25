@@ -166,7 +166,7 @@ func PostPreorder(id int, quantity int) string {
 	//db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
 	//n := 5
 	end := make(chan string)
-	Preorder(end, strconv.Itoa(1), id, quantity)
+	go Preorder(end, strconv.Itoa(1), id, quantity)
 	result = <-end
 	fmt.Println("hererreerere")
 	return result
