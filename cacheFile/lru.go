@@ -85,6 +85,7 @@ func DisplayAllPro(limit int, offset int) (val string) {
 		var price int
 		err = rows.Scan(&name, &quantity, &price)
 		if err != nil {
+			fmt.Println("hererererer")
 			panic(err)
 		}
 		result := Data{Name: name, Quantity: quantity, Price: price}
