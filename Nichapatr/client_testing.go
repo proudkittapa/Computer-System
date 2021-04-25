@@ -277,8 +277,8 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 		}()
 	}
 	wg1.Wait()
+	wg1.Add(1)
 	fmt.Println("case 1 done")
-	//wg1.Add(1)
 	a := client(&wg1, "POST", "/products/1", 100)
 	wg1.Wait()
 	mes1 := getJson(a)
@@ -297,7 +297,7 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 	}
 	wg1.Wait()
 	fmt.Println("case 2 done")
-	//wg1.Add(1)
+	wg1.Add(1)
 	a = client(&wg1, "POST", "/products/2", 500)
 
 	mes1 = getJson(a)
