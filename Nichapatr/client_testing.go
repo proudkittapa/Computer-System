@@ -28,7 +28,7 @@ type Mess struct {
 	Mess string `json:"mess"`
 }
 
-var wg1 sync.WaitGroup
+// var wg1 sync.WaitGroup
 
 func send(conn net.Conn, host string, m string, p string, userid int, quan int) {
 	// fmt.Println("sent")
@@ -128,21 +128,21 @@ func createHeaderPOST(u int, quan int) string {
 	return headers
 }
 
-func onerun2(wg2 *sync.WaitGroup) {
+func onerun2(wg1 sync.WaitGroup) {
 
 	for i := 0; i < 1000; i++ {
-		wg2.Add(1)
+		wg1.Add(1)
 		go func() {
 			client(&wg1, "GET", "/products/1", 0)
 		}()
 	}
-	wg2.Wait()
+	wg1.Wait()
 	// client(&wg, "GET", "/", 0)
 	// client(&wg, "GET", "/products", 0)
 	// client(&wg1, "GET", "/products/1", 0)
 	// client(&wg, "POST", "/products/1", 2)
 }
-func test_time_check(wg2 *sync.WaitGroup) {
+func test_time_check(wg1 sync.WaitGroup) {
 	/*--------------------Cache check (2)--------------------*/
 	// t5 := time.Now()
 	// for i := 0; i < 1000; i++ {
@@ -154,7 +154,7 @@ func test_time_check(wg2 *sync.WaitGroup) {
 	/*--------------------Cache check (1)--------------------*/
 	t1 := time.Now()
 	for i := 1; i < 6; i++ {
-		wg2.Add(1)
+		wg1.Add(1)
 		go client(&wg1, "GET", "/"+strconv.Itoa(i), 0)
 	}
 	t01 := float64(time.Since(t1)) / 1e6 / 5
@@ -162,7 +162,7 @@ func test_time_check(wg2 *sync.WaitGroup) {
 
 	t2 := time.Now()
 	for i := 6; i < 11; i++ {
-		wg2.Add(1)
+		wg1.Add(1)
 		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t02 := float64(time.Since(t2)) / 1e6 / 5
@@ -170,7 +170,7 @@ func test_time_check(wg2 *sync.WaitGroup) {
 
 	t3 := time.Now()
 	for i := 6; i < 11; i++ {
-		wg2.Add(1)
+		wg1.Add(1)
 		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 	}
 	t03 := float64(time.Since(t3)) / 1e6 / 5
@@ -189,7 +189,7 @@ func test_time_check(wg2 *sync.WaitGroup) {
 	/*--------------------Cache check (2)--------------------*/
 	t4 := time.Now()
 	for i := 0; i < 2; i++ {
-		wg2.Add(4)
+		wg1.Add(4)
 		go client(&wg1, "POST", "/products/1", 2)    // stock must = 998
 		go client(&wg1, "POST", "/products/1", 3)    // stock must = 995
 		go client(&wg1, "POST", "/products/1", 5)    // stock must = 990
@@ -200,26 +200,26 @@ func test_time_check(wg2 *sync.WaitGroup) {
 
 	t5 := time.Now()
 	for i := 0; i < 2; i++ {
-		wg2.Add(1)
+		wg1.Add(1)
 		go client(&wg1, "POST", "/products/2", 10000) // stock must = 0
 	}
 	t05 := float64(time.Since(t5)) / 1e6 / 2
 	fmt.Printf("Latency Time:   %v ", t05)
-	wg2.Wait()
+	wg1.Wait()
 }
 
 var num_user float64 = 100
 
-func user_model(wg2 *sync.WaitGroup) {
+func user_model(wg1 sync.WaitGroup) {
 	for i := 0.0; i < (num_user * 0.60); i++ {
-		wg2.Add(2)
+		wg1.Add(2)
 		go func() {
 			client(&wg1, "GET", "/", 0)
 			client(&wg1, "GET", "/products", 0)
 		}()
 	}
 	for i := 0.0; i < (num_user * 0.25); i++ {
-		wg2.Add(2)
+		wg1.Add(2)
 		go func() {
 			client(&wg1, "GET", "/", 0)
 			client(&wg1, "GET", "/products", 0)
@@ -227,7 +227,7 @@ func user_model(wg2 *sync.WaitGroup) {
 		}()
 	}
 	for i := 0.0; i < (num_user * 0.15); i++ {
-		wg2.Add(2)
+		wg1.Add(2)
 		go func() {
 			client(&wg1, "GET", "/", 0)
 			client(&wg1, "GET", "/products", 0)
@@ -235,7 +235,7 @@ func user_model(wg2 *sync.WaitGroup) {
 			client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
 		}()
 	}
-	wg2.Wait()
+	wg1.Wait()
 }
 
 func check(expect Rate, get Rate) {
@@ -248,7 +248,7 @@ func check(expect Rate, get Rate) {
 	fmt.Println("get:", get)
 }
 
-func misshit_check() {
+func misshit_check(wg1 sync.WaitGroup) {
 	//declare variables pid
 	// check1 := []string{"miss", "miss", "miss", "miss", "miss"}
 	// check2 := []string{"miss", "miss", "miss", "miss", "miss"}
@@ -314,9 +314,9 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
-	// var wg1 sync.WaitGroup
+	var wg1 sync.WaitGroup
 	start := time.Now()
-	misshit_check()
+	misshit_check(wg1)
 	// test_time_check()
 	// onerun2(&wg1)
 	// start := time.Now()
