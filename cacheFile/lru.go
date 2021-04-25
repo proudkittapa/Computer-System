@@ -318,6 +318,7 @@ func SendMissHit() Pam {
 
 // func main() {
 // 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+// saveFile(c.mp, c)
 
 // 	InitCache()
 // 	c.ReCache(1)
