@@ -273,7 +273,6 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 			a := client(&wg1, "POST", "/products/1", 200)
 			mes1 := getJson(a)
 			fmt.Println(qcheck(mes1.Mess, "transaction successful"))
-			defer wg1.Done()
 		}()
 	}
 	wg1.Wait()
@@ -293,7 +292,6 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 			a := client(&wg1, "POST", "/products/2", random(100, 150))
 			mes1 := getJson(a)
 			fmt.Println(qcheck(mes1.Mess, "transaction successful"))
-			defer wg1.Done()
 		}()
 	}
 	wg1.Wait()
