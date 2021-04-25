@@ -26,6 +26,7 @@ func main() {
 	s.GET("/products/:id", productID)
 	s.GET("/hitmiss", hitmiss)
 	// cache.ReCache(1)
+	s.POST("/products2/:id", postPreorder2)
 	s.POST("/products/:id", postPreorder)
 	s.Start(":8080")
 }
@@ -49,4 +50,9 @@ func hitmiss() string {
 	a, _ := json.Marshal(cacheFile.SendMissHit())
 	// return "{miss: 1, hit: 2}"
 	return string(a)
+}
+
+func postPreorder2() string {
+	a := cacheFile.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
+	return a
 }
