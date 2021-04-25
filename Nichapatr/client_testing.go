@@ -43,7 +43,7 @@ func send(conn net.Conn, host string, m string, p string, userid int, quan int) 
 		//  send_file(conn)
 	} else {
 		// fmt.Println("sent POST")
-		fmt.Fprintf(conn, createHeaderPOST(userid, quan))
+		fmt.Fprintf(conn, createHeaderPOST(userid, quan, p))
 	}
 	// fmt.Println("send done")
 }
@@ -128,11 +128,12 @@ func createHeaderGET(pathh string, u int) string {
 	return headers
 }
 
-func createHeaderPOST(u int, quan int) string {
+func createHeaderPOST(u int, quan int, p string) string {
 
 	userID := u
 	method := "POST"
-	path := "/products/" + strconv.Itoa(rand.Intn(10))
+	// path := "/products/" + strconv.Itoa(rand.Intn(10))
+	path := p
 	host := "178.128.94.63:8080"
 
 	contentType := "application/json"
