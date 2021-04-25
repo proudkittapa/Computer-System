@@ -1,7 +1,6 @@
 package final1
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -36,8 +35,8 @@ type data struct {
 // }
 
 func ReCache(id int) string {
-	db, err := sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
-	checkErr(err)
+	// db, err := sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+	// checkErr(err)
 
 	// fmt.Println("----------MISS----------")
 
