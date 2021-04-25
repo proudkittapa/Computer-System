@@ -217,7 +217,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 	for i := 1; i < 6; i++ {
 		wg1.Add(1)
 		tp1 := time.Now()
-		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 		tp01 := float64(time.Since(tp1)) / 1e6
 		fmt.Printf("t01 Latency Time MISS:   %v \n", tp01)
 	}
@@ -230,7 +230,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 		wg1.Add(1)
 		fmt.Println(i)
 		tp2 := time.Now()
-		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 		tp02 := float64(time.Since(tp2)) / 1e6
 		fmt.Printf("t02 Latency Time MISS:   %v \n", tp02)
 	}
@@ -243,7 +243,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 		wg1.Add(1)
 		fmt.Println(i)
 		tp3 := time.Now()
-		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 		tp03 := float64(time.Since(tp3)) / 1e6
 		fmt.Printf("t03 Latency Time HIT:   %v \n", tp03)
 	}
@@ -465,10 +465,10 @@ func main() {
 	var wg1 sync.WaitGroup
 	start := time.Now()
 	// misshit_check()
-	fmt.Println("before quantity_check")
-	quantity_check(wg1)
-	fmt.Println("after quantity_check")
-	// test_time_check(wg1)
+	// fmt.Println("before quantity_check")
+	// quantity_check(wg1)
+	// fmt.Println("after quantity_check")
+	test_time_check(wg1)
 	// onerun2(wg1)
 	// user_model(wg1)
 	// fmt.Println("after usermodel")
