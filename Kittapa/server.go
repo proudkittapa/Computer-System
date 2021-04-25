@@ -118,7 +118,7 @@ func (s *Server) req(conn net.Conn) {
 			// a := fmt.Sprintf("HTTP/1.0 404\r\n")
 			// fmt.Fprintf(conn, a)
 		}
-
+		break
 	}
 }
 
