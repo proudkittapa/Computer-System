@@ -129,6 +129,7 @@ func createHeaderPOST(u int, quan int) string {
 }
 
 func onerun2() {
+	wg1.Add(1)
 	// client(&wg, "GET", "/", 0)
 	// client(&wg, "GET", "/products", 0)
 	client(&wg1, "GET", "/products/1", 0)
@@ -314,9 +315,9 @@ func main() {
 	// test_time_check()
 	// user_model()
 	for i := 0; i < 1000; i++ {
-		wg1.Add(1)
-		go client(&wg1, "GET", "/products/1", 0)
-		// go onerun2()
+		// wg1.Add(1)
+		// go client(&wg1, "GET", "/products/1", 0)
+		go onerun2()
 	}
 	wg1.Wait()
 	// time.Sleep(100 * time.Millisecond)
