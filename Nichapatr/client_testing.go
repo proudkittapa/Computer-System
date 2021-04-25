@@ -212,7 +212,8 @@ func test_time_check(wg1 sync.WaitGroup) {
 	tchecku(t01, t02, t03)*/
 
 	fmt.Println("-------------PUNE-----------")
-	tp1 := time.Now() //Pune
+	// tp1 := time.Now() //Pune
+	var tp01 float64
 	for i := 1; i < 6; i++ {
 		wg1.Add(1)
 		tp1 := time.Now()
@@ -220,10 +221,11 @@ func test_time_check(wg1 sync.WaitGroup) {
 		tp01 := float64(time.Since(tp1)) / 1e6
 		fmt.Printf("t01 Latency Time MISS:   %v \n", tp01)
 	}
-	tp01 := float64(time.Since(tp1)) / 1e6 / 5
+	// tp01 := float64(time.Since(tp1)) / 1e6 / 5
 	// fmt.Printf("Latency Time MISS:   %v \n", tp01)
 
-	tp2 := time.Now()
+	// tp2 := time.Now()
+	var tp02 float64
 	for i := 6; i < 11; i++ {
 		wg1.Add(1)
 		fmt.Println(i)
@@ -232,10 +234,11 @@ func test_time_check(wg1 sync.WaitGroup) {
 		tp02 := float64(time.Since(tp2)) / 1e6
 		fmt.Printf("t02 Latency Time MISS:   %v \n", tp02)
 	}
-	tp02 := float64(time.Since(tp2)) / 1e6 / 5
+	// tp02 := float64(time.Since(tp2)) / 1e6 / 5
 	// fmt.Printf("Latency Time MISS:   %v \n", tp02)
 
-	tp3 := time.Now()
+	// tp3 := time.Now()
+	var tp03 float64
 	for i := 6; i < 11; i++ {
 		wg1.Add(1)
 		fmt.Println(i)
@@ -244,7 +247,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 		tp03 := float64(time.Since(tp3)) / 1e6
 		fmt.Printf("t03 Latency Time HIT:   %v \n", tp03)
 	}
-	tp03 := float64(time.Since(tp3)) / 1e6 / 5
+	// tp03 := float64(time.Since(tp3)) / 1e6 / 5
 	// fmt.Printf("Latency Time HIT:   %v \n", tp03)
 	tcheckp(tp01, tp02, tp03)
 
