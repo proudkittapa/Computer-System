@@ -52,6 +52,32 @@ type Pam struct {
 	Hit  int `json:"hit"`
 }
 
+type Dis struct {
+	Product []string
+}
+
+func display_pro() (val string) {
+	var l []string
+	for i := 1; i <= 100; i++ {
+		tmp := Db_query(i)
+		byArr, err := json.Marshal(tmp)
+		CheckErr(err)
+
+		temp := string(byArr)
+
+		l = append(l, temp)
+	}
+
+	result := Dis{Product: l}
+
+	byteArray, err := json.Marshal(result)
+	CheckErr(err)
+
+	val = string(byteArray)
+	fmt.Println(val)
+	return
+}
+
 func InitCache() {
 	//C.limit = 10
 	C = Cache_cons(10)
