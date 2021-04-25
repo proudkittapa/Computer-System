@@ -264,7 +264,7 @@ func check(expect Rate, get Rate) {
 	fmt.Println("get:", get)
 }
 
-func misshit_check(wg1 sync.WaitGroup) {
+func misshit_check() {
 	//declare variables pid
 	// check1 := []string{"miss", "miss", "miss", "miss", "miss"}
 	// check2 := []string{"miss", "miss", "miss", "miss", "miss"}
@@ -272,10 +272,8 @@ func misshit_check(wg1 sync.WaitGroup) {
 
 	checkU1 := Rate{Miss: 1, Hit: 4}
 	for i := 1; i < 6; i++ {
-		wg1.Add(1)
 		clientNoGo("GET", "/", 0)
 	}
-	wg1.Wait()
 	fmt.Println("before hitmissFile")
 	m := clientNoGo("GET", "/hitmissFile", 0)
 	j1 := getJson(m)
@@ -290,10 +288,8 @@ func misshit_check(wg1 sync.WaitGroup) {
 
 	checkP1 := Rate{Miss: 5, Hit: 0}
 	for i := 1; i < 6; i++ {
-		wg1.Add(1)
 		clientNoGo("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	wg1.Wait()
 	m1 := clientNoGo("GET", "/hitmiss", 0)
 	l1 := getJson(m1)
 	n1 := getJson2(l1.Mess)
@@ -303,11 +299,9 @@ func misshit_check(wg1 sync.WaitGroup) {
 
 	checkP2 := Rate{Miss: 10, Hit: 0}
 	for i := 6; i < 11; i++ {
-		wg1.Add(1)
 		clientNoGo("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	wg1.Wait()
-	m2 := client(&wg1, "GET", "/hitmiss", 0)
+	m2 := clientNoGo("GET", "/hitmiss", 0)
 	l2 := getJson(m2)
 	n2 := getJson2(l2.Mess)
 	check(checkP2, n2)
@@ -316,10 +310,8 @@ func misshit_check(wg1 sync.WaitGroup) {
 
 	checkP3 := Rate{Miss: 10, Hit: 5}
 	for i := 6; i < 11; i++ {
-		wg1.Add(1)
 		clientNoGo("GET", "/products/"+strconv.Itoa(i), 0)
 	}
-	wg1.Wait()
 	m3 := clientNoGo("GET", "/hitmiss", 0)
 	l3 := getJson(m3)
 	n3 := getJson2(l3.Mess)
@@ -330,9 +322,9 @@ func misshit_check(wg1 sync.WaitGroup) {
 
 func main() {
 	// flag.Parse()
-	var wg1 sync.WaitGroup
+	// var wg1 sync.WaitGroup
 	start := time.Now()
-	misshit_check(wg1)
+	misshit_check()
 	// test_time_check(wg1)
 	// onerun2(wg1)
 	// start := time.Now()
