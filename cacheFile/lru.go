@@ -56,7 +56,7 @@ type Dis struct {
 	Product []string
 }
 
-func display_pro() (val string) {
+func DisplayAllPro() (val string) {
 	var l []string
 	for i := 1; i <= 100; i++ {
 		tmp := Db_query(i)
