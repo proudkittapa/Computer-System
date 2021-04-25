@@ -69,9 +69,13 @@ func Mile1(id int) string {
 
 }
 
-func DisplayAllPro() (val string) {
+func DisplayAllPro(limit int, offset int) (val string) {
 	var l []string
-	for i := 1; i <= 100; i++ {
+	a := (limit * offset) + 1
+	b := limit - 1
+	c := a + b
+	fmt.Println(a, b, c)
+	for i := a; i <= c; i++ {
 		tmp := Db_query(i)
 		byArr, err := json.Marshal(tmp)
 		CheckErr(err)

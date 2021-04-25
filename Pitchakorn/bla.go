@@ -57,9 +57,26 @@ type Dis struct {
 	Product []string
 }
 
-func display_pro() (val string) {
+func Mile1(id int) string {
+	tmp := Db_query(id)
+
+	byteArray, err := json.Marshal(tmp)
+	CheckErr(err)
+	// fmt.Println(len(byteArray))
+
+	temp := string(byteArray)
+	fmt.Println(temp)
+	return temp
+
+}
+
+func DisplayAllPro(limit int, offset int) (val string) {
 	var l []string
-	for i := 1; i <= 100; i++ {
+	a := (limit * offset) + 1
+	b := limit - 1
+	c := a + b
+	fmt.Println(a, b, c)
+	for i := a; i <= c; i++ {
 		tmp := Db_query(i)
 		byArr, err := json.Marshal(tmp)
 		CheckErr(err)
@@ -75,13 +92,13 @@ func display_pro() (val string) {
 	CheckErr(err)
 
 	val = string(byteArray)
-	fmt.Println(val)
+	// fmt.Println(val)
 	return
 }
 
 func InitCache() {
 	//C.limit = 10
-	C = Cache_cons(10)
+	C = Cache_cons(10000)
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
 	// C.Display()
@@ -275,57 +292,56 @@ func (l *Lru_cache) Display() {
 	}
 }
 
-func SendMissHit() string {
+func SendMissHit() Pam {
 	result := Pam{Miss: cMiss, Hit: cHit}
-
-	byteArray, err := json.Marshal(result)
-	CheckErr(err)
-
-	tmp := string(byteArray)
-
-	return tmp
+	return result
 }
 
 func main() {
 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
-
-	display_pro()
-	// InitCache()
-	// c.ReCache(1)
-	// c.ReCache(1)
-	// c.ReCache(2)
-	// c.ReCache(3)
-	// c.ReCache(4)
-	// c.Display()
-	// defer profile.Start(profile.MemProfile).Stop()
-
-	// ReadFile()
-
-	// c := Cache_cons(10)
-
-	// temp := Data{Name: "pune", Quantity: 20, Price: 100}
-	// temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
-	// temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
-
-	// c.Set(1, temp)
-	// c.Set(1, temp2)
-	// c.Set(1, temp3)
-	// // c.Set(1, temp3)
-	// c.Display()
-	// fmt.Println(c.GetCache(1))
-	// fmt.Println("\nlast: ", c.last)
-	// fmt.Println("head: ", c.head)
-
-	// for i := 0; i < 10; i++ {
-	// 	for j := 0; j < 2; j++ {
-	// 		// start := time.Now()
-	// 		c.Set()
-	// end := time.Since(start)
-	// fmt.Printf("%v\n", end)
-
-	// t := c.cache(i)
-	// fmt.Println(t)
-	// fmt.Printf("%T\n", t)
-	// 	}
-	// }
+	a := DisplayAllPro(10, 0)
+	fmt.Println(a)
 }
+
+// func main() {
+// 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+
+// 	InitCache()
+// 	c.ReCache(1)
+// 	c.ReCache(1)
+// 	c.ReCache(2)
+// 	c.ReCache(3)
+// 	c.ReCache(4)
+// 	// c.Display()
+// 	// defer profile.Start(profile.MemProfile).Stop()
+
+// 	// ReadFile()
+
+// 	// c := Cache_cons(10)
+
+// 	// temp := Data{Name: "pune", Quantity: 20, Price: 100}
+// 	// temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
+// 	// temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
+
+// 	// c.Set(1, temp)
+// 	// c.Set(1, temp2)
+// 	// c.Set(1, temp3)
+// 	// // c.Set(1, temp3)
+// 	// c.Display()
+// 	// fmt.Println(c.GetCache(1))
+// 	// fmt.Println("\nlast: ", c.last)
+// 	// fmt.Println("head: ", c.head)
+
+// 	// for i := 0; i < 10; i++ {
+// 	// 	for j := 0; j < 2; j++ {
+// 	// 		// start := time.Now()
+// 	// 		c.Set()
+// 	// end := time.Since(start)
+// 	// fmt.Printf("%v\n", end)
+
+// 	// t := c.cache(i)
+// 	// fmt.Println(t)
+// 	// fmt.Printf("%T\n", t)
+// 	// 	}
+// 	// }
+// }
