@@ -78,7 +78,7 @@ func DisplayAllPro(limit int, offset int) (val string) {
 
 	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id BETWEEN ? AND ?", strconv.Itoa(a), strconv.Itoa(c))
 	CheckErr(err)
-	defer rows.Close()
+	// defer rows.Close()
 	for rows.Next() {
 		var name string
 		var quantity int
