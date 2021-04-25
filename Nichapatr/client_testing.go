@@ -189,7 +189,7 @@ func tcheckp(t01 float64, t02 float64, t03 float64) {
 	}
 }
 func test_time_check(wg1 sync.WaitGroup) {
-	t1 := time.Now()          //Uye
+	/*t1 := time.Now()          //Uye
 	clientNoGo("GET", "/", 0) //miss1
 	t01 := float64(time.Since(t1)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v ", t01)
@@ -209,8 +209,9 @@ func test_time_check(wg1 sync.WaitGroup) {
 	}
 	t03 := float64(time.Since(t3)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t03)
-	tchecku(t01, t02, t03)
+	tchecku(t01, t02, t03)*/
 
+	fmt.Println("-------------PUNE-----------")
 	tp1 := time.Now() //Pune
 	for i := 1; i < 6; i++ {
 		wg1.Add(1)
@@ -237,6 +238,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 	tcheckp(tp01, tp02, tp03)
 
 	/*--------------------time check (2)--------------------*/
+	fmt.Println("-------------MIND-----------")
 	t4 := time.Now() //Mind
 	for i := 0; i < 2; i++ {
 		wg1.Add(4)
@@ -449,22 +451,13 @@ func main() {
 	var wg1 sync.WaitGroup
 	start := time.Now()
 	// misshit_check()
-	fmt.Println("before quantity_check")
-	quantity_check(wg1)
-	fmt.Println("after quantity_check")
-	// test_time_check(wg1)
+	// fmt.Println("before quantity_check")
+	// quantity_check(wg1)
+	// fmt.Println("after quantity_check")
+	test_time_check(wg1)
 	// onerun2(wg1)
-	// start := time.Now()
 	// user_model(wg1)
 	// fmt.Println("after usermodel")
-	// for i := 0; i < 1000; i++ {
-	// 	wg1.Add(1)
-	// 	go client(&wg1, "GET", "/products/1", 0)
-	// // wg1.Add(1000)
-	// // onerun2(wg1)
-	// }
-	// wg1.Wait()
-	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
 	fmt.Printf("Number Response: %d\n", count_Res)
