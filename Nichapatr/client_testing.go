@@ -234,7 +234,7 @@ func misshit_check() {
 	for i := 1; i < 6; i++ {
 		client("GET", "/", 0)
 	}
-	m := client("GET", "/hitmiss", 0)
+	m := client("GET", "/hitmissFile", 0)
 	j1 := getJson(m)
 	k1 := getJson2(j1.Mess)
 	check(checkU1, k1) //check miss, hit
