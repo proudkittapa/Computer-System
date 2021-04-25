@@ -28,7 +28,7 @@ type Mess struct {
 	Mess string `json:"mess"`
 }
 
-var wg sync.WaitGroup
+var wg1 sync.WaitGroup
 
 func send(conn net.Conn, host string, m string, p string, userid int, quan int) {
 	// fmt.Println("sent")
@@ -76,7 +76,7 @@ func receive2(conn net.Conn) string {
 	return message
 }
 
-func client(wg *sync.WaitGroup, m string, p string, quan int) string {
+func client(wg1 *sync.WaitGroup, m string, p string, quan int) string {
 	// t0 := time.Now()
 	host := "178.128.94.63:8080"
 	conn, err := net.Dial("tcp", host)
@@ -86,9 +86,10 @@ func client(wg *sync.WaitGroup, m string, p string, quan int) string {
 	}
 	send(conn, host, m, p, userid, quan) //check parameter quan
 	a := receive2(conn)
+	wg1.Done()
 	return a
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
-	wg.Done()
+
 	// <-ch
 }
 
@@ -131,7 +132,7 @@ func createHeaderPOST(u int, quan int) string {
 func onerun2(wg *sync.WaitGroup) {
 	// client(&wg, "GET", "/", 0)
 	// client(&wg, "GET", "/products", 0)
-	client(&wg, "GET", "/products/1", 0)
+	client(&wg1, "GET", "/products/1", 0)
 	// client(&wg, "POST", "/products/1", 2)
 }
 func test_time_check() {
