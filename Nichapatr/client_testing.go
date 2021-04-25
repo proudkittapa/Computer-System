@@ -310,8 +310,8 @@ func misshit_check() {
 	l2 := getJson(m2)
 	n2 := getJson2(l2.Mess)
 	check(checkP2, n2)
-	fmt.Println("Hit for /products/:id", n1.Hit)
-	fmt.Println("Miss for /products/:id", n1.Miss)
+	fmt.Println("Hit for /products/:id", n2.Hit)
+	fmt.Println("Miss for /products/:id", n2.Miss)
 
 	checkP3 := Rate{Miss: 10, Hit: 5}
 	for i := 6; i < 11; i++ {
@@ -321,8 +321,8 @@ func misshit_check() {
 	l3 := getJson(m3)
 	n3 := getJson2(l3.Mess)
 	check(checkP3, n3)
-	fmt.Println("Hit for /products/:id", n1.Hit)
-	fmt.Println("Miss for /products/:id", n1.Miss)
+	fmt.Println("Hit for /products/:id", n3.Hit)
+	fmt.Println("Miss for /products/:id", n3.Miss)
 }
 
 func main() {
