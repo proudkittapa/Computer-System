@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"strconv"
@@ -17,6 +18,8 @@ import (
 
 	"github.com/pkg/profile"
 )
+
+var num_user float64 = 1000
 
 type Messagee struct {
 	Name     string
@@ -35,7 +38,7 @@ type PayInfo struct {
 }
 
 var mutex sync.Mutex
-var users int = 1
+var users int = 1000
 var c = 0
 
 //209.97.165.170
@@ -226,19 +229,21 @@ func main() {
 	defer profile.Start().Stop()
 	var wg sync.WaitGroup
 	start := time.Now()
-	for i := 0; i < users; i++ {
-		wg.Add(1)
-		// go onerun(i)
-		go client(&wg, "GET", "/", i)
-		wg.Add(1)
-		go client(&wg, "GET", "/products", i)
-		wg.Add(1)
-		go client(&wg, "GET", "/products/1", i)
-		wg.Add(1)
-		go client(&wg, "POST", "/products/1", i)
+	// for i := 0; i < users/4; i++ {
+	// 	wg.Add(1)
+	// 	// go onerun(i)
+	// 	go client(&wg, "GET", "/", i)
+	// 	wg.Add(1)
+	// 	go client(&wg, "GET", "/products", i)
+	// 	wg.Add(1)
+	// 	go client(&wg, "GET", "/products/1", i)
+	// 	wg.Add(1)
+	// 	go client(&wg, "POST", "/products/1", i)
 
-	}
-	wg.Wait()
+	// }
+	// wg.Wait()
+
+	user_model(wg)
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
@@ -247,4 +252,34 @@ func main() {
 	tt := float64(t) / 1e6
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f", rate)
+}
+
+func user_model(wg1 sync.WaitGroup) {
+	for i := 0.0; i < (num_user * 0.60); i++ {
+		wg1.Add(2)
+		go func() {
+			client(&wg1, "GET", "/", 0)
+			client(&wg1, "GET", "/products", 0)
+		}()
+	}
+	fmt.Println("here")
+	for i := 0.0; i < (num_user * 0.25); i++ {
+		wg1.Add(3)
+		go func() {
+			client(&wg1, "GET", "/", 0)
+			client(&wg1, "GET", "/products", 0)
+			client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+		}()
+	}
+	for i := 0.0; i < (num_user * 0.15); i++ {
+		wg1.Add(4)
+		go func() {
+			client(&wg1, "GET", "/", 0)
+			client(&wg1, "GET", "/products", 0)
+			client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+			client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+		}()
+	}
+	wg1.Wait()
+	fmt.Println("after wait group")
 }
