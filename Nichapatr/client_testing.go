@@ -128,9 +128,10 @@ func createHeaderPOST(u int, quan int) string {
 	return headers
 }
 
-func onerun2() {
+func onerun2(wg1 sync.WaitGroup) {
 
 	for i := 0; i < 1000; i++ {
+		wg1.Add(1)
 		client(&wg1, "GET", "/products/1", 0)
 	}
 	wg1.Wait()
@@ -321,8 +322,8 @@ func main() {
 	// for i := 0; i < 1000; i++ {
 	// 	// wg1.Add(1)
 	// 	// go client(&wg1, "GET", "/products/1", 0)
-	wg1.Add(1000)
-	go onerun2()
+	// wg1.Add(1000)
+	go onerun2(wg1)
 	// }
 	// wg1.Wait()
 	// time.Sleep(100 * time.Millisecond)
