@@ -253,7 +253,7 @@ func random(x int, y int) int {
 	return randomNum
 }
 func quantity_check(wg1 sync.WaitGroup) { //Mind
-	// 10 users && 10,000 products in database (/product/3)
+	// 10 users && 1000 products in database (/product/3)
 	// "The order is out of stock"
 	fmt.Println("case1")
 	for i := 0; i < 5; i++ {
@@ -273,12 +273,12 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 	for i := 0; i < 5; i++ {
 		wg1.Add(1)
 		go func() {
-			a := client(&wg1, "POST", "/products/2", random(1000, 2000))
+			a := client(&wg1, "POST", "/products/2", random(100, 150))
 			mes1 := getJson(a)
 			fmt.Println(qcheck(mes1.Mess, "transaction successful"))
 		}()
 	}
-	a = client(&wg1, "POST", "/products/502", 150)
+	a = client(&wg1, "POST", "/products/502", 500)
 	mes1 = getJson(a)
 	fmt.Println(qcheck(mes1.Mess, "order more than stock quantity"))
 	// unpredict result numer of "transaction successful"&"The order is out of stock"
@@ -287,14 +287,14 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 	for i := 0; i < 5; i++ {
 		wg1.Add(1)
 		go func() {
-			a := client(&wg1, "POST", "/products/503", 1000)
+			a := client(&wg1, "POST", "/products/503", 100)
 			mes1 := getJson(a)
 			if qcheck(mes1.Mess, "transaction successful") == "success" {
 				suc++
 			}
 		}()
 		go func() {
-			a := client(&wg1, "POST", "/products/503", 2000)
+			a := client(&wg1, "POST", "/products/503", 200)
 			mes1 := getJson(a)
 			if qcheck(mes1.Mess, "transaction successful") == "success" {
 				suc++
