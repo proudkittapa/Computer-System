@@ -318,9 +318,9 @@ func main() {
 	start := time.Now()
 	// misshit_check(wg1)
 	// test_time_check(wg1)
-	onerun2(wg1)
+	// onerun2(wg1)
 	// start := time.Now()
-	// user_model(&wg1)
+	user_model(wg1)
 	// for i := 0; i < 1000; i++ {
 	// 	// wg1.Add(1)
 	// 	// go client(&wg1, "GET", "/products/1", 0)
