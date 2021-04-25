@@ -131,8 +131,6 @@ func createHeaderPOST(u int, quan int) string {
 func onerun2() {
 
 	for i := 0; i < 1000; i++ {
-
-		wg1.Add(1)
 		client(&wg1, "GET", "/products/1", 0)
 	}
 	wg1.Wait()
@@ -323,6 +321,7 @@ func main() {
 	// for i := 0; i < 1000; i++ {
 	// 	// wg1.Add(1)
 	// 	// go client(&wg1, "GET", "/products/1", 0)
+	wg1.Add(1000)
 	go onerun2()
 	// }
 	// wg1.Wait()
