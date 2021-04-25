@@ -78,6 +78,7 @@ func receive2(conn net.Conn) string {
 
 func client(wg1 *sync.WaitGroup, m string, p string, quan int) string {
 	// t0 := time.Now()
+	fmt.Println("client", userid)
 	host := "178.128.94.63:8080"
 	conn, err := net.Dial("tcp", host)
 	if err != nil {
