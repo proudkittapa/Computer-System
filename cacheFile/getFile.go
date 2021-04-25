@@ -1,47 +1,141 @@
-package cacheFile
+//https://kgrz.io/reading-files-in-go-an-overview.html#reading-file-chunks-concurrently
+package main
 
 import (
 	"fmt"
 	"os"
-
-	// "pin2pre/cacheFile"
+	"pin2pre/cacheFile"
 	"sync"
 	"time"
 )
 
-type Chunk struct {
+type chunk struct {
 	bufsize int
 	offset  int64
 }
 
-var CacheObject Cache = NewCache()
+var cacheObject cacheFile.Cache = cacheFile.NewCache()
 
-func Call_cache(filename string) string {
+func main() {
+	// fmt.Println(cacheFile.NewCache())
+	// const BufferSize = 500
+	// start := time.Now()
+	// file, err := os.Open("index.html")
+	// call_cache("index.html")
+	// if err != nil {
+	// 	fmt.Println("File reading error", err)
+	// 	return
+	// }
+	// defer func() {
+	// 	if err := file.Close(); err != nil {
+	// 		panic(err)
+	// 	}
+	// }()
+
+	// fileinfo, err := file.Stat()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+
+	// filesize := int(fileinfo.Size())
+	// fmt.Println(filesize)
+	// // Number of go routines we need to spawn.
+	// concurrency := filesize / BufferSize
+	// // buffer sizes that each of the go routine below should use. ReadAt
+	// // returns an error if the buffer size is larger than the bytes returned
+	// // from the file.
+	// chunksizes := make([]chunk, concurrency)
+
+	// // All buffer sizes are the same in the normal case. Offsets depend on the
+	// // index. Second go routine should start at 100, for example, given our
+	// // buffer size of 100.
+	// for i := 0; i < concurrency; i++ {
+	// 	chunksizes[i].bufsize = BufferSize
+	// 	chunksizes[i].offset = int64(BufferSize * i)
+	// }
+
+	// // check for any left over bytes. Add the residual number of bytes as the
+	// // the last chunk size.
+	// if remainder := filesize % BufferSize; remainder != 0 {
+	// 	c := chunk{bufsize: remainder, offset: int64(concurrency * BufferSize)}
+	// 	concurrency++
+	// 	chunksizes = append(chunksizes, c)
+	// }
+
+	// var wg sync.WaitGroup
+	// wg.Add(concurrency)
+	// store := make([]string, concurrency)
+	// start2 := time.Now()
+	// for i := 0; i < concurrency; i++ {
+	// 	go func(chunksizes []chunk, i int) {
+	// 		defer wg.Done()
+
+	// 		chunk := chunksizes[i]
+	// 		buffer := make([]byte, chunk.bufsize)
+	// 		_, err := file.ReadAt(buffer, chunk.offset)
+
+	// 		if err != nil {
+	// 			fmt.Println(err)
+	// 			return
+	// 		}
+	// 		store[i] = string(buffer)
+	// 		// fmt.Println("bytes read, string(bytestream): ", bytesread)
+	// 		// fmt.Println("bytestream to string: ", string(buffer))
+	// 	}(chunksizes, i)
+	// }
+
+	// wg.Wait()
+	// fmt.Printf("time: %v\n", time.Since(start))
+	//fmt.Printf("hello")
+	// fmt.Printf("time2: %v\n", time.Since(start2))
+
+	// var text string
+	// for i := 0; i < concurrency; i++ {
+	// 	text += store[i]
+	// }
+	// fmt.Println(text)
+	// call_cache("index.html")
+	// call_cache("index.html")
+	// call_cache("index.html")
+	// call_cache("index.html")
+	call_cache("index.html")
+}
+
+var miss_num int
+
+var hit_num int
+
+func call_cache(filename string) string {
 	start := time.Now()
-	d, err := CacheObject.Check(filename)
+
+	d, err := cacheObject.Check(filename)
 	if err != nil {
 		fmt.Println(err)
-		a := GetFile("index.html")
-		CacheObject.Add(filename, a)
-		d, _ = CacheObject.Check(filename)
-		CacheObject.Display()
-
+		a := getFile("index.html")
+		cacheObject.Add(filename, a)
+		d, _ = cacheObject.Check(filename)
+		cacheObject.Display()
+		miss_num += 1
+		fmt.Println("Cache miss: ", miss_num)
 		fmt.Println("Time calling cache miss: ", time.Since(start))
 		return d
 	} else {
-		CacheObject.Display()
+		cacheObject.Display()
+		hit_num += 1
 
-		fmt.Println("Time calling cache hit: ", time.Since(start))
+		fmt.Println("Cache hit: ", hit_num)
+		fmt.Println("Time calling cache hit: ", (time.Since(start)))
 		return d
 	}
 
 }
 
-func GetFile(filename string) string {
+func getFile(filename string) string {
 	// call_cache("index.html")
-	const BufferSize = 500
+	const BufferSize = 300
 	start := time.Now()
-	file, err := os.Open("/root/go/src/Computer-System/pre-order/" + filename)
+	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Println("File reading error", err)
 		return ""
@@ -63,7 +157,7 @@ func GetFile(filename string) string {
 	// Num of go routines
 	concurrency := filesize / BufferSize
 
-	chunksizes := make([]Chunk, concurrency)
+	chunksizes := make([]chunk, concurrency)
 
 	for i := 0; i < concurrency; i++ {
 		chunksizes[i].bufsize = BufferSize
@@ -71,7 +165,7 @@ func GetFile(filename string) string {
 	}
 
 	if remainder := filesize % BufferSize; remainder != 0 {
-		c := Chunk{bufsize: remainder, offset: int64(concurrency * BufferSize)}
+		c := chunk{bufsize: remainder, offset: int64(concurrency * BufferSize)}
 		concurrency++
 		chunksizes = append(chunksizes, c)
 	}
@@ -82,9 +176,9 @@ func GetFile(filename string) string {
 	var wg sync.WaitGroup
 	wg.Add(concurrency)
 	store := make([]string, concurrency)
-	start2 := time.Now()
+	// start2 := time.Now()
 	for i := 0; i < concurrency; i++ {
-		go func(chunksizes []Chunk, i int) {
+		go func(chunksizes []chunk, i int) {
 			defer wg.Done()
 
 			chunk := chunksizes[i]
@@ -102,15 +196,15 @@ func GetFile(filename string) string {
 	}
 
 	wg.Wait()
-	fmt.Printf("time: %v\n", time.Since(start))
-	fmt.Printf("hello")
-	fmt.Printf("time2: %v\n", time.Since(start2))
+
+	// fmt.Printf("hello")
+	// fmt.Printf("time2: %v\n", time.Since(start2))
 
 	var text string
 	for i := 0; i < concurrency; i++ {
 		text += store[i]
 	}
 	// fmt.Println(text)
-
+	fmt.Printf("time: %v\n", time.Since(start))
 	return text
 }
