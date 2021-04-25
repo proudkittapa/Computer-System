@@ -111,7 +111,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	end <- result
 }
 func PostPreorder(id int, quantity int) string {
-	db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
+	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// db.SetMaxOpenConns(2)
 
 	// db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
