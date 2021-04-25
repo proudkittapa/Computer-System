@@ -316,7 +316,7 @@ func main() {
 	// user_model()
 	for i := 0; i < 1000; i++ {
 		wg1.Add(1)
-		client(&wg1, "GET", "/products/1", i)
+		go client(&wg1, "GET", "/products/1", i)
 		// go onerun2()
 	}
 	wg1.Wait()
