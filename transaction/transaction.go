@@ -44,7 +44,7 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 		transactionC <- "not complete"
 		return
 	}
-	//fmt.Println(newQuantity)
+	fmt.Printf("new q: %d/n", newQuantity)
 	_, err := tx.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(id))
 	if err != nil {
 		fmt.Println("decrement fail")
@@ -85,6 +85,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	if result2 == "not complete" {
 		result = "the order is out of stock"
 		fmt.Println(result)
+		tx.Commit()
 		end <- result
 		return
 	}
