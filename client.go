@@ -455,15 +455,18 @@ func main() {
 	// test_time_check(wg1)
 	// onerun2(wg1)
 	// start := time.Now()
-	user_model(wg1)
+	// user_model(wg1)
 	// fmt.Println("after usermodel")
-	// for i := 0; i < 1000; i++ {
-	// 	wg1.Add(1)
-	// 	go client(&wg1, "GET", "/products/1", 0)
-	// // wg1.Add(1000)
-	// // onerun2(wg1)
-	// }
-	// wg1.Wait()
+	for i := 0; i < 1000; i++ {
+		wg1.Add(4)
+		go client(&wg1, "GET", "/", 0)
+		go client(&wg1, "GET", "/products?limit=10&offset=0", 0)
+		go client(&wg1, "GET", "/products/1", 0)
+		go client(&wg1, "GET", "/products/1", 2)
+		// // wg1.Add(1000)
+		// // onerun2(wg1)
+	}
+	wg1.Wait()
 	// time.Sleep(100 * time.Millisecond)
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
