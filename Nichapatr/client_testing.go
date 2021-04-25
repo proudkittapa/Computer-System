@@ -209,16 +209,16 @@ func test_time_check() {
 
 var num_user float64 = 100
 
-func user_model() {
+func user_model(wg2 *sync.WaitGroup) {
 	for i := 0.0; i < (num_user * 0.60); i++ {
-		wg1.Add(2)
+		wg2.Add(2)
 		go func() {
 			client(&wg1, "GET", "/", 0)
 			client(&wg1, "GET", "/products", 0)
 		}()
 	}
 	for i := 0.0; i < (num_user * 0.25); i++ {
-		wg1.Add(2)
+		wg2.Add(2)
 		go func() {
 			client(&wg1, "GET", "/", 0)
 			client(&wg1, "GET", "/products", 0)
@@ -226,7 +226,7 @@ func user_model() {
 		}()
 	}
 	for i := 0.0; i < (num_user * 0.15); i++ {
-		wg1.Add(2)
+		wg2.Add(2)
 		go func() {
 			client(&wg1, "GET", "/", 0)
 			client(&wg1, "GET", "/products", 0)
@@ -312,7 +312,7 @@ func main() {
 	start := time.Now()
 	// misshit_check()
 	// test_time_check()
-	user_model()
+	user_model(&wg1)
 	// for i := 0; i < 1000; i++ {
 	// 	// wg1.Add(1)
 	// 	// go client(&wg1, "GET", "/products/1", 0)
