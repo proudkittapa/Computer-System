@@ -246,15 +246,15 @@ func user_model(wg1 sync.WaitGroup) {
 			client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
 		}()
 	}
-	// for i := 0.0; i < (num_user * 0.15); i++ {
-	// 	wg1.Add(4)
-	// 	go func() {
-	// 		client(&wg1, "GET", "/", 0)
-	// 		client(&wg1, "GET", "/products", 0)
-	// 		client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-	// 		client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
-	// 	}()
-	// }
+	for i := 0.0; i < (num_user * 0.15); i++ {
+		wg1.Add(4)
+		go func() {
+			client(&wg1, "GET", "/", 0)
+			client(&wg1, "GET", "/products", 0)
+			client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+			client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+		}()
+	}
 	wg1.Wait()
 	fmt.Println("after wait group")
 }
