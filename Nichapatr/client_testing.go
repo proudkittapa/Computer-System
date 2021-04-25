@@ -282,7 +282,9 @@ func qcheck(message string, expect string) string {
 		fmt.Printf("Fail, expect: %s, get %s\n", expect, message)
 		return "fail"
 	}
+	return "fail"
 }
+
 func unpredictcheck(success int) {
 	if success == 7 || success == 5 {
 		fmt.Println("Succes")
@@ -393,7 +395,7 @@ func main() {
 	// flag.Parse()
 	// var wg1 sync.WaitGroup
 	start := time.Now()
-	misshit_check()
+	// misshit_check()
 	// test_time_check(wg1)
 	// onerun2(wg1)
 	// start := time.Now()
