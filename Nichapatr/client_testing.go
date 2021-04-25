@@ -51,7 +51,7 @@ var result Rate
 
 func receive2(conn net.Conn) string {
 	defer conn.Close()
-	// fmt.Println("reading")
+	fmt.Println("reading")
 	message := ""
 	buffer := make([]byte, 1024)
 	for {
@@ -95,7 +95,7 @@ var count_Res = 0
 var count_Fail = 0
 
 func createHeaderGET(pathh string, u int) string {
-	fmt.Println("headerGET")
+	// fmt.Println("headerGET")
 	userID := u
 	method := "GET"
 	path := pathh
@@ -250,6 +250,7 @@ func misshit_check() {
 	for i := 1; i < 6; i++ {
 		client("GET", "/", 0)
 	}
+	fmt.Println("before hitmissFile")
 	m := client("GET", "/hitmissFile", 0)
 	j1 := getJson(m)
 	fmt.Println("j1:", j1)
