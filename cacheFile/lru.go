@@ -86,6 +86,7 @@ func DisplayAllPro(limit int, offset int) (val string) {
 		err = rows.Scan(&name, &quantity, &price)
 
 		result := Data{Name: name, Quantity: quantity, Price: price}
+		fmt.Println("result", result)
 		byArr, err := json.Marshal(result)
 		CheckErr(err)
 		tmp := string(byArr)
