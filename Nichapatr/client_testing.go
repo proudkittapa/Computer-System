@@ -49,7 +49,7 @@ func send(conn net.Conn, host string, m string, p string, userid int, quan int) 
 
 var result Rate
 
-func receive(conn net.Conn) string {
+func receive2(conn net.Conn) string {
 	defer conn.Close()
 	// fmt.Println("reading")
 	message := ""
@@ -81,7 +81,6 @@ func receive(conn net.Conn) string {
 	*/
 
 	return message
-	// result = getJson(message)
 }
 
 func client(m string, p string, quan int) string {
@@ -93,7 +92,8 @@ func client(m string, p string, quan int) string {
 		log.Fatalln(err)
 	}
 	send(conn, host, m, p, userid, quan) //check parameter quan
-	return receive(conn)
+	a := receive2(conn)
+	return a
 	// fmt.Printf("Latency Time:   %v ", time.Since(t0))
 	// wg.Done()
 	// <-ch
@@ -138,7 +138,7 @@ func onerun() {
 	for i := 0; i < 1000; i++ {
 		// client("GET", "/", 0)
 		// client("GET", "/products", 0)
-		go client("GET", "/products/1", 0)
+		client("GET", "/products/1", 0)
 		// client("POST", "/products/1", 2)
 	}
 }
