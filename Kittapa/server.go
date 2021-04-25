@@ -157,6 +157,7 @@ func getMessage(message string) (string, string, []string) {
 	} else if p[1] == "products" && len(p) == 3 {
 		fmt.Println("productsWithID")
 		ID, _ = strconv.Atoi(p[2])
+		fmt.Println("IDDDDD", ID)
 		path = "/" + p[1] + "/:id"
 	}
 	fmt.Println("path", path)
