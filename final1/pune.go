@@ -40,7 +40,7 @@ type data struct {
 func Display_pro() (val string) {
 	var l []string
 	for i := 1; i <= 1; i++ {
-		val := cacheFile.Db_query(i)
+		val := db_query(i)
 		l = append(l, val)
 	}
 
@@ -123,5 +123,32 @@ func GetFile() string {
 	return buffer.String()
 	// contentType = "text/html"
 	// headers = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", bufferLen, contentType, buffer)
+
+}
+
+func db_query(id int) string {
+	//db, err := sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
+	//checkErr(err)
+
+	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+	checkErr(err)
+
+	for rows.Next() {
+		var name string
+		var quantity int
+		var price int
+		err = rows.Scan(&name, &quantity, &price)
+
+		result := data{Name: name, Quantity: quantity, Price: price}
+		byteArray, err := json.Marshal(result)
+		checkErr(err)
+		// fmt.Println(len(byteArray))
+
+		mp[id] = string(byteArray)
+
+	}
+	val := mp[id]
+	fmt.Println(val)
+	return val
 
 }
