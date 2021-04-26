@@ -329,14 +329,14 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 		go func() {
 			a := client(&wg1, "POST", "/products/3", 100)
 			mes1 := getJson(a)
-			if qcheck2(mes1.Mess, "transaction successful") == "success" {
+			if qcheck(mes1.Mess, "transaction successful") == "success" {
 				suc++
 			}
 		}()
 		go func() {
 			a := client(&wg1, "POST", "/products/3", 200)
 			mes1 := getJson(a)
-			if qcheck2(mes1.Mess, "transaction successful") == "success" {
+			if qcheck(mes1.Mess, "transaction successful") == "success" {
 				suc++
 			}
 		}()
