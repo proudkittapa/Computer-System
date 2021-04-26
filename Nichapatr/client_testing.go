@@ -341,8 +341,8 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 			}
 		}()
 	}
-	unpredictcheck(suc)
 	wg1.Wait()
+	unpredictcheck(suc)
 
 }
 
