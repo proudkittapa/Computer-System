@@ -166,7 +166,7 @@ func tchecku(t01 float64, t02 float64, t03 float64) {
 	if math.Abs(t03-t02) <= 1 {
 		fmt.Println("Both are hit, so time is similar (success)") // t01 ad t02 are both hit, so time must be similar
 	} else {
-		fmt.Println("something is not right(1) :")
+		fmt.Println("the different btw time of hit are not similar:")
 		fmt.Println(t01 - t02)
 	}
 	if t03 < t01 && t02 < t01 {
@@ -179,7 +179,7 @@ func tcheckp(t01 float64, t02 float64, t03 float64) {
 	if math.Abs(t01-t02) <= 1 {
 		fmt.Println("Both are Miss, so time is similar (success)") // t01 ad t02 are both miss, so time must be similar
 	} else {
-		fmt.Println("something is not right(1) :")
+		fmt.Println("the different btw time of misss are not similar:")
 		fmt.Println(t01 - t02)
 	}
 	if t03 < t02 {
