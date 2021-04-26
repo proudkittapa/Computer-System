@@ -73,7 +73,7 @@ func Mile1(id int) string {
 func DisplayAllPro(limit int, offset int) (val string) {
 	var l []string
 	a := (limit * offset) + 1
-	fmt.Println(a)
+	// fmt.Println(a)
 	b := limit - 1
 	c := a + b
 
@@ -85,11 +85,11 @@ func DisplayAllPro(limit int, offset int) (val string) {
 		var price int
 		err = rows.Scan(&name, &quantity, &price)
 		if err != nil {
-			fmt.Println("hererererer")
+			// fmt.Println("hererererer")
 			log.Fatal(err)
 		}
 		result := Data{Name: name, Quantity: quantity, Price: price}
-		fmt.Println("result", result)
+		// fmt.Println("result", result)
 		byArr, err := json.Marshal(result)
 		CheckErr(err)
 		tmp := string(byArr)
@@ -296,7 +296,7 @@ func ReadFile() Lru_cache {
 		c.Set(t[i], tmp)
 
 	}
-	c.Display()
+	// c.Display()
 	return c
 }
 
