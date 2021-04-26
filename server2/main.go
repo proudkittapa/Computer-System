@@ -57,6 +57,6 @@ func getCacheFile() string {
 
 func displayProducts() string {
 	// fmt.Println(Kittapa.LF)
-	a := final2.DisplayAllPro()
+	a := final2.Display_pro()
 	return a
 }
