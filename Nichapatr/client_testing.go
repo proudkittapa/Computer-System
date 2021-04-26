@@ -362,10 +362,10 @@ func qcheck2(message string, expect string) string {
 	if message == "" {
 		fmt.Println("No message")
 	} else if message == expect {
-		fmt.Printf("-success-")
+		fmt.Println("-success-")
 		return "success"
 	} else {
-		fmt.Printf("-Fail-")
+		fmt.Println("-Fail-")
 		return "fail"
 	}
 	return "fail"
