@@ -189,7 +189,7 @@ func tcheckp(t01 float64, t02 float64, t03 float64) {
 	}
 }
 func test_time_check(wg1 sync.WaitGroup) {
-	/*t1 := time.Now()          //Uye
+	t1 := time.Now()          //Uye
 	clientNoGo("GET", "/", 0) //miss1
 	t01 := float64(time.Since(t1)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v ", t01)
@@ -209,7 +209,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 	}
 	t03 := float64(time.Since(t3)) / 1e6 / 5
 	fmt.Printf("Latency Time:   %v \n", t03)
-	tchecku(t01, t02, t03)*/
+	tchecku(t01, t02, t03)
 
 	fmt.Println("-------------PUNE-----------")
 	tp1 := time.Now() //Pune
@@ -362,10 +362,10 @@ func qcheck2(message string, expect string) string {
 	if message == "" {
 		fmt.Println("No message")
 	} else if message == expect {
-		fmt.Printf("-success-")
+		fmt.Println("-success-")
 		return "success"
 	} else {
-		fmt.Printf("-Fail-")
+		fmt.Println("-Fail-")
 		return "fail"
 	}
 	return "fail"
@@ -373,9 +373,9 @@ func qcheck2(message string, expect string) string {
 
 func unpredictcheck(success int) {
 	if success == 7 || success == 5 || success == 6 {
-		fmt.Printf("-------success------ get %d success in this senario\n", success)
+		fmt.Printf("-------------------success get %d success in this senario------------------ \n", success)
 	} else {
-		fmt.Println("-------fail------")
+		fmt.Println("--------------------fail-------------------")
 	}
 }
 
@@ -474,14 +474,14 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
-	// var wg1 sync.WaitGroup
+	var wg1 sync.WaitGroup
 	start := time.Now()
 	fmt.Println("---------------miss hit check---------------")
 	misshit_check()
-	// fmt.Println("---------------quantity_check---------------")
-	// quantity_check(wg1)
-	// fmt.Println("-----------------time_check-----------------")
-	// test_time_check(wg1)
+	fmt.Println("---------------quantity_check---------------")
+	quantity_check(wg1)
+	fmt.Println("-----------------time_check-----------------")
+	test_time_check(wg1)
 	// onerun2(wg1)
 	// user_model(wg1)
 	// fmt.Println("after usermodel")
