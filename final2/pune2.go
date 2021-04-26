@@ -22,6 +22,10 @@ type data struct {
 	Price    int    `json:"price"`
 }
 
+type Dis struct {
+	Product []string
+}
+
 // func cache(id int) (val string, res int) {
 
 // 	_, in_cache := mp[id]
@@ -43,11 +47,11 @@ type data struct {
 func Display_pro() (val string) {
 	var l []string
 	for i := 1; i <= 1; i++ {
-		val := cacheFile.Db_query(i)
+		val := db_query(i)
 		l = append(l, val)
 	}
 
-	result := display{Product: l}
+	result := Dis{Product: l}
 
 	byteArray, err := json.Marshal(result)
 	checkErr(err)

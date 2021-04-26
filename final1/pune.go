@@ -25,6 +25,10 @@ type data struct {
 	Price    int    `json:"price"`
 }
 
+type Dis struct {
+	Product []string
+}
+
 // func cache(id int) string {
 // 	// cache(1) // if true return val else return -1
 // 	if val, ok := mp[id]; ok {
@@ -44,7 +48,7 @@ func Display_pro() (val string) {
 		l = append(l, val)
 	}
 
-	result := display{Product: l}
+	result := Dis{Product: l}
 
 	byteArray, err := json.Marshal(result)
 	checkErr(err)
