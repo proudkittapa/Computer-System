@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"pin2pre/Kittapa"
 	"pin2pre/cacheFile"
+
+	"github.com/robfig/cron"
 	// "pin2pre/transaction"
 	// "pin2pre/cacheFile"
 )
@@ -17,6 +19,10 @@ func main() {
 	s := Kittapa.New()
 	cacheFile.InitDatabase()
 	cacheFile.InitCache()
+	cacheFile.C = cacheFile.ReadFile()
+	c := cron.New()
+	// cacheFile.SaveFile(cacheFile.C.Mp, cacheFile.C)
+	c.AddFunc("* */1 * * *", saveFile)
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
 	// .Display()
@@ -72,4 +78,8 @@ func displayProducts() string {
 	// fmt.Println(Kittapa.LF)
 	a := cacheFile.DisplayAllPro(Kittapa.LF.Limit, Kittapa.LF.Offset)
 	return a
+}
+
+func saveFile() {
+	cacheFile.SaveFile(cacheFile.C.Mp, cacheFile.C)
 }

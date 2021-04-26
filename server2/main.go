@@ -22,8 +22,8 @@ func main() {
 	// cacheFile.C = cacheFile.Cache_cons(10)
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// s.GET("/", abc)
-	// s.GET("/", getCacheFile)            //uye
-	// s.GET("/products", displayProducts) //all products
+	s.GET("/", getCacheFile)            //uye
+	s.GET("/products", displayProducts) //all products
 	s.GET("/products/:id", productID)
 	// s.GET("/hitmiss", hitmiss)
 	// s.GET("/hitmissFile", hitmissFile)
@@ -50,13 +50,13 @@ func postPreorder2() string {
 	return a
 }
 
-// func getCacheFile() string {
-// 	a := final1.Call_cache("index.html")
-// 	return a
-// }
+func getCacheFile() string {
+	a := final2.Call_cache("index.html")
+	return a
+}
 
-// func displayProducts() string {
-// 	// fmt.Println(Kittapa.LF)
-// 	a := final1.DisplayAllPro(Kittapa.LF.Limit, Kittapa.LF.Offset)
-// 	return a
-// }
+func displayProducts() string {
+	// fmt.Println(Kittapa.LF)
+	a := final2.DisplayAllPro()
+	return a
+}

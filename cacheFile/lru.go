@@ -38,7 +38,7 @@ type Node struct {
 
 type Lru_cache struct {
 	limit int
-	mp    map[int]*Node
+	Mp    map[int]*Node
 	head  *Node
 	last  *Node
 }
@@ -147,11 +147,11 @@ func Cache_cons(cap int) Lru_cache {
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// // db.SetMaxIdleConns(200000)
 	// db.SetMaxOpenConns(200000)
-	return Lru_cache{limit: cap, mp: make(map[int]*Node, cap)}
+	return Lru_cache{limit: cap, Mp: make(map[int]*Node, cap)}
 }
 
 func (list *Lru_cache) GetCache(id int) string {
-	if node_val, ok := list.mp[id]; ok {
+	if node_val, ok := list.Mp[id]; ok {
 		fmt.Println("-----------HIT-----------")
 		cHit++
 		list.Move(node_val)
@@ -173,26 +173,26 @@ func (list *Lru_cache) Set(id int, val Data) string {
 
 	temp := string(byteArray)
 
-	if prod, ok := list.mp[id]; ok || len(list.mp) >= list.limit {
+	if prod, ok := list.Mp[id]; ok || len(list.Mp) >= list.limit {
 		// fmt.Println("if 1")
-		fmt.Println("len", len(list.mp))
+		fmt.Println("len", len(list.Mp))
 		fmt.Println("limit", list.limit)
-		if len(list.mp) >= list.limit {
+		if len(list.Mp) >= list.limit {
 			fmt.Println("cache full -> deleting last node -> add new node")
 			rm := list.Remove(list.last)
-			delete(list.mp, rm)
+			delete(list.Mp, rm)
 
-		} else if _, ok := list.mp[id]; ok {
+		} else if _, ok := list.Mp[id]; ok {
 			fmt.Println("Same product ID -> deleting old -> add new")
 			rm := list.Remove(prod)
-			delete(list.mp, rm)
+			delete(list.Mp, rm)
 
 		}
 	}
 
 	node := Node{id: id, value: temp}
 	list.AddNode(&node)
-	list.mp[id] = &node
+	list.Mp[id] = &node
 
 	reVal := node.value
 	return reVal
@@ -257,7 +257,7 @@ func Db_query(id int) (val Data) {
 
 func SaveFile(mp map[int]*Node, lru Lru_cache) {
 	var prodList []int
-	t := lru.mp
+	t := lru.Mp
 
 	keys := make([]int, 0, len(t))
 	for k := range t {

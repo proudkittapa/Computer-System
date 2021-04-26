@@ -166,7 +166,7 @@ func tchecku(t01 float64, t02 float64, t03 float64) {
 	if math.Abs(t03-t02) <= 1 {
 		fmt.Println("Both are hit, so time is similar (success)") // t01 ad t02 are both hit, so time must be similar
 	} else {
-		fmt.Println("something is not right(1) :")
+		fmt.Println("the different btw time of hit are not similar:")
 		fmt.Println(t01 - t02)
 	}
 	if t03 < t01 && t02 < t01 {
@@ -179,7 +179,7 @@ func tcheckp(t01 float64, t02 float64, t03 float64) {
 	if math.Abs(t01-t02) <= 1 {
 		fmt.Println("Both are Miss, so time is similar (success)") // t01 ad t02 are both miss, so time must be similar
 	} else {
-		fmt.Println("something is not right(1) :")
+		fmt.Println("the different btw time of misss are not similar:")
 		fmt.Println(t01 - t02)
 	}
 	if t03 < t02 {
@@ -212,58 +212,58 @@ func test_time_check(wg1 sync.WaitGroup) {
 	tchecku(t01, t02, t03)*/
 
 	fmt.Println("-------------PUNE-----------")
-	// tp1 := time.Now() //Pune
-	var tp01 float64
+	tp1 := time.Now() //Pune
+	// var tp01 float64
 	for i := 1; i < 6; i++ {
 		wg1.Add(1)
 		tp1 := time.Now()
-		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 		tp01 := float64(time.Since(tp1)) / 1e6
 		fmt.Printf("t01 Latency Time MISS:   %v \n", tp01)
 	}
-	// tp01 := float64(time.Since(tp1)) / 1e6 / 5
-	// fmt.Printf("Latency Time MISS:   %v \n", tp01)
+	tp01 := float64(time.Since(tp1)) / 1e6 / 5.0
+	fmt.Printf("Latency Time MISS:   %v \n", tp01)
 
-	// tp2 := time.Now()
-	var tp02 float64
+	tp2 := time.Now()
+	// var tp02 float64
 	for i := 6; i < 11; i++ {
 		wg1.Add(1)
 		fmt.Println(i)
 		tp2 := time.Now()
-		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 		tp02 := float64(time.Since(tp2)) / 1e6
 		fmt.Printf("t02 Latency Time MISS:   %v \n", tp02)
 	}
-	// tp02 := float64(time.Since(tp2)) / 1e6 / 5
-	// fmt.Printf("Latency Time MISS:   %v \n", tp02)
+	tp02 := float64(time.Since(tp2)) / 1e6 / 5.0
+	fmt.Printf("Latency Time MISS:   %v \n", tp02)
 
-	// tp3 := time.Now()
-	var tp03 float64
+	tp3 := time.Now()
+	// var tp03 float64
 	for i := 6; i < 11; i++ {
 		wg1.Add(1)
 		fmt.Println(i)
 		tp3 := time.Now()
-		go client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
 		tp03 := float64(time.Since(tp3)) / 1e6
 		fmt.Printf("t03 Latency Time HIT:   %v \n", tp03)
 	}
-	// tp03 := float64(time.Since(tp3)) / 1e6 / 5
-	// fmt.Printf("Latency Time HIT:   %v \n", tp03)
+	tp03 := float64(time.Since(tp3)) / 1e6 / 5.0
+	fmt.Printf("Latency Time HIT:   %v \n", tp03)
 	tcheckp(tp01, tp02, tp03)
 
 	/*--------------------time check (2)--------------------*/
 	fmt.Println("-------------MIND-----------")
 	t4 := time.Now() //Mind
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 5; i++ {
 		wg1.Add(4)
-		go client(&wg1, "POST", "/products/4", 2)     // stock must = 998
-		go client(&wg1, "POST", "/products/4", 3)     // stock must = 995
-		go client(&wg1, "POST", "/products/4", 5)     // stock must = 990
-		go client(&wg1, "POST", "/products/4", 10000) // stock must = 990 mess: the order more than stock quantity
+		go client(&wg1, "POST", "/products/4", 2)   // stock must = 998
+		go client(&wg1, "POST", "/products/4", 3)   // stock must = 995
+		go client(&wg1, "POST", "/products/4", 5)   // stock must = 990
+		go client(&wg1, "POST", "/products/4", 200) // stock must = 790
 	}
 	t04 := float64(time.Since(t4)) / 1e6
 	fmt.Printf("Time:   %v ", t04)
-	fmt.Printf("Latency Time:   %v ", (t04 / 8))
+	fmt.Printf("Latency Time:   %v ", (t04 / 20.0))
 
 	// t5 := time.Now()
 	// for i := 0; i < 2; i++ {
@@ -329,20 +329,20 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 		go func() {
 			a := client(&wg1, "POST", "/products/3", 100)
 			mes1 := getJson(a)
-			if qcheck(mes1.Mess, "transaction successful") == "success" {
+			if qcheck2(mes1.Mess, "transaction successful") == "success" {
 				suc++
 			}
 		}()
 		go func() {
 			a := client(&wg1, "POST", "/products/3", 200)
 			mes1 := getJson(a)
-			if qcheck(mes1.Mess, "transaction successful") == "success" {
+			if qcheck2(mes1.Mess, "transaction successful") == "success" {
 				suc++
 			}
 		}()
 	}
-	unpredictcheck(suc)
 	wg1.Wait()
+	unpredictcheck(suc)
 
 }
 
@@ -358,10 +358,22 @@ func qcheck(message string, expect string) string {
 	}
 	return "fail"
 }
+func qcheck2(message string, expect string) string {
+	if message == "" {
+		fmt.Println("No message")
+	} else if message == expect {
+		fmt.Printf("-success-")
+		return "success"
+	} else {
+		fmt.Printf("-Fail-")
+		return "fail"
+	}
+	return "fail"
+}
 
 func unpredictcheck(success int) {
 	if success == 7 || success == 5 || success == 6 {
-		fmt.Println("-------success------")
+		fmt.Printf("-------success------ get %d success in this senario\n", success)
 	} else {
 		fmt.Println("-------fail------")
 	}
@@ -466,9 +478,9 @@ func main() {
 	start := time.Now()
 	// misshit_check()
 	// fmt.Println("before quantity_check")
-	//quantity_check(wg1)
+	quantity_check(wg1)
 	// fmt.Println("after quantity_check")
-	test_time_check(wg1)
+	// test_time_check(wg1)
 	// onerun2(wg1)
 	// user_model(wg1)
 	// fmt.Println("after usermodel")
