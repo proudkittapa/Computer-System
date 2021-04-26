@@ -5,86 +5,208 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"strconv"
-
-	// "time"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
-	db *sql.DB
+	db    *sql.DB
+	C     Lru_cache
+	cMiss int = 0
+	cHit  int = 0
 )
 
-func checkErr(err error) {
+func CheckErr(err error) {
 	if err != nil {
-		panic(err)
+		fmt.Println("check err:", err)
 	}
 }
 
-type data struct {
+type Data struct {
 	Name     string `json:"name"`
 	Quantity int    `json:"quantity"`
 	Price    int    `json:"price"`
 }
 
-type node struct {
+type Node struct {
 	id    int
 	value string
-	prev  *node
-	next  *node
+	prev  *Node
+	next  *Node
 }
 
-type lru_cache struct {
+type Lru_cache struct {
 	limit int
-	mp    map[int]*node
-	head  *node
-	last  *node
+	mp    map[int]*Node
+	head  *Node
+	last  *Node
 }
 
-type jsonSave struct {
+type JsonSave struct {
 	ProductIDList []int `json:"productIDList"`
 	Limit         int   `json:"limit"`
 }
 
-func cache_cons(cap int) lru_cache {
-	return lru_cache{limit: cap, mp: make(map[int]*node, cap)}
+type Pam struct {
+	Miss int `json:"miss"`
+	Hit  int `json:"hit"`
 }
 
-func (list *lru_cache) cache(id int) string {
-	if node_val, ok := list.mp[id]; ok {
-		fmt.Println("-----------HIT-----------")
-		list.move(node_val)
+type Dis struct {
+	Product []string
+}
 
-		fmt.Println(node_val.value)
-		return node_val.value
+func Mile1(id int) string {
+	tmp := Db_query(id)
+
+	byteArray, err := json.Marshal(tmp)
+	CheckErr(err)
+	// fmt.Println(len(byteArray))
+
+	temp := string(byteArray)
+	fmt.Println(temp)
+	return temp
+
+}
+
+func DisplayAllPro(limit int, offset int) (val string) {
+	var l []string
+	a := (limit * offset) + 1
+	fmt.Println(a)
+	b := limit - 1
+	c := a + b
+
+	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id BETWEEN ? AND ?", strconv.Itoa(a), strconv.Itoa(c))
+	CheckErr(err)
+	for rows.Next() {
+		var name string
+		var quantity int
+		var price int
+		err = rows.Scan(&name, &quantity, &price)
+		if err != nil {
+			fmt.Println("hererererer")
+			log.Fatal(err)
+		}
+		result := Data{Name: name, Quantity: quantity, Price: price}
+		fmt.Println("result", result)
+		byArr, err := json.Marshal(result)
+		CheckErr(err)
+		tmp := string(byArr)
+		// fmt.Println(len(byteArray))
+
+		l = append(l, tmp)
+
+	}
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := rows.Close(); err != nil {
+		log.Fatal(err)
+	}
+	result := Dis{Product: l}
+
+	byteArray, err := json.Marshal(result)
+	CheckErr(err)
+
+	val = string(byteArray)
+	// fmt.Println(val)
+	return
+}
+
+func InitCache() {
+	//C.limit = 10
+	C = Cache_cons(10000)
+	// fmt.Println("head", C.head)
+	// fmt.Println("last", C.last)
+	// C.Display()
+}
+
+func (list *Lru_cache) ReCache(id int) (val string) {
+	temp := C.GetCache(id)
+	// fmt.Printf("%T\n", temp)
+
+	if temp == "" {
+		i := Db_query(id)
+		val = C.Set(id, i)
+
+		fmt.Println(val)
+		return val
 
 	} else {
-		fmt.Println("-----------MISS-----------")
-		if len(list.mp) >= list.limit {
-			rm := list.remove(list.last)
-			delete(list.mp, rm)
-		}
-		json, _ := db_query(id)
-		node := node{id: id, value: json}
-		list.add(&node)
-		list.mp[id] = &node
-		fmt.Println(node.value)
-
-		return node.value
-		// return val.value
+		fmt.Println(temp)
+		return temp
 	}
+
 }
 
-func (list *lru_cache) move(node *node) {
+func Cache_cons(cap int) Lru_cache {
+	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
+	// // db.SetMaxIdleConns(200000)
+	// db.SetMaxOpenConns(200000)
+	return Lru_cache{limit: cap, mp: make(map[int]*Node, cap)}
+}
+
+func (list *Lru_cache) GetCache(id int) string {
+	if node_val, ok := list.mp[id]; ok {
+		fmt.Println("-----------HIT-----------")
+		cHit++
+		list.Move(node_val)
+		// fmt.Println(val.value)
+		return node_val.value
+	} else {
+		fmt.Println("-----------MISS-----------")
+		cMiss++
+		return ""
+	}
+
+}
+
+func (list *Lru_cache) Set(id int, val Data) string {
+
+	byteArray, err := json.Marshal(val)
+	CheckErr(err)
+	// fmt.Println(len(byteArray))
+
+	temp := string(byteArray)
+
+	if prod, ok := list.mp[id]; ok || len(list.mp) >= list.limit {
+		// fmt.Println("if 1")
+		// fmt.Println("len", len(list.mp))
+		// fmt.Println("limit", list.limit)
+		if len(list.mp) >= list.limit {
+			// fmt.Println("cache full -> deleting last node -> add new node")
+			rm := list.Remove(list.last)
+			delete(list.mp, rm)
+
+		} else if _, ok := list.mp[id]; ok {
+			// fmt.Println("Same product ID -> deleting old -> add new")
+			rm := list.Remove(prod)
+			delete(list.mp, rm)
+
+		}
+	}
+
+	node := Node{id: id, value: temp}
+	list.AddNode(&node)
+	list.mp[id] = &node
+
+	reVal := node.value
+	return reVal
+}
+
+func (list *Lru_cache) Move(node *Node) {
 	if node == list.head {
 		return
 	}
-	list.remove(node)
-	list.add(node)
+	list.Remove(node)
+	list.AddNode(node)
 }
 
-func (list *lru_cache) remove(node *node) int {
+func (list *Lru_cache) Remove(node *Node) int {
 	if node == list.last {
 		// fmt.Println("con 1")
 		list.last = list.last.prev
@@ -99,7 +221,7 @@ func (list *lru_cache) remove(node *node) int {
 	return node.id
 }
 
-func (list *lru_cache) add(node *node) {
+func (list *Lru_cache) AddNode(node *Node) {
 	if list.head != nil {
 		list.head.prev = node
 		node.next = list.head
@@ -111,39 +233,29 @@ func (list *lru_cache) add(node *node) {
 	}
 }
 
-func db_query(id int) (val string, quan int) {
+// ref https://www.tutorialfor.com/blog-259822.htm
+//     https://medium.com/@fazlulkabir94/lru-cache-golang-implementation-92b7bafb76f0
+
+func Db_query(id int) (val Data) {
 
 	// fmt.Println("----------MISS----------")
+	// fmt.Println("productID :", id)
+	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 
-	rows, _ := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+	var name string
+	var quantity int
+	var price int
+	err := rows.Scan(&name, &quantity, &price)
+	CheckErr(err)
 
-	for rows.Next() {
-		var name string
-		var quantity int
-		var price int
-		err := rows.Scan(&name, &quantity, &price)
-		checkErr(err)
+	result := Data{Name: name, Quantity: quantity, Price: price}
 
-		result := data{Name: name, Quantity: quantity, Price: price}
-		byteArray, err := json.Marshal(result)
-		checkErr(err)
-		// fmt.Println(len(byteArray))
+	// fmt.Println(val)
 
-		val = string(byteArray)
-		quan = result.Quantity
-		// fmt.Println(val)
-
-		// fmt.Println(byteArray)
-		// fmt.Printf("%T", byteArray)
-		// fmt.Printf("%T", result.Quantity)
-
-	}
-
-	return val, quan
-
+	return result
 }
 
-func saveFile(lru lru_cache) {
+func SaveFile(mp map[int]*Node, lru Lru_cache) {
 	var prodList []int
 	t := lru.mp
 
@@ -158,174 +270,104 @@ func saveFile(lru lru_cache) {
 
 	fmt.Println(prodList)
 
-	tempList := jsonSave{ProductIDList: prodList, Limit: lru.limit}
+	tempList := JsonSave{ProductIDList: prodList, Limit: lru.limit}
 	jsonIDList, _ := json.Marshal(tempList)
 	_ = ioutil.WriteFile("cacheSave.json", jsonIDList, 0644)
 }
 
-// func saveFile_old(mp map[int]*node, lru lru_cache) {
-// 	var cache_list []kv
+// ref https://stackoverflow.com/questions/47898327/properly-create-a-json-file-and-read-from-it
 
-// 	for productID := 1; productID < len(mp); productID++ {
-// 		temp_kv := kv{Key: productID, Value: mp[productID].value}
-// 		cache_list = append(cache_list, temp_kv)
-// 	}
+func ReadFile() Lru_cache {
 
-// 	tempCache := jsonCache{Cache: cache_list, Limit: lru.limit}
-// 	// fmt.Println(lru.limit)
-
-// 	jsonCacheList, _ := json.Marshal(tempCache)
-// 	_ = ioutil.WriteFile("cacheSave.json", jsonCacheList, 0644)
-
-// 	// fmt.Println(string(jsonCacheList))
-// 	// fmt.Println(cache_list)
-// 	// fmt.Println(tempCache)
-
-// }
-
-func readFile() lru_cache {
 	fromFile, err := ioutil.ReadFile("cacheSave.json")
-	checkErr(err)
+	CheckErr(err)
 
-	var temp jsonSave
+	var temp JsonSave
 	err = json.Unmarshal(fromFile, &temp)
 
-	c := cache_cons(temp.Limit)
+	c := Cache_cons(temp.Limit)
 
 	t := temp.ProductIDList
 	// fmt.Println(t[0])
 	for i := 0; i < len(t); i++ {
-		fmt.Println(t[i])
-		tmp, _ := db_query(t[i])
-		c.Set(t[i], t)
+		// fmt.Println(t[i])
+		// fmt.Printf("%T\n", t[i])
+		tmp := Db_query(t[i])
+		c.Set(t[i], tmp)
+
 	}
 	c.Display()
 	return c
-
 }
 
-func (list *lru_cache) Set(id int, val data) {
+// ref https://tutorialedge.net/golang/parsing-json-with-golang/
 
-	byteArray, err := json.Marshal(val)
-	CheckErr(err)
-	// fmt.Println(len(byteArray))
-
-	temp := string(byteArray)
-
-	if prod, ok := list.mp[id]; ok || len(list.mp) >= list.limit {
-		if len(list.mp) >= list.limit {
-			rm := list.remove(list.last)
-			delete(list.mp, rm)
-		} else if _, ok := list.mp[id]; ok {
-			// list.Move(prod)
-			rm := list.remove(prod)
-			delete(list.mp, rm)
-		}
+func (l *Lru_cache) Display() {
+	node := l.last
+	if node == nil {
+		fmt.Println("empty")
 	}
-
-	node := node{id: id, value: temp}
-	list.add(&node)
-	list.mp[id] = &node
-	// fmt.Println(node.value)
-}
-
-// func readFile_old() lru_cache {
-// 	fromFile, err := ioutil.ReadFile("cacheSave.json")
-// 	checkErr(err)
-
-// 	var tempStruct jsonSave
-// 	err = json.Unmarshal(fromFile, &tempStruct)
-
-// 	c := cache_cons(tempStruct.Limit)
-
-// 	t := tempStruct.Cache
-// 	for i := 0; i < len(t); i++ {
-// 		for j := 1; j <= len(t); j++ {
-// 			node := node{id: j, value: t[i].Value}
-// 			c.add(&node)
-// 			c.mp[j] = &node
-// 			// fmt.Println(c)
-// 		}
-// 		// fmt.Println(t[i].Value)
-// 		// fmt.Printf("%T\n", t[i].Value)
-// 	}
-
-// 	fmt.Println(t)
-// 	fmt.Printf("%T\n", t)
-// 	return c
-// }
-
-func (l *lru_cache) Display() {
-	node := l.head
 	for node != nil {
-		fmt.Printf("%+v ->", node.id)
-		node = node.next
+		fmt.Printf("%+v <- ", node.id)
+		node = node.prev
 	}
-	fmt.Println()
 }
 
-// func Display(node *node) {
-// 	for node != nil {
-// 		fmt.Printf("%v ->", node.id)
-// 		node = node.next
-// 	}
-// 	fmt.Println()
-// }
+func SendMissHit() Pam {
+	result := Pam{Miss: cMiss, Hit: cHit}
+	return result
+}
 
 func main() {
 	db, _ = sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 
-	// var prodIDList []int
+	InitCache()
+	// c.ReCache(1)
+	// c.ReCache(1)
+	// c.ReCache(2)
+	// c.ReCache(3)
+	// c.ReCache(4)
+	// c.Display()
+	// defer profile.Start(profile.MemProfile).Stop()
 
-	// c := cache_cons(1000)
+	// ReadFile()
 
-	// for i := 0; i < 10; i++ {
-	// 	// fmt.Println(i)
-	// 	for j := 0; j < 2; j++ {
-	// 		// start := time.Now()
-	// 		c.cache(i)
-	// 		// _, temp := db_query(i)
-	// 		// fmt.Println(temp)
-	// 		// end := time.Since(start)
-	// 		// fmt.Printf("%v\n", end)
+	c := Cache_cons(10)
+
+	// temp := Data{Name: "pune", Quantity: 20, Price: 100}
+	// temp2 := Data{Name: "pune2", Quantity: 20, Price: 100}
+	// temp3 := Data{Name: "pune3", Quantity: 20, Price: 100}
+
+	// c.Set(1, temp)
+	// c.Set(1, temp2)
+	// c.Set(1, temp3)
+	// // c.Set(1, temp3)
+	// c.Display()
+	// fmt.Println(c.GetCache(1))
+	// fmt.Println("\nlast: ", c.last)
+	// fmt.Println("head: ", c.head)
+
+	for i := 0; i < 10; i++ {
+		// for j := 0; j < 2; j++ {
+		start := time.Now()
+		c.ReCache(i)
+		end := time.Since(start)
+		fmt.Printf("%v\n", end)
+		// }
+	}
+
+	for i := 0; i < 10; i++ {
+		// for j := 0; j < 2; j++ {
+		start := time.Now()
+		c.ReCache(i)
+		end := time.Since(start)
+		fmt.Printf("%v\n", end)
+		// }
+	}
+
+	// t := c.cache(i)
+	// fmt.Println(t)
+	// fmt.Printf("%T\n", t)
 	// 	}
-
 	// }
-
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
-
-	// fmt.Println(c.limit)
-	readFile()
-
-	// fmt.Printf("%T\n", c.mp)
-
-	// c.cache(32)
-	// // c.Display()
-	// // fmt.Println("last: ", c.last)
-	// // fmt.Println("head: ", c.head)
-	// c.cache(555)
-	// // c.Display()
-	// // fmt.Println("last: ", c.last)
-	// // fmt.Println("head: ", c.head)
-	// c.cache(90)
-	// // c.Display()
-	// // fmt.Println("last: ", c.last)
-	// // fmt.Println("head: ", c.head)
-	// c.cache(42)
-	// c.cache(7231)
-	// c.cache(555)
-	// c.cache(4)
-	// c.cache(678)
-	// c.cache(123)
-
-	// saveFile(c)
-
-	// readFile()
-
-	// saveFile_old(c.mp, c)
-	// // c.Display()
-	// fmt.Println("last: ", c.last)
-	// fmt.Println("head: ", c.head)
-
 }

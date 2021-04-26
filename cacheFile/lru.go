@@ -128,6 +128,7 @@ func (list *Lru_cache) ReCache(id int) (val string) {
 	// fmt.Printf("%T\n", temp)
 
 	if temp == "" {
+		fmt.Println("-----------MISS-----------")
 		i := Db_query(id)
 		val = C.Set(id, i)
 
@@ -135,6 +136,7 @@ func (list *Lru_cache) ReCache(id int) (val string) {
 		return val
 
 	} else {
+		fmt.Println("-----------HIT-----------")
 		fmt.Println(temp)
 		return temp
 	}
