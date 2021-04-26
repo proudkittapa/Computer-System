@@ -21,7 +21,7 @@ var (
 	mutex     sync.Mutex
 	totalTime float64
 	x         Data
-	result    string
+//	result    string
 )
 
 type product struct {
@@ -136,13 +136,13 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		Preorder(end, user, productId, orderQuantity)
 		return
 	} else if result2 == "not complete" {
-		result = "order more than stock quantity"
+		result := "order more than stock quantity"
 		fmt.Println(result)
 		tx.Commit()
 		end <- result
 		return
 	} else if result2 == "out of stock" {
-		result = "The order is out of stock"
+		result := "The order is out of stock"
 		fmt.Println(result)
 		tx.Commit()
 		end <- result
@@ -157,7 +157,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 			// fmt.Printf("Failed to commit tx: %v\n", err)
 		}
 
-		result = "transaction successful"
+		result := "transaction successful"
 		end <- result
 	}
 
@@ -172,7 +172,7 @@ func PostPreorder(id int, quantity int) string {
 	end := make(chan string)
 	go Preorder(end, strconv.Itoa(1), id, quantity)
 	fmt.Printf("quantityyyy: %d\n", quantity)
-	result = <-end
+	result := <-end
 	fmt.Println("hererreerere")
 	return result
 }
