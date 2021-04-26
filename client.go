@@ -446,28 +446,10 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
-	var wg1 sync.WaitGroup
+	// var wg1 sync.WaitGroup
 	start := time.Now()
-	// misshit_check()
-	// fmt.Println("before quantity_check")
-	// quantity_check(wg1)
-	// fmt.Println("after quantity_check")
-	// test_time_check(wg1)
-	// onerun2(wg1)
-	// start := time.Now()
-	user_model(wg1)
-	// fmt.Println("after usermodel")
-	// for i := 0; i < 2000; i++ {
-	// 	wg1.Add(1)
-	// 	// go client(&wg1, "GET", "/", 0)
-	// 	// go client(&wg1, "GET", "/products?limit=10&offset=0", 0)
-	// 	go client(&wg1, "GET", "/products/1", 0)
-	// 	// go client(&wg1, "GET", "/products/1", 2)
-	// 	// // wg1.Add(1000)
-	// 	// // onerun2(wg1)
-	// }
-	// wg1.Wait()
-	// time.Sleep(100 * time.Millisecond)
+	// user_model(wg1)
+	user_model2()
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
 	fmt.Printf("Number Response: %d\n", count_Res)
@@ -475,9 +457,7 @@ func main() {
 	tt := float64(t) / 1e6
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f", rate)
-	// client("GET", "/hitmiss", 0)
-	// fmt.Println("HIT:", result.Hit)
-	// fmt.Println("Miss:", result.Miss)
+
 }
 
 func getJson(message string) Mess {
@@ -505,4 +485,29 @@ func getJson2(message string) Rate {
 		// fmt.Println("data", result)
 	}
 	return result
+}
+func user_model2() {
+	for i := 0.0; i < (num_user * 0.60); i++ {
+		func() {
+			clientNoGo("GET", "/", 0)
+			clientNoGo("GET", "/products?limit=10&offset=0", 0)
+		}()
+	}
+	// fmt.Println("here")
+	for i := 0.0; i < (num_user * 0.25); i++ {
+		func() {
+			clientNoGo("GET", "/", 0)
+			clientNoGo("GET", "/products?limit=10&offset=0", 0)
+			clientNoGo("GET", "/products/"+strconv.Itoa(rand.Intn(14)), 0)
+		}()
+	}
+	for i := 0.0; i < (num_user * 0.15); i++ {
+		func() {
+			clientNoGo("GET", "/", 0)
+			clientNoGo("GET", "/products?limit=10&offset=0", 0)
+			clientNoGo("GET", "/products/"+strconv.Itoa(rand.Intn(14)), 0)
+			clientNoGo("POST", "/products/"+strconv.Itoa(rand.Intn(14)), 2)
+		}()
+	}
+	fmt.Println("after wait group")
 }
