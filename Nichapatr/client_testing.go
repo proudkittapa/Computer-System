@@ -254,12 +254,12 @@ func test_time_check(wg1 sync.WaitGroup) {
 	/*--------------------time check (2)--------------------*/
 	fmt.Println("-------------MIND-----------")
 	t4 := time.Now() //Mind
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 5; i++ {
 		wg1.Add(4)
-		go client(&wg1, "POST", "/products/4", 2)     // stock must = 998
-		go client(&wg1, "POST", "/products/4", 3)     // stock must = 995
-		go client(&wg1, "POST", "/products/4", 5)     // stock must = 990
-		go client(&wg1, "POST", "/products/4", 10000) // stock must = 990 mess: the order more than stock quantity
+		go client(&wg1, "POST", "/products/4", 2)   // stock must = 998
+		go client(&wg1, "POST", "/products/4", 3)   // stock must = 995
+		go client(&wg1, "POST", "/products/4", 5)   // stock must = 990
+		go client(&wg1, "POST", "/products/4", 200) // stock must = 790
 	}
 	t04 := float64(time.Since(t4)) / 1e6
 	fmt.Printf("Time:   %v ", t04)
