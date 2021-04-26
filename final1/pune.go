@@ -1,8 +1,11 @@
 package final1
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -73,3 +76,35 @@ func ReCache(id int) string {
 // 	}
 
 // }
+
+func GetFile() string {
+	f, err := os.Open("../pre-order/index.html")
+
+	if err != nil {
+		fmt.Println("File reading error", err)
+
+	}
+	defer func() {
+		if err := f.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	chunksize := 512
+	reader := bufio.NewReader(f)
+	part := make([]byte, chunksize)
+	buffer := bytes.NewBuffer(make([]byte, 0))
+	var bufferLen int
+	for {
+		count, err := reader.Read(part)
+		if err != nil {
+			break
+		}
+		bufferLen += count
+		buffer.Write(part[:count])
+	}
+	// fmt.Println("home")
+	return buffer.String()
+	// contentType = "text/html"
+	// headers = fmt.Sprintf("HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: %s\r\n\n%s", bufferLen, contentType, buffer)
+
+}
