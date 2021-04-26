@@ -336,7 +336,7 @@ func quantity_check(wg1 sync.WaitGroup) { //Mind
 		go func() {
 			a := client(&wg1, "POST", "/products/3", 200)
 			mes1 := getJson(a)
-			if qcheck(mes1.Mess, "transaction successful") == "success" {
+			if qcheck2(mes1.Mess, "transaction successful") == "success" {
 				suc++
 			}
 		}()
@@ -358,10 +358,22 @@ func qcheck(message string, expect string) string {
 	}
 	return "fail"
 }
+func qcheck2(message string, expect string) string {
+	if message == "" {
+		fmt.Println("No message")
+	} else if message == expect {
+		fmt.Printf("-success-")
+		return "success"
+	} else {
+		fmt.Printf("-Fail-")
+		return "fail"
+	}
+	return "fail"
+}
 
 func unpredictcheck(success int) {
 	if success == 7 || success == 5 || success == 6 {
-		fmt.Println("-------success------")
+		fmt.Printf("-------success------ get %d success in this senario\n", success)
 	} else {
 		fmt.Println("-------fail------")
 	}
