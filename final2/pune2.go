@@ -40,6 +40,23 @@ type data struct {
 // 	}
 // }
 
+func Display_pro() (val string) {
+	var l []string
+	for i := 1; i <= 1; i++ {
+		val := cacheFile.Db_query(i)
+		l = append(l, val)
+	}
+
+	result := display{Product: l}
+
+	byteArray, err := json.Marshal(result)
+	checkErr(err)
+
+	val = string(byteArray)
+	// fmt.Println(val)
+	return
+}
+
 func ReCache(id int) string {
 	// cache(1) // if true return val else return -1
 	if val, ok := mp[id]; ok {
