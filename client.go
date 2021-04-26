@@ -446,10 +446,10 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
-	// var wg1 sync.WaitGroup
+	var wg1 sync.WaitGroup
 	start := time.Now()
-	// user_model(wg1)
-	user_model2()
+	user_model(wg1)
+	// user_model2()
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
 	fmt.Printf("Number Response: %d\n", count_Res)
