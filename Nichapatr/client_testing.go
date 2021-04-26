@@ -263,7 +263,7 @@ func test_time_check(wg1 sync.WaitGroup) {
 	}
 	t04 := float64(time.Since(t4)) / 1e6
 	fmt.Printf("Time:   %v ", t04)
-	fmt.Printf("Latency Time:   %v ", (t04 / 8.0))
+	fmt.Printf("Latency Time:   %v ", (t04 / 20.0))
 
 	// t5 := time.Now()
 	// for i := 0; i < 2; i++ {
