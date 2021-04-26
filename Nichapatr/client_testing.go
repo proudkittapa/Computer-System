@@ -474,14 +474,14 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
-	// var wg1 sync.WaitGroup
+	var wg1 sync.WaitGroup
 	start := time.Now()
 	fmt.Println("---------------miss hit check---------------")
 	misshit_check()
-	// fmt.Println("---------------quantity_check---------------")
-	// quantity_check(wg1)
-	// fmt.Println("-----------------time_check-----------------")
-	// test_time_check(wg1)
+	fmt.Println("---------------quantity_check---------------")
+	quantity_check(wg1)
+	fmt.Println("-----------------time_check-----------------")
+	test_time_check(wg1)
 	// onerun2(wg1)
 	// user_model(wg1)
 	// fmt.Println("after usermodel")
