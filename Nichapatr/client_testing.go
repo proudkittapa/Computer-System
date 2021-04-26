@@ -474,7 +474,7 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
-	var wg1 sync.WaitGroup
+	// var wg1 sync.WaitGroup
 	start := time.Now()
 	fmt.Println("---------------miss hit check---------------")
 	misshit_check()
