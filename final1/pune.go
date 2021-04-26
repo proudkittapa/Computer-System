@@ -99,7 +99,7 @@ func ReCache(id int) string {
 // }
 
 func GetFile() string {
-	f, err := os.Open("../pre-order/index.html")
+	f, err := os.Open("/root/go/src/Computer-System/pre-order/index.html")
 
 	if err != nil {
 		fmt.Println("File reading error", err)
