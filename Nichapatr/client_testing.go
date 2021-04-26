@@ -373,9 +373,9 @@ func qcheck2(message string, expect string) string {
 
 func unpredictcheck(success int) {
 	if success == 7 || success == 5 || success == 6 {
-		fmt.Printf("-------success------ get %d success in this senario\n", success)
+		fmt.Printf("-------------------success------------------ get %d success in this senario\n", success)
 	} else {
-		fmt.Println("-------fail------")
+		fmt.Println("--------------------fail-------------------")
 	}
 }
 
