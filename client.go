@@ -15,6 +15,8 @@ import (
 	"time"
 )
 
+var users = 2000
+
 type Message struct {
 	Name     string
 	Quantity int
@@ -150,7 +152,7 @@ func createHeaderPOST(u int, quan int, p string) string {
 
 func onerun2(wg1 sync.WaitGroup) {
 
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < users; i++ {
 		wg1.Add(1)
 		go func() {
 			// client(&wg1, "GET", "/", 0)
