@@ -21,6 +21,7 @@ var (
 	mutex     sync.Mutex
 	totalTime float64
 	x         Data
+
 //	result    string
 )
 
@@ -36,7 +37,7 @@ type product struct {
 func InitDatabase() {
 	// db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
-	db.SetMaxOpenConns(4000)
+	db.SetMaxOpenConns(10000)
 	// db.SetMaxIdleConns(32000)
 	// db.SetConnMaxLifetime(10 * time.Second)
 	for i := 1; i <= 5; i++ {
