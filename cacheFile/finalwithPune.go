@@ -63,6 +63,9 @@ func getJson(message string) product {
 func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	//fmt.Println("stop1")
 	rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
+	if rows != nil {
+		log.Fatal("get quantity err", rows)
+	}
 	var name string
 	var quantity int
 	var price int

@@ -78,7 +78,10 @@ func DisplayAllPro(limit int, offset int) (val string) {
 	c := a + b
 
 	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id BETWEEN ? AND ?", strconv.Itoa(a), strconv.Itoa(c))
-	CheckErr(err)
+	// CheckErr(err)
+	if err != nil {
+		log.Fatal("Display all pro err", err)
+	}
 	for rows.Next() {
 		var name string
 		var quantity int
@@ -91,7 +94,10 @@ func DisplayAllPro(limit int, offset int) (val string) {
 		result := Data{Name: name, Quantity: quantity, Price: price}
 		// fmt.Println("result", result)
 		byArr, err := json.Marshal(result)
-		CheckErr(err)
+		// CheckErr(err)
+		if err != nil {
+			log.Fatal("json marshal err", err)
+		}
 		tmp := string(byArr)
 		// fmt.Println(len(byteArray))
 
@@ -99,11 +105,11 @@ func DisplayAllPro(limit int, offset int) (val string) {
 
 	}
 	if err := rows.Err(); err != nil {
-		log.Fatal(err)
+		log.Fatal("rows.Err()", err)
 	}
 
 	if err := rows.Close(); err != nil {
-		log.Fatal(err)
+		log.Fatal("rows.Close()", err)
 	}
 	result := Dis{Product: l}
 
@@ -168,9 +174,11 @@ func (list *Lru_cache) GetCache(id int) string {
 func (list *Lru_cache) Set(id int, val Data) string {
 
 	byteArray, err := json.Marshal(val)
-	CheckErr(err)
+	// CheckErr(err)
 	// fmt.Println(len(byteArray))
-
+	if err != nil {
+		log.Fatal("set err", err)
+	}
 	temp := string(byteArray)
 
 	if prod, ok := list.Mp[id]; ok || len(list.Mp) >= list.limit {
@@ -241,13 +249,17 @@ func Db_query(id int) (val Data) {
 	// fmt.Println("----------MISS----------")
 	// fmt.Println("productID :", id)
 	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-
+	if rows != nil {
+		log.Fatal("query rows", rows)
+	}
 	var name string
 	var quantity int
 	var price int
 	err := rows.Scan(&name, &quantity, &price)
-	CheckErr(err)
-
+	// CheckErr(err)
+	if err != nil {
+		log.Fatal("rows.Scan in db_query err", err)
+	}
 	result := Data{Name: name, Quantity: quantity, Price: price}
 
 	// fmt.Println(val)
