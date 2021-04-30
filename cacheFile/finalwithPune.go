@@ -90,7 +90,6 @@ func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	//fmt.Println("done")
 	//fmt.Println(quantity)
 	t <- quantity
-	fmt.Printf("-----numQuery: %d-------\n", numQuery)
 
 }
 
@@ -139,6 +138,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	transactionC := make(chan string)
 	t := make(chan int)
 	//start := time.Now()
+	fmt.Printf("-----numQuery: %d-------\n", numQuery)
 	go GetQuantity(tx, transactionC, t, productId)
 	go Decrement(tx, t, transactionC, orderQuantity, productId)
 	result2 := <-transactionC
