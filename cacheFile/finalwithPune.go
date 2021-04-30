@@ -90,6 +90,8 @@ func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	//fmt.Println("done")
 	//fmt.Println(quantity)
 	t <- quantity
+	fmt.Printf("-----numQuery: %d-------\n", numQuery)
+
 }
 
 func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
