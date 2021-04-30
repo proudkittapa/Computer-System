@@ -160,7 +160,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		return
 	} else {
 		fmt.Println("user:", user, "productId:", productId, "orderQuantity:", orderQuantity)
-		fmt.Printf("-----numQuery: %d-------\n", numQuery)
+		fmt.Printf("numQuery: %dn", numQuery)
 		var wg sync.WaitGroup
 		wg.Add(1)
 		go Insert(&wg, tx, user, productId, orderQuantity)
@@ -183,7 +183,7 @@ func PostPreorder(id int, quantity int) string {
 	//n := 5
 	end := make(chan string)
 	go Preorder(end, strconv.Itoa(1), id, quantity)
-	fmt.Printf("-----numQuery: %d-------\n", numQuery)
+	fmt.Printf("numQuery: %d\n", numQuery)
 	fmt.Printf("quantityyyy: %d\n", quantity)
 	result := <-end
 	fmt.Println("hererreerere")
