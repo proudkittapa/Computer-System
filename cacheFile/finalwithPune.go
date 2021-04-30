@@ -22,6 +22,7 @@ var (
 	mutex     sync.Mutex
 	totalTime float64
 	x         Data
+	numQuery  int
 
 //	result    string
 )
@@ -66,6 +67,7 @@ func getJson(message string) product {
 func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	//fmt.Println("stop1")
 	rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
+	numQuery++
 	if rows != nil {
 		log.Fatal("get quantity err", rows)
 	}
@@ -156,6 +158,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		return
 	} else {
 		fmt.Println("user:", user, "productId:", productId, "orderQuantity:", orderQuantity)
+		fmt.Printf("-----numQuery: %d-------\n", numQuery)
 		var wg sync.WaitGroup
 		wg.Add(1)
 		go Insert(&wg, tx, user, productId, orderQuantity)
