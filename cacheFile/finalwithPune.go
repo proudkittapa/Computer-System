@@ -146,12 +146,14 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		return
 	} else if result2 == "not complete" {
 		result := "order more than stock quantity"
+		fmt.Printf("-----numQuery: %d-------\n", numQuery)
 		fmt.Println(result)
 		tx.Commit()
 		end <- result
 		return
 	} else if result2 == "out of stock" {
 		result := "The order is out of stock"
+		fmt.Printf("-----numQuery: %d-------\n", numQuery)
 		fmt.Println(result)
 		tx.Commit()
 		end <- result
