@@ -249,16 +249,16 @@ func Db_query(id int) (val Data) {
 	// fmt.Println("----------MISS----------")
 	// fmt.Println("productID :", id)
 	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
-	// if rows != nil {
-	// 	log.Fatal("query rows", rows)
-	// }
+	if rows != nil {
+		log.Fatal("query rows", rows)
+	}
 	var name string
 	var quantity int
 	var price int
 	err := rows.Scan(&name, &quantity, &price)
 	// CheckErr(err)
 	if err != nil {
-		log.Fatal("rows.Scan in db_query err", err)
+		log.Fatal("rows.Scan in db_query err", err, "id:", id)
 	}
 	result := Data{Name: name, Quantity: quantity, Price: price}
 
