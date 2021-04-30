@@ -156,8 +156,8 @@ func onerun2(wg1 sync.WaitGroup) {
 		wg1.Add(1)
 		go func() {
 			// client(&wg1, "GET", "/", 0)
-			client(&wg1, "GET", "/products?limit=10&offset=0", 0)
-			// client(&wg1, "GET", "/products/1", 0)
+			// client(&wg1, "GET", "/products?limit=10&offset=0", 0)
+			client(&wg1, "GET", "/products/1", 0)
 			// client(&wg1, "POST", "/products/1", 2)
 		}()
 	}
@@ -450,8 +450,8 @@ func main() {
 	// flag.Parse()
 	var wg1 sync.WaitGroup
 	start := time.Now()
-	// onerun2(wg1)
-	user_model(wg1)
+	onerun2(wg1)
+	// user_model(wg1)
 	// user_model2()
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
