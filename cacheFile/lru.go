@@ -248,47 +248,46 @@ func Db_query(id int) (val Data) {
 
 	// fmt.Println("----------MISS----------")
 	// fmt.Println("productID :", id)
-
-	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id=?", strconv.Itoa(id))
-	if rows != nil {
+	/*
+		rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+		if rows != nil {
+			log.Fatal("query rows", rows, "id:", id)
+		}
+		var name string
+		var quantity int
+		var price int
+		err := rows.Scan(&name, &quantity, &price)
+		// CheckErr(err)
+		if err != nil {
+			log.Fatal("rows.Scan in db_query err", err, "id:", id)
+		}
+	*/
+	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+	// CheckErr(err)
+	if err != nil {
 		log.Fatal("query rows", rows, "id:", id)
 	}
 	var name string
 	var quantity int
 	var price int
-	err := rows.Scan(&name, &quantity, &price)
-	// CheckErr(err)
-	if err != nil {
-		log.Fatal("rows.Scan in db_query err", err, "id:", id)
-	}
-	/*
-		rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+	for rows.Next() {
+
+		err = rows.Scan(&name, &quantity, &price)
+		if err != nil {
+			// fmt.Println("hererererer")
+			log.Fatal(err)
+		}
+		// result := Data{Name: name, Quantity: quantity, Price: price}
+		// fmt.Println("result", result)
+		// byArr, err := json.Marshal(result)
 		// CheckErr(err)
 		if err != nil {
-			log.Fatal("Display all pro err", err)
+			log.Fatal("json marshal err", err)
 		}
-		for rows.Next() {
-			var name string
-			var quantity int
-			var price int
-			err = rows.Scan(&name, &quantity, &price)
-			if err != nil {
-				// fmt.Println("hererererer")
-				log.Fatal(err)
-			}
-			result := Data{Name: name, Quantity: quantity, Price: price}
-			// fmt.Println("result", result)
-			byArr, err := json.Marshal(result)
-			// CheckErr(err)
-			if err != nil {
-				log.Fatal("json marshal err", err)
-			}
-			tmp := string(byArr)
-			// fmt.Println(len(byteArray))
+		// tmp := string(byArr)
+		// fmt.Println(len(byteArray)
 
-
-		}
-	*/
+	}
 	result := Data{Name: name, Quantity: quantity, Price: price}
 
 	// fmt.Println(val)
