@@ -250,7 +250,7 @@ func Db_query(id int) (val Data) {
 	// fmt.Println("productID :", id)
 	rows := db.QueryRow("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
 	if rows != nil {
-		log.Fatal("query rows", rows)
+		log.Fatal("query rows", rows, "id:", id)
 	}
 	var name string
 	var quantity int
