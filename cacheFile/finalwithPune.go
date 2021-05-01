@@ -76,7 +76,7 @@ func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	var price int
 	err := rows.Scan(&name, &quantity, &price)
 	if err != nil {
-		//fmt.Println("get quantity fail")
+		fmt.Println("get quantity fail")
 		transactionC <- "rollback"
 		tx.Rollback()
 		return
@@ -98,17 +98,18 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 	quantity := <-t // channel from getQuantity
 	newQuantity := quantity - orderQuantity
 	if quantity == 0 {
+		fmt.Println("quan = 0: ")
 		transactionC <- "out of stock"
 		return
 	}
 	if newQuantity < 0 {
-		//fmt.Println("the order is out of stock")
+		fmt.Println("the order is out of stock")
 		transactionC <- "not complete"
 		return
 	}
 	_, err := tx.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(id))
 	if err != nil {
-		//fmt.Println("decrement fail")
+		fmt.Println("decrement fail")
 		tx.Rollback()
 		transactionC <- "rollback"
 		return
@@ -135,7 +136,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	ctx = context.Background()
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
-		log.Println(err)
+		log.Println("preorder(): ", err)
 		// panic(err)
 	}
 	transactionC := make(chan string)
@@ -171,7 +172,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		go Insert(&wg, tx, user, productId, orderQuantity)
 		wg.Wait()
 		if err := tx.Commit(); err != nil {
-			// fmt.Printf("Failed to commit tx: %v\n", err)
+			fmt.Printf("Failed to commit tx: %v\n", err)
 		}
 
 		result := "transaction successful"

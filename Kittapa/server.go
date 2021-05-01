@@ -155,7 +155,7 @@ func getMessage(message string) (string, string, []string) {
 		LF.Offset, _ = strconv.Atoi(k)
 		path = "/products"
 	} else if p[1] == "products" && len(p) == 3 {
-		fmt.Println("productsWithID")
+		// fmt.Println("productsWithID")
 		ID, _ = strconv.Atoi(p[2])
 		// fmt.Println("IDDDDD", ID)
 		path = "/" + p[1] + "/:id"
