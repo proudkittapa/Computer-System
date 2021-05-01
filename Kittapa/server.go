@@ -140,8 +140,8 @@ func getMessage(message string) (string, string, []string) {
 	// fmt.Println("headers[0]", headers[0])
 	path := (strings.Split(headers[0], " "))[1]
 	p := strings.Split(path, "/")
-	fmt.Println("len p:", len(p))
-	fmt.Println("p[1]:", p[1])
+	// fmt.Println("len p:", len(p))
+	// fmt.Println("p[1]:", p[1])
 	a, b := queryString(p[1])
 	if b {
 		fmt.Println(a)
@@ -157,10 +157,10 @@ func getMessage(message string) (string, string, []string) {
 	} else if p[1] == "products" && len(p) == 3 {
 		fmt.Println("productsWithID")
 		ID, _ = strconv.Atoi(p[2])
-		fmt.Println("IDDDDD", ID)
+		// fmt.Println("IDDDDD", ID)
 		path = "/" + p[1] + "/:id"
 	}
-	fmt.Println("path", path)
+	// fmt.Println("path", path)
 	return method, path, p
 }
 
