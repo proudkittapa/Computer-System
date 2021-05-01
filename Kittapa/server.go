@@ -115,7 +115,7 @@ func (s *Server) req(conn net.Conn) {
 		fmt.Println(method, path)
 		r, yes := s.check(method, path)
 		if yes {
-			fmt.Println("yesssss")
+			// fmt.Println("yesssss")
 			fc = r.Name()
 			send(conn, fc, "application/json")
 		} else {

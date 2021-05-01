@@ -65,7 +65,7 @@ func getJson(message string) product {
 }
 
 func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
-	//fmt.Println("stop1")
+	fmt.Println("getQuan")
 	rows := tx.QueryRow("select name, quantity_in_stock, unit_price from products where product_id = " + strconv.Itoa(id))
 	numQuery++
 	if rows != nil {
@@ -94,6 +94,7 @@ func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 }
 
 func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity int, id int) {
+	fmt.Println("decrement")
 	quantity := <-t // channel from getQuantity
 	newQuantity := quantity - orderQuantity
 	if quantity == 0 {
@@ -119,6 +120,7 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 }
 
 func Insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
+	fmt.Println("insert")
 	_, err := tx.Exec("INSERT INTO order_items(username, product_id, quantity) VALUES (?, ?, ?)", user, id, q)
 	if err != nil {
 		fmt.Println("insert fail")
@@ -129,6 +131,7 @@ func Insert(wg *sync.WaitGroup, tx *sql.Tx, user string, id int, q int) {
 }
 
 func Preorder(end chan string, user string, productId int, orderQuantity int) {
+	fmt.Println("preorder")
 	ctx = context.Background()
 	tx, err := db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
@@ -180,6 +183,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	return
 }
 func PostPreorder(id int, quantity int) string {
+	fmt.Println("postPreorder")
 	// InitDatabase()
 	//InitCache()
 	//db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, 1)
