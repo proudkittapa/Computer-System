@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-var users = 20000
+var users = 100
 
 type Message struct {
 	Name     string
@@ -156,9 +156,9 @@ func onerun2(wg1 sync.WaitGroup) {
 		wg1.Add(1)
 		go func() {
 			// client(&wg1, "GET", "/", 0)
-			client(&wg1, "GET", "/products?limit=10&offset=0", 0)
+			// client(&wg1, "GET", "/products?limit=10&offset=0", 0)
 			// client(&wg1, "GET", "/products/1"+strconv.Itoa(rand.Intn(14)), 0)
-			// client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(100)), 2)
+			client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(100)), 2)
 		}()
 	}
 	wg1.Wait()
