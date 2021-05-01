@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-var users = 10000
+var users = 20000
 
 type Message struct {
 	Name     string
