@@ -72,11 +72,14 @@ func Mile1(id int) string {
 
 func DisplayAllPro(limit int, offset int) (val string) {
 	var l []string
+	fmt.Println("limit: ", limit)
+	fmt.Println("offset: ", offset)
+
 	a := (limit * offset) + 1
 	// fmt.Println(a)
 	b := limit - 1
 	c := a + b
-
+	fmt.Println("abc", a, b, c)
 	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id BETWEEN ? AND ?", strconv.Itoa(a), strconv.Itoa(c))
 	// CheckErr(err)
 	if err != nil {
