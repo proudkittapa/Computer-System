@@ -493,6 +493,7 @@ func baselineN() {
 		clientNoGo("GET", "/", 0)
 	}
 	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
+	clientNoGo("GET", "/resetTime", 0)
 	t3 := time.Now()
 	for i := 0; i < n; i++ {
 		clientNoGo("GET", "/products", 0)
