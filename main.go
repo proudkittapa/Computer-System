@@ -17,6 +17,7 @@ var t2 time.Duration
 var t4 time.Duration
 var t6 time.Duration
 var t8 time.Duration
+var l []string
 
 func main() {
 	s := Kittapa.New()
@@ -95,7 +96,9 @@ func displayProducts() string {
 	t := time.Now()
 	// fmt.Println(Kittapa.LF)
 	a := cacheFile.DisplayAllPro(Kittapa.LF.Limit, Kittapa.LF.Offset)
-	t4 = t4 + time.Since(t)
+	// t4 = t4 + time.Since(t)
+
+	l = append(l, string(time.Since(t)))
 	fmt.Println("t4", time.Since(t))
 	return a
 }
