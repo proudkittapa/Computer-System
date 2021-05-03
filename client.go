@@ -450,8 +450,8 @@ func main() {
 	// flag.Parse()
 	var wg1 sync.WaitGroup
 	start := time.Now()
-	// onerun2(wg1)
-	user_model(wg1)
+	onerun2(wg1)
+	// user_model(wg1)
 	// user_model2()
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
