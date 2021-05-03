@@ -475,16 +475,16 @@ func misshit_check() {
 func baseline() {
 	t1 := time.Now()
 	clientNoGo("GET", "/", 0)
-	fmt.Printf("\n------> TIME t1: %v\n", t1)
+	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
 	t3 := time.Now()
 	clientNoGo("GET", "/products", 0)
-	fmt.Printf("\n------> TIME t3: %v\n", t3)
+	fmt.Printf("\n------> TIME t3: %v\n", time.Since(t3))
 	t5 := time.Now()
 	clientNoGo("GET", "/products/10", 0)
-	fmt.Printf("\n------> TIME t5: %v\n", t5)
+	fmt.Printf("\n------> TIME t5: %v\n", time.Since(t5))
 	t7 := time.Now()
 	clientNoGo("POST", "/products/10", 2)
-	fmt.Printf("\n------> TIME t7: %v\n", t7)
+	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 }
 
 func main() {
@@ -500,7 +500,6 @@ func main() {
 	baseline()
 	// onerun2(wg1)
 	// user_model(wg1)
-	// fmt.Println("after usermodel")
 	fmt.Println("-----------------END-----------------")
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
