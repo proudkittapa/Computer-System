@@ -120,7 +120,7 @@ func DisplayAllPro(limit int, offset int) (val string) {
 	CheckErr(err)
 
 	val = string(byteArray)
-	// fmt.Println(val)
+	fmt.Println(val)
 	return
 }
 
