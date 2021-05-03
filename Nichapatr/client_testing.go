@@ -487,7 +487,7 @@ func baseline() {
 	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 }
 func baselineN() {
-	n := 100
+	n := 1000
 	t1 := time.Now()
 	for i := 0; i < n; i++ {
 		clientNoGo("GET", "/", 0)
