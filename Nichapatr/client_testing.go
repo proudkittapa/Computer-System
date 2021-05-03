@@ -97,7 +97,7 @@ func client(wg1 *sync.WaitGroup, m string, p string, quan int) string {
 
 func clientNoGo(m string, p string, quan int) string {
 	// t0 := time.Now()
-	host := "178.128.94.63:8080"
+	host := "178.128.94.63:8081"
 	conn, err := net.Dial("tcp", host)
 	if err != nil {
 		count_Fail++
