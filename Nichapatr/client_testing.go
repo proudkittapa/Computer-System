@@ -472,19 +472,36 @@ func misshit_check() {
 	fmt.Println("Miss for /products/:id", n3.Miss)
 }
 
+func baseline() {
+	t1 := time.Now()
+	clientNoGo("GET", "/", 0)
+	fmt.Printf("\n------> TIME t1: %v\n", t1)
+	t3 := time.Now()
+	clientNoGo("GET", "/products", 0)
+	fmt.Printf("\n------> TIME t3: %v\n", t3)
+	t5 := time.Now()
+	clientNoGo("GET", "/products/10", 0)
+	fmt.Printf("\n------> TIME t5: %v\n", t5)
+	t7 := time.Now()
+	clientNoGo("POST", "/products/10", 2)
+	fmt.Printf("\n------> TIME t7: %v\n", t7)
+}
+
 func main() {
-	// flag.Parse()
-	var wg1 sync.WaitGroup
+	// var wg1 sync.WaitGroup
 	start := time.Now()
-	fmt.Println("---------------miss hit check---------------")
-	misshit_check()
-	fmt.Println("---------------quantity_check---------------")
-	quantity_check(wg1)
+	// fmt.Println("---------------miss hit check---------------")
+	// misshit_check()
+	// fmt.Println("---------------quantity_check---------------")
+	// quantity_check(wg1)
+	// fmt.Println("-----------------time_check-----------------")
+	// test_time_check(wg1)
 	fmt.Println("-----------------time_check-----------------")
-	test_time_check(wg1)
+	baseline()
 	// onerun2(wg1)
 	// user_model(wg1)
 	// fmt.Println("after usermodel")
+	fmt.Println("-----------------END-----------------")
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
 	fmt.Printf("Number Response: %d\n", count_Res)
