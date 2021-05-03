@@ -513,7 +513,7 @@ func baselineN() {
 }
 
 func final(wg sync.WaitGroup) {
-	n := 1
+	n := 10
 	t1 := time.Now()
 	for i := 0; i < n; i++ {
 		wg.Add(1)
