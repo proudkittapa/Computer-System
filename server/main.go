@@ -4,13 +4,19 @@ import (
 	"fmt"
 	"pin2pre/Kittapa"
 	"pin2pre/final1"
+
 	// "pin2pre/transaction"
 	// "pin2pre/cacheFile"
+	"time"
 )
 
 var quan int = 0
 
 // var cache cacheFile.Lru_cache
+var t2 time.Duration
+var t4 time.Duration
+var t6 time.Duration
+var t8 time.Duration
 
 func main() {
 	s := Kittapa.New()
@@ -34,8 +40,11 @@ func main() {
 }
 
 func productID() string {
+	t := time.Now()
 	fmt.Println("ID:", Kittapa.ID)
 	a := final1.ReCache(Kittapa.ID)
+	t6 = time.Since(t)
+	fmt.Println("productID(): ", t6)
 	return a
 }
 
@@ -45,18 +54,27 @@ func abc() string {
 
 func postPreorder2() string {
 	// cacheFile.InitDatabase()
+	t := time.Now()
 	fmt.Println("ID", Kittapa.ID)
 	a := final1.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
+	t8 = time.Since(t)
+	fmt.Println("postPreorder(): ", t8)
 	return a
 }
 
 func getCacheFile() string {
+	t := time.Now()
 	a := final1.GetFile()
+	t2 = time.Since(t)
+	fmt.Println("getFile(): ", t2)
 	return a
 }
 
 func displayProducts() string {
+	t := time.Now()
 	// fmt.Println(Kittapa.LF)
 	a := final1.Display_pro()
+	t4 = time.Since(t)
+	fmt.Println("displayProducts(): ", t4)
 	return a
 }

@@ -165,6 +165,15 @@ func onerun2(wg1 sync.WaitGroup) {
 	wg1.Wait()
 
 }
+
+func onerunNoGo() {
+	clientNoGo("GET", "/", 0)
+	clientNoGo("GET", "/products", 0)
+	clientNoGo("GET", "/products/1"+strconv.Itoa(rand.Intn(14)), 0)
+	clientNoGo("POST", "/products/"+strconv.Itoa(rand.Intn(100)), 2)
+
+}
+
 func tchecku(t01 float64, t02 float64, t03 float64) {
 	if math.Abs(t03-t02) <= 1 {
 		fmt.Println("Both are hit, so time is similar (success)") // t01 ad t02 are both hit, so time must be similar
@@ -449,11 +458,12 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
-	var wg1 sync.WaitGroup
+	// var wg1 sync.WaitGroup
 	start := time.Now()
 	// onerun2(wg1)
-	user_model(wg1)
+	// user_model(wg1)
 	// user_model2()
+	onerunNoGo()
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
 	fmt.Printf("Number Response: %d\n", count_Res)
