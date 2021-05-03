@@ -403,13 +403,13 @@ func user_model(wg1 sync.WaitGroup) { /*-------------------- user_model --------
 	}
 	wg1.Wait()
 	fmt.Printf("\n------> TIME t5: %v\n", time.Since(t5))
-	t7 := time.Now()
-	for i := 0.0; i < (num_user * 0.15); i++ {
-		wg1.Add(1)
-		go client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
-	}
-	wg1.Wait()
-	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
+	// t7 := time.Now()
+	// for i := 0.0; i < (num_user * 0.15); i++ {
+	// 	wg1.Add(1)
+	// 	go client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+	// }
+	// wg1.Wait()
+	// fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 
 	clientNoGo("GET", "/resetTime", 0)
 }
