@@ -42,6 +42,7 @@ func main() {
 }
 
 func resetTime() string {
+	fmt.Println(l)
 	fmt.Println("t2 getFile(): ", t2)
 	fmt.Println("t4 displayProducts(): ", t4)
 	fmt.Println("t6 productID(): ", t6)
