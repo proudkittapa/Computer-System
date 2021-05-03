@@ -188,7 +188,7 @@ func tcheckp(t01 float64, t02 float64, t03 float64) {
 		fmt.Println("cache not make faster maybe not hit")
 	}
 }
-func test_time_check(wg1 sync.WaitGroup) {
+func test_time_check(wg1 sync.WaitGroup) { /*-------------------- time check --------------------*/
 	t1 := time.Now()          //Uye
 	clientNoGo("GET", "/", 0) //miss1
 	t01 := float64(time.Since(t1)) / 1e6 / 5
@@ -280,7 +280,7 @@ func random(x int, y int) int {
 	randomNum := min + rand.Intn(max-min+1)
 	return randomNum
 }
-func quantity_check(wg1 sync.WaitGroup) { //Mind
+func quantity_check(wg1 sync.WaitGroup) { //Mind /*-------------------- quantity_check --------------------*/
 	// 10 users && 1000 products in database (/product/3)
 	// "The order is out of stock"
 
@@ -381,7 +381,7 @@ func unpredictcheck(success int) {
 
 var num_user float64 = 100
 
-func user_model(wg1 sync.WaitGroup) {
+func user_model(wg1 sync.WaitGroup) { /*-------------------- user_model --------------------*/
 	t1 := time.Now()
 	for i := 0.0; i < (num_user * 1.00); i++ {
 		wg1.Add(1)
@@ -424,7 +424,7 @@ func check(expect Rate, get Rate) {
 	fmt.Println("get:", get)
 }
 
-func misshit_check() {
+func misshit_check() { /*------------------------------------------------ miss/hit_check -------------------------------*/
 	checkU1 := Rate{Miss: 1, Hit: 4}
 	for i := 1; i < 6; i++ {
 		clientNoGo("GET", "/", 0)
@@ -475,7 +475,7 @@ func misshit_check() {
 	fmt.Println("Miss for /products/:id", n3.Miss)
 }
 
-func baseline() {
+func baseline() { /*-------------------------------------- baseline -------------------------------*/
 	t1 := time.Now()
 	clientNoGo("GET", "/", 0)
 	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
@@ -489,7 +489,7 @@ func baseline() {
 	clientNoGo("POST", "/products/10", 2)
 	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 }
-func baselineN() {
+func baselineN() { /*-------------------------------------- baseline No Go -------------------------------*/
 	n := 10000
 	t1 := time.Now()
 	for i := 0; i < n; i++ {
@@ -515,7 +515,7 @@ func baselineN() {
 	clientNoGo("GET", "/resetTime", 0)
 }
 
-func final(wg sync.WaitGroup) {
+func final(wg sync.WaitGroup) { /*-------------------------------------- baseline with go -------------------------------*/
 	n := 1
 	t1 := time.Now()
 	for i := 0; i < n; i++ {
@@ -555,18 +555,19 @@ func final(wg sync.WaitGroup) {
 func main() {
 	var wg1 sync.WaitGroup
 	start := time.Now()
-	final(wg1)
+
 	// fmt.Println("---------------miss hit check---------------")
 	// misshit_check()
 	// fmt.Println("---------------quantity_check---------------")
 	// quantity_check(wg1)
 	// fmt.Println("-----------------time_check-----------------")
 	// test_time_check(wg1)
-	// fmt.Println("-----------------Baselilne-----------------")
+	fmt.Println("-----------------Baselilne-----------------")
 	// baseline()
 	// baselineN()
+	// final(wg1)
 	// onerun2(wg1)
-	// user_model(wg1)
+	user_model(wg1)
 	fmt.Println("-----------------END-----------------")
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
@@ -574,7 +575,7 @@ func main() {
 	fmt.Printf("Number fail: %d\n", count_Fail)
 	tt := float64(t) / 1e6
 	rate := float64(count_Res) / (tt / 1000)
-	fmt.Printf("Rate per Sec: %f", rate)
+	fmt.Printf("Rate per Sec: %f\n", rate)
 	// client("GET", "/hitmiss", 0)
 	// fmt.Println("HIT:", result.Hit)
 	// fmt.Println("Miss:", result.Miss)
