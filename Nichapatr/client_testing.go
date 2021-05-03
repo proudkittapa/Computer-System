@@ -512,18 +512,54 @@ func baselineN() {
 	clientNoGo("GET", "/resetTime", 0)
 }
 
+func final(wg1 sync.WaitGroup) {
+	n := 1
+	t1 := time.Now()
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go client(&wg, "GET", "/", 0)
+	}
+	wg.Wait()
+	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
+
+	t3 := time.Now()
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go client(&wg, "GET", "/products", 0)
+	}
+	wg.Wait()
+	fmt.Printf("\n------> TIME t3: %v\n", time.Since(t3))
+	t5 := time.Now()
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go client(&wg, "GET", "/products/10", 0)
+	}
+	wg.Wait()
+	fmt.Printf("\n------> TIME t5: %v\n", time.Since(t5))
+	t7 := time.Now()
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go client(&wg, "POST", "/products/10", 2)
+	}
+	wg.Wait()
+	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
+
+	clientNoGo("GET", "/resetTime", 0)
+}
+
 func main() {
-	// var wg1 sync.WaitGroup
+	var wg1 sync.WaitGroup
 	start := time.Now()
+	final(wg1)
 	// fmt.Println("---------------miss hit check---------------")
 	// misshit_check()
 	// fmt.Println("---------------quantity_check---------------")
 	// quantity_check(wg1)
 	// fmt.Println("-----------------time_check-----------------")
 	// test_time_check(wg1)
-	fmt.Println("-----------------Baselilne-----------------")
+	// fmt.Println("-----------------Baselilne-----------------")
 	// baseline()
-	baselineN()
+	// baselineN()
 	// onerun2(wg1)
 	// user_model(wg1)
 	fmt.Println("-----------------END-----------------")
