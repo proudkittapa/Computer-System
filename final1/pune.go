@@ -43,7 +43,7 @@ type Dis struct {
 
 func Display_pro() (val string) {
 	var l []string
-	for i := 1; i <= 1; i++ {
+	for i := 1; i <= 1200; i++ {
 		val := db_query(i)
 		l = append(l, val)
 	}
