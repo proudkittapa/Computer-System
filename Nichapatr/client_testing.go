@@ -486,6 +486,29 @@ func baseline() {
 	clientNoGo("POST", "/products/10", 2)
 	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 }
+func baselineN() {
+	n := 10
+	t1 := time.Now()
+	for i := 0; i < n; i++ {
+		clientNoGo("GET", "/", 0)
+	}
+	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
+	t3 := time.Now()
+	for i := 0; i < n; i++ {
+		clientNoGo("GET", "/products", 0)
+	}
+	fmt.Printf("\n------> TIME t3: %v\n", time.Since(t3))
+	t5 := time.Now()
+	for i := 0; i < n; i++ {
+		clientNoGo("GET", "/products/10", 0)
+	}
+	fmt.Printf("\n------> TIME t5: %v\n", time.Since(t5))
+	t7 := time.Now()
+	for i := 0; i < n; i++ {
+		clientNoGo("POST", "/products/10", 2)
+	}
+	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
+}
 
 func main() {
 	// var wg1 sync.WaitGroup
@@ -496,8 +519,9 @@ func main() {
 	// quantity_check(wg1)
 	// fmt.Println("-----------------time_check-----------------")
 	// test_time_check(wg1)
-	fmt.Println("-----------------time_check-----------------")
-	baseline()
+	fmt.Println("-----------------Baselilne-----------------")
+	// baseline()
+	baselineN()
 	// onerun2(wg1)
 	// user_model(wg1)
 	fmt.Println("-----------------END-----------------")
