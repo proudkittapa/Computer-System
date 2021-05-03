@@ -37,7 +37,7 @@ type product struct {
 // }
 func InitDatabase() {
 	// db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
-	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
+	db, _ = sql.Open("mysql", "root:62011139@tcp(178.128.94.63:3306)/prodj")
 	db.SetConnMaxLifetime(time.Minute * 3)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
