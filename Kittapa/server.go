@@ -88,7 +88,7 @@ func (s *Server) listen(port string) {
 		}
 		count++
 		fmt.Println("connections:", count)
-		s.handle(conn)
+		go s.handle(conn)
 	}
 }
 
