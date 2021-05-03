@@ -37,7 +37,7 @@ func main() {
 func productID() string {
 	fmt.Println("ID:", Kittapa.ID)
 	a := cacheFile.C.ReCache(Kittapa.ID)
-	return a
+	return
 }
 
 func abc() string {
