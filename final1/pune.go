@@ -42,11 +42,7 @@ type Dis struct {
 // }
 
 func Display_pro() (val string) {
-	var l []string
-	for i := 1; i <= 1200; i++ {
-		val := db_query(i)
-		l = append(l, val)
-	}
+	var l []string = db_query()
 
 	result := Dis{Product: l}
 
@@ -130,13 +126,13 @@ func GetFile() string {
 
 }
 
-func db_query(id int) string {
+func db_query() []string {
 	//db, err := sql.Open("mysql", "root:62011212@tcp(127.0.0.1:3306)/prodj")
 	//checkErr(err)
 
-	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products WHERE product_id = " + strconv.Itoa(id))
+	rows, err := db.Query("SELECT name, quantity_in_stock, unit_price FROM products")
 	checkErr(err)
-
+	var arr []string
 	for rows.Next() {
 		var name string
 		var quantity int
@@ -147,12 +143,10 @@ func db_query(id int) string {
 		byteArray, err := json.Marshal(result)
 		checkErr(err)
 		// fmt.Println(len(byteArray))
-
-		mp[id] = string(byteArray)
+		arr = append(arr, string(byteArray))
 
 	}
-	val := mp[id]
 	// fmt.Println(val)
-	return val
+	return arr
 
 }
