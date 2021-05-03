@@ -513,7 +513,7 @@ func baselineN() {
 }
 
 func final(wg sync.WaitGroup) {
-	n := 1
+	n := 10
 	t1 := time.Now()
 	for i := 0; i < n; i++ {
 		wg.Add(1)
@@ -525,7 +525,7 @@ func final(wg sync.WaitGroup) {
 	t3 := time.Now()
 	for i := 0; i < n; i++ {
 		wg.Add(1)
-		go client(&wg, "GET", "/products?limit=5&offset=0", 0)
+		go client(&wg, "GET", "/products?limit=1000&offset=0", 0)
 	}
 	wg.Wait()
 	fmt.Printf("\n------> TIME t3: %v\n", time.Since(t3))
