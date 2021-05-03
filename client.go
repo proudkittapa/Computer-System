@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-var users = 500
+var users = 10
 
 type Message struct {
 	Name     string
@@ -156,9 +156,9 @@ func onerun2(wg1 sync.WaitGroup) {
 	for i := 0; i < users; i++ {
 		wg1.Add(1)
 		go func() {
-			// client(&wg1, "GET", "/", 0)
-			// client(&wg1, "GET", "/products?limit=10&offset=0", 0)
-			// client(&wg1, "GET", "/products/1"+strconv.Itoa(rand.Intn(14)), 0)
+			client(&wg1, "GET", "/", 0)
+			client(&wg1, "GET", "/products?limit=10&offset=0", 0)
+			client(&wg1, "GET", "/products/1"+strconv.Itoa(rand.Intn(14)), 0)
 			client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(100)), 2)
 		}()
 	}
@@ -460,12 +460,12 @@ func misshit_check() {
 
 func main() {
 	// flag.Parse()
-	// var wg1 sync.WaitGroup
+	var wg1 sync.WaitGroup
 	start := time.Now()
-	// onerun2(wg1)
+	onerun2(wg1)
 	// user_model(wg1)
 	// user_model2()
-	onerunNoGo()
+	// onerunNoGo()
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
 	fmt.Printf("Number Response: %d\n", count_Res)
