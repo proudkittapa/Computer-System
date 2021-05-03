@@ -12,8 +12,8 @@ import (
 func InitDatabase() {
 	//db, _ = sql.Open("mysql", "root:mind10026022@tcp(127.0.0.1:3306)/prodj")
 	db, _ = sql.Open("mysql", "root:62011139@tcp(127.0.0.1:3306)/prodj")
-	db.SetMaxOpenConns(100)
-	db.SetMaxIdleConns(50)
+	// db.SetMaxOpenConns(100)
+	// db.SetMaxIdleConns(50)
 	for i := 1; i <= 5; i++ {
 		db.Exec("update products set quantity_in_stock = ? where product_id = ? ", 1000, i)
 	}

@@ -167,10 +167,12 @@ func onerun2(wg1 sync.WaitGroup) {
 }
 
 func onerunNoGo() {
-	clientNoGo("GET", "/", 0)
-	clientNoGo("GET", "/products", 0)
-	clientNoGo("GET", "/products/1"+strconv.Itoa(rand.Intn(14)), 0)
-	clientNoGo("POST", "/products/"+strconv.Itoa(rand.Intn(100)), 2)
+	for i := 0; i < 10; i++ {
+		clientNoGo("GET", "/", 0)
+		clientNoGo("GET", "/products", 0)
+		clientNoGo("GET", "/products/1"+strconv.Itoa(rand.Intn(14)), 0)
+		clientNoGo("POST", "/products/"+strconv.Itoa(rand.Intn(100)), 2)
+	}
 
 }
 
