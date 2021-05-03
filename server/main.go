@@ -88,6 +88,6 @@ func displayProducts() string {
 	// fmt.Println(Kittapa.LF)
 	a := final1.Display_pro()
 	t4 = t4 + time.Since(t)
-	fmt.Println("t4 displayProducts(): ", t4)
+	fmt.Println("t4 displayProducts(): ", time.Since(t))
 	return a
 }
