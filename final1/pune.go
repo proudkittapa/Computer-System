@@ -82,7 +82,7 @@ func ReCache(id int) string {
 
 	}
 	val := mp[id]
-	fmt.Println(val)
+	// fmt.Println(val)
 	return val
 
 }
@@ -152,7 +152,7 @@ func db_query(id int) string {
 
 	}
 	val := mp[id]
-	fmt.Println(val)
+	// fmt.Println(val)
 	return val
 
 }
