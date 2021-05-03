@@ -512,7 +512,7 @@ func baselineN() {
 	clientNoGo("GET", "/resetTime", 0)
 }
 
-func final(wg1 sync.WaitGroup) {
+func final(wg sync.WaitGroup) {
 	n := 1
 	t1 := time.Now()
 	for i := 0; i < n; i++ {
