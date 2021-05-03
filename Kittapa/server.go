@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var ID int = 0
@@ -144,16 +145,18 @@ func getMessage(message string) (string, string, []string) {
 	// fmt.Println("p[1]:", p[1])
 	a, b := queryString(p[1])
 	if b {
-		fmt.Println(a)
+		// fmt.Println(a)
+		t := time.Now()
 		qString := strings.Split(a, "&")
-		for j := 0; j < len(qString); j++ {
-			fmt.Println("J: ", qString[j])
-		}
+		// for j := 0; j < len(qString); j++ {
+		// 	fmt.Println("J: ", qString[j])
+		// }
 		k := strings.Split(qString[0], "=")[1]
 		LF.Limit, _ = strconv.Atoi(k)
 		k = strings.Split(qString[1], "=")[1]
 		LF.Offset, _ = strconv.Atoi(k)
 		path = "/products"
+		fmt.Println("time for offset and limit:", t)
 	} else if p[1] == "products" && len(p) == 3 {
 		// fmt.Println("productsWithID")
 		ID, _ = strconv.Atoi(p[2])
