@@ -74,7 +74,7 @@ func DisplayAllPro(limit int, offset int) (val string) {
 	var l []string
 	fmt.Println("limit: ", limit)
 	fmt.Println("offset: ", offset)
-
+	limit = 100
 	a := (limit * offset) + 1
 	// fmt.Println(a)
 	b := limit - 1
