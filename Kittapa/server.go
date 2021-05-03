@@ -156,7 +156,7 @@ func getMessage(message string) (string, string, []string) {
 		k = strings.Split(qString[1], "=")[1]
 		LF.Offset, _ = strconv.Atoi(k)
 		path = "/products"
-		fmt.Println("time for offset and limit:", t)
+		fmt.Println("time for offset and limit:", time.Since(t))
 	} else if p[1] == "products" && len(p) == 3 {
 		// fmt.Println("productsWithID")
 		ID, _ = strconv.Atoi(p[2])
