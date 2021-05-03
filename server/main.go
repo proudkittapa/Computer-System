@@ -31,6 +31,7 @@ func main() {
 	s.GET("/", getCacheFile)            //uye
 	s.GET("/products", displayProducts) //all products
 	s.GET("/products/:id", productID)
+	s.GET("/resetTime", resetTime)
 	// s.GET("/hitmiss", hitmiss)
 	// s.GET("/hitmissFile", hitmissFile)
 	// cache.ReCache(1)
@@ -39,11 +40,19 @@ func main() {
 	s.Start(":8081")
 }
 
+func resetTime() string {
+	t2 = 0
+	t4 = 0
+	t6 = 0
+	t8 = 0
+	return ""
+}
+
 func productID() string {
 	t := time.Now()
 	fmt.Println("ID:", Kittapa.ID)
 	a := final1.ReCache(Kittapa.ID)
-	t6 = time.Since(t)
+	t6 = t6 + time.Since(t)
 	fmt.Println("t6 productID(): ", t6)
 	return a
 }
@@ -57,7 +66,7 @@ func postPreorder2() string {
 	t := time.Now()
 	fmt.Println("ID", Kittapa.ID)
 	a := final1.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
-	t8 = time.Since(t)
+	t8 = t8 + time.Since(t)
 	fmt.Println("t8 postPreorder(): ", t8)
 	return a
 }
@@ -65,7 +74,7 @@ func postPreorder2() string {
 func getCacheFile() string {
 	t := time.Now()
 	a := final1.GetFile()
-	t2 = time.Since(t)
+	t2 = t2 + time.Since(t)
 	fmt.Println("t2 getFile(): ", t2)
 	return a
 }
@@ -74,7 +83,7 @@ func displayProducts() string {
 	t := time.Now()
 	// fmt.Println(Kittapa.LF)
 	a := final1.Display_pro()
-	t4 = time.Since(t)
+	t4 = t4 + time.Since(t)
 	fmt.Println("t4 displayProducts(): ", t4)
 	return a
 }
