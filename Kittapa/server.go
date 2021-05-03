@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var ID int = 0
@@ -142,7 +143,9 @@ func getMessage(message string) (string, string, []string) {
 	p := strings.Split(path, "/")
 	// fmt.Println("len p:", len(p))
 	// fmt.Println("p[1]:", p[1])
+	t := time.Now()
 	a, b := queryString(p[1])
+	fmt.Println("queryString time:", time.Since(t))
 	if b {
 		// fmt.Println(a)
 		//t := time.Now()
