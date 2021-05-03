@@ -382,33 +382,36 @@ func unpredictcheck(success int) {
 var num_user float64 = 100
 
 func user_model(wg1 sync.WaitGroup) {
-	for i := 0.0; i < (num_user * 0.60); i++ {
-		wg1.Add(2)
-		go func() {
-			client(&wg1, "GET", "/", 0)
-			client(&wg1, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
-		}()
-	}
-	fmt.Println("here")
-	for i := 0.0; i < (num_user * 0.25); i++ {
-		wg1.Add(3)
-		go func() {
-			client(&wg1, "GET", "/", 0)
-			client(&wg1, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
-			client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-		}()
-	}
-	for i := 0.0; i < (num_user * 0.15); i++ {
-		wg1.Add(4)
-		go func() {
-			client(&wg1, "GET", "/", 0)
-			client(&wg1, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
-			client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-			client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
-		}()
+	t1 := time.Now()
+	for i := 0.0; i < (num_user * 1.00); i++ {
+		wg1.Add(1)
+		go client(&wg1, "GET", "/", 0)
 	}
 	wg1.Wait()
-	fmt.Println("after wait group")
+	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
+	t3 := time.Now()
+	for i := 0.0; i < (num_user * 1.00); i++ {
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products?limit=10&offset="+strconv.Itoa(rand.Intn(10)), 0)
+	}
+	wg1.Wait()
+	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t3))
+	t5 := time.Now()
+	for i := 0.0; i < (num_user * 0.4); i++ {
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+	}
+	wg1.Wait()
+	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t5))
+	t7 := time.Now()
+	for i := 0.0; i < (num_user * 0.15); i++ {
+		wg1.Add(1)
+		go client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+	}
+	wg1.Wait()
+	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t7))
+
+	clientNoGo("GET", "/resetTime", 0)
 }
 
 func check(expect Rate, get Rate) {
@@ -529,6 +532,7 @@ func final(wg sync.WaitGroup) {
 	}
 	wg.Wait()
 	fmt.Printf("\n------> TIME t3: %v\n", time.Since(t3))
+
 	t5 := time.Now()
 	for i := 0; i < n; i++ {
 		wg.Add(1)
@@ -536,6 +540,7 @@ func final(wg sync.WaitGroup) {
 	}
 	wg.Wait()
 	fmt.Printf("\n------> TIME t5: %v\n", time.Since(t5))
+
 	t7 := time.Now()
 	for i := 0; i < n; i++ {
 		wg.Add(1)
