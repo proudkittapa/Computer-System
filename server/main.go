@@ -44,7 +44,7 @@ func productID() string {
 	fmt.Println("ID:", Kittapa.ID)
 	a := final1.ReCache(Kittapa.ID)
 	t6 = time.Since(t)
-	fmt.Println("productID(): ", t6)
+	fmt.Println("t6 productID(): ", t6)
 	return a
 }
 
@@ -58,7 +58,7 @@ func postPreorder2() string {
 	fmt.Println("ID", Kittapa.ID)
 	a := final1.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
 	t8 = time.Since(t)
-	fmt.Println("postPreorder(): ", t8)
+	fmt.Println("t8 postPreorder(): ", t8)
 	return a
 }
 
@@ -66,7 +66,7 @@ func getCacheFile() string {
 	t := time.Now()
 	a := final1.GetFile()
 	t2 = time.Since(t)
-	fmt.Println("getFile(): ", t2)
+	fmt.Println("t2 getFile(): ", t2)
 	return a
 }
 
@@ -75,6 +75,6 @@ func displayProducts() string {
 	// fmt.Println(Kittapa.LF)
 	a := final1.Display_pro()
 	t4 = time.Since(t)
-	fmt.Println("displayProducts(): ", t4)
+	fmt.Println("t4 displayProducts(): ", t4)
 	return a
 }
