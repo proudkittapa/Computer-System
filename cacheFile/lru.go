@@ -141,12 +141,12 @@ func (list *Lru_cache) ReCache(id int) (val string) {
 		i := Db_query(id)
 		val = C.Set(id, i)
 
-		fmt.Println(val)
+		// fmt.Println(val)
 		return val
 
 	} else {
 		fmt.Println("-----------HIT-----------")
-		fmt.Println(temp)
+		// fmt.Println(temp)
 		return temp
 	}
 
