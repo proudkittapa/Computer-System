@@ -10,7 +10,7 @@ import (
 	// "pin2pre/cacheFile"
 )
 
-var user = 100 + 5
+var user = 100 + 1
 var quan int = 0
 
 // var cache cacheFile.Lru_cache
@@ -121,12 +121,12 @@ func postPreorder2() string {
 func getCacheFile() string {
 	// t := time.Now()
 
-	if Counter2 == 5 {
+	if Counter2 == 1 {
 		t2 = time.Now()
 	}
 	Counter2++
 	a := cacheFile.Call_cache("index.html")
-	// l = append(l, time.Since(t))
+	// l = append(l,s time.Since(t))
 	if Counter2 == user {
 		fmt.Println("------------------------------------")
 		fmt.Println("GetFile():", time.Since(t2))
