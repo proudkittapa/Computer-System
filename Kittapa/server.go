@@ -13,6 +13,15 @@ import (
 )
 
 var ID int = 0
+var T2 time.Time
+var T4 time.Time
+var T6 time.Time
+var T8 time.Time
+
+var Counter2 = 0
+var Counter4 = 0
+var Counter6 = 0
+var Counter8 = 0
 
 type (
 	Server struct {
@@ -78,7 +87,10 @@ func (s *Server) listen(port string) {
 		log.Fatal(err.Error())
 	}
 	defer li.Close()
-
+	T2 = time.Now()
+	T4 = time.Now()
+	T6 = time.Now()
+	T8 = time.Now()
 	for {
 		conn, err := li.Accept()
 
@@ -88,13 +100,14 @@ func (s *Server) listen(port string) {
 		}
 		count++
 		fmt.Println("connections:", count)
-		s.handle(conn)
+		go s.handle(conn)
 	}
 }
 
 func (s *Server) handle(conn net.Conn) {
 	defer conn.Close()
 	s.req(conn)
+
 }
 
 func (s *Server) req(conn net.Conn) {
@@ -118,6 +131,18 @@ func (s *Server) req(conn net.Conn) {
 		if yes {
 			// fmt.Println("yesssss")
 			fc = r.Name()
+			if Counter2 == 1000 {
+				fmt.Println("GetFile():", time.Since(T2))
+			}
+			if Counter4 == 1000 {
+				fmt.Println("displayProducts():", time.Since(T4))
+			}
+			if Counter6 == 400 {
+				fmt.Println("productID():", time.Since(T6))
+			}
+			if Counter8 == 150 {
+				fmt.Println("postPreorder():", time.Since(T8))
+			}
 			send(conn, fc, "application/json")
 		} else {
 			fmt.Println("no")
