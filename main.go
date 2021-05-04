@@ -13,11 +13,15 @@ import (
 var quan int = 0
 
 // var cache cacheFile.Lru_cache
-var t2 time.Duration
-var t4 time.Duration
-var t6 time.Duration
-var t8 time.Duration
-var l []time.Duration
+var t2 time.Time
+var t4 time.Time
+var t6 time.Time
+var t8 time.Time
+
+var Counter2 = 0
+var Counter4 = 0
+var Counter6 = 0
+var Counter8 = 0
 
 func main() {
 	s := Kittapa.New()
@@ -56,10 +60,17 @@ func resetTime() string {
 
 func productID() string {
 	// t := time.Now()
-	Kittapa.Counter6++
+	if Counter6 == 0 {
+		t6 = time.Now()
+	}
 	fmt.Println("ID:", Kittapa.ID)
 	a := cacheFile.C.ReCache(Kittapa.ID)
 	// t6 = t6 + time.Since(t)
+	if Counter6 == 400 {
+		fmt.Println("productID():", time.Since(t6))
+	}
+	Counter6++
+
 	return a
 }
 
@@ -75,17 +86,30 @@ func hitmiss() string {
 
 func postPreorder2() string {
 	// t := time.Now()
-	Kittapa.Counter8++
+	if Counter8 == 0 {
+		t8 = time.Now()
+	}
 	a := cacheFile.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
 	// fmt.Println(Kittapa.Result.Quantity == 200)
 	// t8 = t8 + time.Since(t)
+	if Counter8 == 150 {
+		fmt.Println("postPreorder():", time.Since(t8))
+	}
+	Counter8++
 	return a
 }
 
 func getCacheFile() string {
 	// t := time.Now()
-	Kittapa.Counter2++
+	if Counter2 == 0 {
+		t2 = time.Now()
+	}
 	a := cacheFile.Call_cache("index.html")
+	if Counter2 == 1000 {
+		fmt.Println("GetFile():", time.Since(t2))
+	}
+	Counter2++
+
 	// t2 = t2 + time.Since(t)
 	return a
 }
@@ -97,13 +121,17 @@ func hitmissFile() string {
 }
 
 func displayProducts() string {
-	// t := time.Now()
+	if Counter4 == 0 {
+		t4 = time.Now()
+	}
 	// fmt.Println(Kittapa.LF)
-	Kittapa.Counter4++
 
 	a := cacheFile.DisplayAllPro(Kittapa.LF.Limit, Kittapa.LF.Offset)
-	// t4 = t4 + time.Since(t)
-	// l = append(l, time.Since(t))
-	// fmt.Println("t4", time.Since(t))
+
+	if Counter4 == 1000 {
+		fmt.Println("displayProducts():", time.Since(t4))
+	}
+	Counter4++
+
 	return a
 }
