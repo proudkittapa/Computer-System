@@ -21,12 +21,12 @@ func NewCache() Cache {
 	return Cache{Hash: Hash{}}
 }
 
-var count = 0
+var Count = 0
 
 func (c *Cache) Check(str string) (string, error) {
 	if _, ok := c.Hash[str]; ok {
-		count++
-		fmt.Println("Check():", count)
+		Count++
+		fmt.Println("Check():", Count)
 		return c.Hash[str], nil
 	} else {
 		return "", errors.New("key doesn't exists")
