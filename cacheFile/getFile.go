@@ -9,7 +9,6 @@ import (
 
 	// "pin2pre/cacheFile"
 	"sync"
-	"time"
 )
 
 type chunk struct {
@@ -55,10 +54,10 @@ func Call_cache(filename string) string {
 func getFile(filename string) string {
 	// call_cache("index.html")
 	const BufferSize = 300
-	start := time.Now()
+	// start := time.Now()
 	file, err := os.Open(filename)
 	if err != nil {
-		fmt.Println("File reading error", err)
+		// fmt.Println("File reading error", err)
 		return ""
 	}
 	defer func() {
@@ -69,12 +68,12 @@ func getFile(filename string) string {
 
 	fileinfo, err := file.Stat()
 	if err != nil {
-		fmt.Println(err)
+		// fmt.Println(err)
 		return ""
 	}
 
 	filesize := int(fileinfo.Size())
-	fmt.Println(filesize)
+	// fmt.Println(filesize)
 	// Num of go routines
 	concurrency := filesize / BufferSize
 
@@ -107,7 +106,7 @@ func getFile(filename string) string {
 			_, err := file.ReadAt(buffer, chunk.offset)
 
 			if err != nil {
-				fmt.Println(err)
+				// fmt.Println(err)
 				return
 			}
 			store[i] = string(buffer)
@@ -126,7 +125,7 @@ func getFile(filename string) string {
 		text += store[i]
 	}
 	// fmt.Println(text)
-	fmt.Printf("time: %v\n", time.Since(start))
+	// fmt.Printf("time: %v\n", time.Since(start))
 	return text
 }
 
