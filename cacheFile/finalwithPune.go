@@ -175,15 +175,17 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		wg.Wait()
 		if err := tx.Commit(); err != nil {
 			fmt.Printf("Failed to commit tx: %v\n", err)
+			result := "error"
+			end <- result
+			return
+		} else {
+			result := "transaction successful"
+			fmt.Println("transaction successfullll")
+			succ += 1
+			fmt.Printf("num tran successful: %d\n", succ)
+			end <- result
 		}
-
-		result := "transaction successful"
-		fmt.Println("transaction successfullll")
-		succ += 1
-		fmt.Printf("num tran successful: %d\n", succ)
-		end <- result
 	}
-
 	// C.Display()
 	return
 }
@@ -202,7 +204,6 @@ func PostPreorder(id int, quantity int) string {
 	}
 	fmt.Println("hererreerere")
 	return result
-	fmt.Println("has returned result")
 }
 
 //fmt.Println("success")
