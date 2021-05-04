@@ -97,7 +97,7 @@ func displayProducts() string {
 	t := time.Now()
 	// fmt.Println(Kittapa.LF)
 	a := cacheFile.DisplayAllPro(Kittapa.LF.Limit, Kittapa.LF.Offset)
-	// t4 = t4 + time.Since(t)
+	t4 = t4 + time.Since(t)
 
 	l = append(l, time.Since(t))
 	fmt.Println("t4", time.Since(t))
