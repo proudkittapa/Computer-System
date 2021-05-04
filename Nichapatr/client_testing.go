@@ -80,7 +80,8 @@ func receive2(conn net.Conn) string {
 func client(wg1 *sync.WaitGroup, m string, p string, quan int) string {
 	// t0 := time.Now()
 	// fmt.Println("client", userid)
-	host := "178.128.94.63:8081"
+	// host := "178.128.94.63:8081"
+	host := "localhost:8081"
 	conn, err := net.Dial("tcp", host)
 	if err != nil {
 		count_Fail++
@@ -97,7 +98,9 @@ func client(wg1 *sync.WaitGroup, m string, p string, quan int) string {
 
 func clientNoGo(m string, p string, quan int) string {
 	// t0 := time.Now()
-	host := "178.128.94.63:8081"
+	// host := "178.128.94.63:8081"
+	host := "localhost:8081"
+
 	conn, err := net.Dial("tcp", host)
 	if err != nil {
 		count_Fail++
@@ -379,7 +382,7 @@ func unpredictcheck(success int) {
 	}
 }
 
-var num_user float64 = 100
+var num_user float64 = 10
 
 func user_model(wg1 sync.WaitGroup) { /*-------------------- user_model --------------------*/
 	t1 := time.Now()
