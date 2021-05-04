@@ -71,6 +71,7 @@ func productID() string {
 		fmt.Println("------------------------------------")
 		fmt.Println("productID():", time.Since(t6))
 		fmt.Println("------------------------------------")
+		tt6 = time.Since(t6)
 
 	}
 	Counter6++
@@ -100,6 +101,8 @@ func postPreorder2() string {
 		fmt.Println("------------------------------------")
 		fmt.Println("postPreorder():", time.Since(t8))
 		fmt.Println("------------------------------------")
+		tt8 = time.Since(t8)
+
 	}
 	Counter8++
 	return a
@@ -115,6 +118,7 @@ func getCacheFile() string {
 		fmt.Println("------------------------------------")
 		fmt.Println("GetFile():", time.Since(t2))
 		fmt.Println("------------------------------------")
+		tt2 = time.Since(t2)
 	}
 	Counter2++
 
@@ -140,6 +144,7 @@ func displayProducts() string {
 		fmt.Println("------------------------------------")
 		fmt.Println("displayProducts():", time.Since(t4))
 		fmt.Println("------------------------------------")
+		tt4 = time.Since(t4)
 	}
 	Counter4++
 
