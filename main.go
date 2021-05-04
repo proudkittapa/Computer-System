@@ -10,7 +10,7 @@ import (
 	// "pin2pre/cacheFile"
 )
 
-var user = 100
+var user = 1000
 var quan int = 0
 
 // var cache cacheFile.Lru_cache
