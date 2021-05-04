@@ -133,22 +133,26 @@ func InitCache() {
 	// C.Display()
 }
 
+var counter = 0
+
 func (list *Lru_cache) ReCache(id int) (val string) {
 	temp := C.GetCache(id)
+	counter++
 	C.Display()
 	// fmt.Printf("%T\n", temp)
 	fmt.Println("temp:", temp)
 
 	if temp == "" {
-		fmt.Println("-----------MISS-----------")
+		fmt.Println("-----------MISS-----------", counter)
 		i := Db_query(id)
+		fmt.Println("enter set", counter)
 		val = C.Set(id, i)
 
 		// fmt.Println(val)
 		return val
 
 	} else {
-		fmt.Println("-----------HIT-----------")
+		fmt.Println("-----------HIT-----------", counter)
 		// fmt.Println(temp)
 		return temp
 	}
