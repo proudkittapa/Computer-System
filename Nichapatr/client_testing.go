@@ -519,8 +519,7 @@ func completed_flowN() { /*-------------------------------------- baseline No Go
 	clientNoGo("GET", "/resetTime", 0)
 }
 
-func completed_flow(wg sync.WaitGroup) { /*-------------------------------------- baseline with go -------------------------------*/
-	n := 1
+func completed_flow(wg sync.WaitGroup, n int) { /*-------------------------------------- baseline with go -------------------------------*/
 	t1 := time.Now()
 	for i := 0; i < n; i++ {
 		wg.Add(1)
@@ -569,7 +568,7 @@ func main() {
 	fmt.Println("-----------------RUN-----------------")
 	// completed_flow1()
 	// completed_flowN()
-	completed_flow(wg1)
+	completed_flow(wg1, 10)
 	// onerun2(wg1)
 	// user_model(wg1)
 	fmt.Println("-----------------END-----------------")
