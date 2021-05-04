@@ -520,21 +520,21 @@ func completed_flowN() { /*-------------------------------------- baseline No Go
 }
 
 func completed_flow(wg sync.WaitGroup, n int) { /*-------------------------------------- baseline with go -------------------------------*/
-	// t1 := time.Now()
-	// for i := 0; i < n; i++ {
-	// 	wg.Add(1)
-	// 	go client(&wg, "GET", "/", 0)
-	// }
-	// wg.Wait()
-	// fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
+	t1 := time.Now()
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go client(&wg, "GET", "/", 0)
+	}
+	wg.Wait()
+	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
 
-	// t3 := time.Now()
-	// for i := 0; i < n; i++ {
-	// 	wg.Add(1)
-	// 	go client(&wg, "GET", "/products?limit=5&offset=0", 0)
-	// }
-	// wg.Wait()
-	// fmt.Printf("\n------> TIME t3: %v\n", time.Since(t3))
+	t3 := time.Now()
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go client(&wg, "GET", "/products?limit=5&offset=0", 0)
+	}
+	wg.Wait()
+	fmt.Printf("\n------> TIME t3: %v\n", time.Since(t3))
 
 	t5 := time.Now()
 	for i := 0; i < n; i++ {
@@ -544,13 +544,13 @@ func completed_flow(wg sync.WaitGroup, n int) { /*------------------------------
 	wg.Wait()
 	fmt.Printf("\n------> TIME t5: %v\n", time.Since(t5))
 
-	// t7 := time.Now()
-	// for i := 0; i < n; i++ {
-	// 	wg.Add(1)
-	// 	go client(&wg, "POST", "/products/10", 2)
-	// }
-	// wg.Wait()
-	// fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
+	t7 := time.Now()
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go client(&wg, "POST", "/products/10", 2)
+	}
+	wg.Wait()
+	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 
 	// clientNoGo("GET", "/timeFunction", 0)
 }
