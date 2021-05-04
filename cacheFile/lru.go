@@ -57,19 +57,6 @@ type Dis struct {
 	Product []string
 }
 
-func Mile1(id int) string {
-	tmp := Db_query(id)
-
-	byteArray, err := json.Marshal(tmp)
-	CheckErr(err)
-	// fmt.Println(len(byteArray))
-
-	temp := string(byteArray)
-	fmt.Println(temp)
-	return temp
-
-}
-
 func DisplayAllPro(limit int, offset int) (val string) {
 	var l []string
 	fmt.Println("limit: ", limit)
@@ -138,7 +125,7 @@ var counter = 0
 func (list *Lru_cache) ReCache(id int) (val string) {
 	temp := C.GetCache(id)
 	counter++
-	C.Display()
+	// C.Display()
 	// fmt.Printf("%T\n", temp)
 	fmt.Println("temp:", temp)
 
