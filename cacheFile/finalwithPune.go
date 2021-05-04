@@ -22,6 +22,7 @@ var (
 	totalTime float64
 	x         Data
 	numQuery  int
+	succ      int
 
 //	result    string
 )
@@ -178,6 +179,8 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 
 		result := "transaction successful"
 		fmt.Println("transaction successfullll")
+		succ += 1
+		fmt.Printf("num tran successful: %d\n", succ)
 		end <- result
 	}
 
