@@ -23,6 +23,7 @@ var (
 	x         Data
 	numQuery  int
 	succ      int
+	numErr    int
 
 //	result    string
 )
@@ -201,6 +202,8 @@ func PostPreorder(id int, quantity int) string {
 	fmt.Printf("quantityyyy: %d\n", quantity)
 	result := <-end
 	if result == "error" {
+		numErr += 1
+		fmt.Printf("num Err: %d \n", numErr)
 		Preorder(end, strconv.Itoa(1), id, quantity)
 	}
 	fmt.Println("hererreerere")
