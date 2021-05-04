@@ -382,7 +382,7 @@ func unpredictcheck(success int) {
 	}
 }
 
-var num_user float64 = 2000
+var num_user float64 = 3000
 
 func user_model(wg1 sync.WaitGroup) { /*-------------------- user_model --------------------*/
 
