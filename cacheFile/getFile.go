@@ -37,17 +37,16 @@ func Call_cache(filename string) string {
 		a := getFile("/root/go/src/Computer-System/pre-order/" + filename)
 		cacheObject.Add(filename, a)
 		d, _ = cacheObject.Check(filename)
-		cacheObject.Display()
+		// cacheObject.Display()
 		miss_num += 1
-		fmt.Println("Cache miss: ", miss_num)
-		fmt.Println("Time calling cache miss: ", time.Since(start))
+		// fmt.Println("Cache miss: ", miss_num)
+		// fmt.Println("Time calling cache miss: ", time.Since(start))
 		return d
 	} else {
 		cacheObject.Display()
 		hit_num += 1
-
-		fmt.Println("Cache hit: ", hit_num)
-		fmt.Println("Time calling cache hit: ", (time.Since(start)))
+		// fmt.Println("Cache hit: ", hit_num)
+		// fmt.Println("Time calling cache hit: ", (time.Since(start)))
 		return d
 	}
 
