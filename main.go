@@ -127,7 +127,7 @@ func getCacheFile() string {
 	Counter2++
 	a := cacheFile.Call_cache("index.html")
 	// l = append(l, time.Since(t))
-	if Counter2 == user {
+	if Counter2 == 5 {
 		fmt.Println("------------------------------------")
 		fmt.Println("GetFile():", time.Since(t2))
 		fmt.Println("------------------------------------")
