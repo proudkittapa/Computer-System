@@ -568,7 +568,7 @@ func main() {
 	fmt.Println("-----------------RUN-----------------")
 	// completed_flow1()
 	// completed_flowN()
-	completed_flow(wg1, 1)
+	completed_flow(wg1, 10)
 	// onerun2(wg1)
 	// user_model(wg1)
 	fmt.Println("-----------------END-----------------")
