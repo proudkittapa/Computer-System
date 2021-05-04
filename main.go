@@ -60,9 +60,11 @@ func timeFunction() string {
 	fmt.Println("t6 productID(): ", tt6)
 	fmt.Println("t8 postPreorder(): ", tt8)
 	fmt.Println("counter cache:", cacheFile.Count)
-	fmt.Println("L:", cacheFile.L)
-	fmt.Println("l:", l)
-	fmt.Println("T:", Kittapa.T)
+	fmt.Println("L1:", cacheFile.L1)
+	fmt.Println("L2:", cacheFile.L2)
+	fmt.Println("L3:", cacheFile.L3)
+	// fmt.Println("l:", l)
+	// fmt.Println("T:", Kittapa.T)
 	return ""
 }
 

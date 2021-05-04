@@ -27,17 +27,23 @@ var cacheObject Cache = NewCache()
 var miss_num int
 
 var hit_num int
-var L []time.Duration
+var L1 []time.Duration
+var L2 []time.Duration
+var L3 []time.Duration
 
 func Call_cache(filename string) string {
 	start := time.Now()
 
 	d, err := cacheObject.Check(filename)
+	L1 = append(L1, time.Since(start))
 	if err != nil {
 		// fmt.Println(err)
+		start2 := time.Now()
 		a := getFile("/root/go/src/Computer-System/pre-order/" + filename)
-		// start := time.Now()
+		L2 = append(L2, time.Since(start2))
+		start3 := time.Now()
 		cacheObject.Add(filename, a)
+		L3 = append(L3, time.Since(start3))
 		// d, _ = cacheObject.Check(filename)
 		// cacheObject.Display()
 		miss_num += 1
