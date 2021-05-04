@@ -57,7 +57,7 @@ func Call_cache(filename string) string {
 		// fmt.Println("Time calling cache hit: ", (time.Since(start)))
 	}
 	fmt.Println("Cache file:", time.Since(start))
-	L = append(L, time.Since(start))
+	// L = append(L, time.Since(start))
 	return d
 
 }
