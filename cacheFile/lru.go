@@ -126,6 +126,7 @@ func DisplayAllPro(limit int, offset int) (val string) {
 
 func InitCache() {
 	//C.limit = 10
+	fmt.Println()
 	C = Cache_cons(10000)
 	// fmt.Println("head", C.head)
 	// fmt.Println("last", C.last)
@@ -134,6 +135,7 @@ func InitCache() {
 
 func (list *Lru_cache) ReCache(id int) (val string) {
 	temp := C.GetCache(id)
+	C.Display()
 	// fmt.Printf("%T\n", temp)
 
 	if temp == "" {
