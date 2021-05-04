@@ -51,10 +51,6 @@ func resetTime() string {
 	fmt.Println("t4 displayProducts(): ", t4)
 	fmt.Println("t6 productID(): ", t6)
 	fmt.Println("t8 postPreorder(): ", t8)
-	t2 = 0
-	t4 = 0
-	t6 = 0
-	t8 = 0
 	return ""
 }
 
