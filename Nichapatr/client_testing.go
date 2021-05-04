@@ -395,7 +395,7 @@ func user_model(wg1 sync.WaitGroup) { /*-------------------- user_model --------
 	t3 := time.Now()
 	for i := 0.0; i < (num_user * 1.00); i++ {
 		wg1.Add(1)
-		go client(&wg1, "GET", "/products?limit=500&offset=0", 0)
+		go client(&wg1, "GET", "/products?limit=100&offset=0", 0)
 	}
 	wg1.Wait()
 	fmt.Printf("\n------> TIME t3: %v\n", time.Since(t3))
