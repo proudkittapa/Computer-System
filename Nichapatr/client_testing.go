@@ -479,7 +479,7 @@ func misshit_check() { /*------------------------------------------------ miss/h
 	fmt.Println("Miss for /products/:id", n3.Miss)
 }
 
-func baseline() { /*-------------------------------------- baseline -------------------------------*/
+func completed_flow1() { /*-------------------------------------- baseline -------------------------------*/
 	t1 := time.Now()
 	clientNoGo("GET", "/", 0)
 	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
@@ -493,7 +493,7 @@ func baseline() { /*-------------------------------------- baseline ------------
 	clientNoGo("POST", "/products/10", 2)
 	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 }
-func baselineN() { /*-------------------------------------- baseline No Go -------------------------------*/
+func completed_flowN() { /*-------------------------------------- baseline No Go -------------------------------*/
 	n := 10000
 	t1 := time.Now()
 	for i := 0; i < n; i++ {
@@ -519,7 +519,7 @@ func baselineN() { /*-------------------------------------- baseline No Go -----
 	clientNoGo("GET", "/resetTime", 0)
 }
 
-func final(wg sync.WaitGroup) { /*-------------------------------------- baseline with go -------------------------------*/
+func completed_flow(wg sync.WaitGroup) { /*-------------------------------------- baseline with go -------------------------------*/
 	n := 1
 	t1 := time.Now()
 	for i := 0; i < n; i++ {
@@ -566,12 +566,12 @@ func main() {
 	// quantity_check(wg1)
 	// fmt.Println("-----------------time_check-----------------")
 	// test_time_check(wg1)
-	fmt.Println("-----------------Baselilne-----------------")
-	// baseline()
-	// baselineN()
-	// final(wg1)
+	fmt.Println("-----------------RUN-----------------")
+	// completed_flow1()
+	// completed_flowN()
+	completed_flow(wg1)
 	// onerun2(wg1)
-	user_model(wg1)
+	// user_model(wg1)
 	fmt.Println("-----------------END-----------------")
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
