@@ -18,6 +18,11 @@ var t4 time.Time
 var t6 time.Time
 var t8 time.Time
 
+var tt2 time.Duration
+var tt4 time.Duration
+var tt6 time.Duration
+var tt8 time.Duration
+
 var Counter2 = 0
 var Counter4 = 0
 var Counter6 = 0
@@ -33,7 +38,7 @@ func main() {
 	// cacheFile.C = cacheFile.Cache_cons(10)
 	// db, _ = sql.Open("mysql", "root:62011139@tcp(localhost:3306)/prodj")
 	// s.GET("/", abc)
-	s.GET("/resetTime", resetTime)
+	s.GET("/timeFunction", timeFunction)
 	s.GET("/", getCacheFile)            //uye
 	s.GET("/products", displayProducts) //all products
 	s.GET("/products/:id", productID)
@@ -45,12 +50,12 @@ func main() {
 	s.Start(":8081")
 }
 
-func resetTime() string {
+func timeFunction() string {
 	// fmt.Println(l)
-	fmt.Println("t2 getFile(): ", t2)
-	fmt.Println("t4 displayProducts(): ", t4)
-	fmt.Println("t6 productID(): ", t6)
-	fmt.Println("t8 postPreorder(): ", t8)
+	fmt.Println("t2 getFile(): ", tt2)
+	fmt.Println("t4 displayProducts(): ", tt4)
+	fmt.Println("t6 productID(): ", tt6)
+	fmt.Println("t8 postPreorder(): ", tt8)
 	return ""
 }
 
