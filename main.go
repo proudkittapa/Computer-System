@@ -42,7 +42,7 @@ func main() {
 }
 
 func resetTime() string {
-	fmt.Println(l)
+	// fmt.Println(l)
 	fmt.Println("t2 getFile(): ", t2)
 	fmt.Println("t4 displayProducts(): ", t4)
 	fmt.Println("t6 productID(): ", t6)
@@ -99,7 +99,7 @@ func displayProducts() string {
 	a := cacheFile.DisplayAllPro(Kittapa.LF.Limit, Kittapa.LF.Offset)
 	t4 = t4 + time.Since(t)
 
-	l = append(l, time.Since(t))
+	// l = append(l, time.Since(t))
 	fmt.Println("t4", time.Since(t))
 	return a
 }
