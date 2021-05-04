@@ -29,6 +29,8 @@ var Counter4 = 0
 var Counter6 = 0
 var Counter8 = 0
 
+var l []time.Duration
+
 func main() {
 	s := Kittapa.New()
 	cacheFile.InitDatabase()
@@ -59,6 +61,7 @@ func timeFunction() string {
 	fmt.Println("t8 postPreorder(): ", tt8)
 	fmt.Println("counter cache:", cacheFile.Count)
 	fmt.Println("L:", cacheFile.L)
+	fmt.Println("l:", l)
 	return ""
 }
 
@@ -124,6 +127,8 @@ func getCacheFile() string {
 		fmt.Println("GetFile():", time.Since(t2))
 		fmt.Println("------------------------------------")
 		tt2 = time.Since(t2)
+		l = append(l, tt2)
+
 		Counter2 = 0
 	}
 
