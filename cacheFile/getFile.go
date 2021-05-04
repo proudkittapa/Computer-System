@@ -64,7 +64,7 @@ func Call_cache(filename string) string {
 
 func getFile(filename string) string {
 	// call_cache("index.html")
-	const BufferSize = 300
+	const BufferSize = 64 * 1024
 	// start := time.Now()
 	file, err := os.Open(filename)
 	if err != nil {
