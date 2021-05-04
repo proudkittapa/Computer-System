@@ -415,7 +415,7 @@ func user_model(wg1 sync.WaitGroup) { /*-------------------- user_model --------
 	wg1.Wait()
 	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 
-	clientNoGo("GET", "/resetTime", 0)
+	// clientNoGo("GET", "/resetTime", 0)
 }
 
 func check(expect Rate, get Rate) {
