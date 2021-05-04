@@ -27,6 +27,7 @@ var cacheObject Cache = NewCache()
 var miss_num int
 
 var hit_num int
+var L []time.Duration
 
 func Call_cache(filename string) string {
 	start := time.Now()
@@ -41,6 +42,7 @@ func Call_cache(filename string) string {
 		// cacheObject.Display()
 		miss_num += 1
 		fmt.Println("Cache miss: ", miss_num)
+
 		// fmt.Println("Time calling cache miss: ", time.Since(start))
 	} else {
 		// cacheObject.Display()
@@ -49,6 +51,7 @@ func Call_cache(filename string) string {
 		// fmt.Println("Time calling cache hit: ", (time.Since(start)))
 	}
 	fmt.Println("Cache file:", time.Since(start))
+	L = append(L, time.Since(start))
 	return d
 
 }
