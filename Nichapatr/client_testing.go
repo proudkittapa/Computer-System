@@ -553,7 +553,7 @@ func completed_flow(wg sync.WaitGroup) { /*-------------------------------------
 	wg.Wait()
 	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 
-	clientNoGo("GET", "/resetTime", 0)
+	clientNoGo("GET", "/timeFunction", 0)
 }
 
 func main() {
