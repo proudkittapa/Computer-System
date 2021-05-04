@@ -150,6 +150,8 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	if result2 == "rollback" {
 		//fmt.Println("rollback")
 		//Preorder(end, user, productId, orderQuantity)
+		numErr += 1
+		fmt.Printf("num Err: %d \n", numErr)
 		result := "error"
 		end <- result
 		return
@@ -176,6 +178,8 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		wg.Wait()
 		if err := tx.Commit(); err != nil {
 			fmt.Printf("Failed to commit tx: %v\n", err)
+			numErr += 1
+			fmt.Printf("num Err2: %d \n", numErr)
 			result := "error"
 			end <- result
 			return
@@ -202,8 +206,7 @@ func PostPreorder(id int, quantity int) string {
 	fmt.Printf("quantityyyy: %d\n", quantity)
 	result := <-end
 	if result == "error" {
-		numErr += 1
-		fmt.Printf("num Err: %d \n", numErr)
+
 		Preorder(end, strconv.Itoa(1), id, quantity)
 	}
 	fmt.Println("hererreerere")
