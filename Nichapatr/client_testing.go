@@ -382,7 +382,7 @@ func unpredictcheck(success int) {
 	}
 }
 
-var num_user float64 = 100
+var num_user float64 = 1000
 
 func user_model(wg1 sync.WaitGroup) { /*-------------------- user_model --------------------*/
 	t1 := time.Now()
@@ -568,9 +568,9 @@ func main() {
 	fmt.Println("-----------------RUN-----------------")
 	// completed_flow1()
 	// completed_flowN()
-	completed_flow(wg1, 1500)
+	// completed_flow(wg1, 150)
 	// onerun2(wg1)
-	// user_model(wg1)
+	user_model(wg1)
 	fmt.Println("-----------------END-----------------")
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
