@@ -62,6 +62,7 @@ func timeFunction() string {
 	fmt.Println("counter cache:", cacheFile.Count)
 	fmt.Println("L:", cacheFile.L)
 	fmt.Println("l:", l)
+	fmt.Println("T:", Kittapa.T)
 	return ""
 }
 
