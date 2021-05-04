@@ -137,6 +137,7 @@ func (list *Lru_cache) ReCache(id int) (val string) {
 	temp := C.GetCache(id)
 	C.Display()
 	// fmt.Printf("%T\n", temp)
+	fmt.Println("temp:", temp)
 
 	if temp == "" {
 		fmt.Println("-----------MISS-----------")
