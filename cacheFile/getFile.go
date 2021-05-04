@@ -133,7 +133,7 @@ func getFile(filename string) string {
 
 func SendMissHitFile() HM {
 	result := HM{Miss: miss_num, Hit: hit_num}
-
+	fmt.Println(result)
 	// byteArray, err := json.Marshal(result)
 	// CheckErr(err)
 
