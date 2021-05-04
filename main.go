@@ -92,7 +92,7 @@ func hitmiss() string {
 
 func postPreorder2() string {
 	// t := time.Now()
-	if Counter8 == user {
+	if Counter8 == 0 {
 		t8 = time.Now()
 	}
 	a := cacheFile.PostPreorder(Kittapa.ID, Kittapa.Result.Quantity)
@@ -105,7 +105,6 @@ func postPreorder2() string {
 		fmt.Println("------------------------------------")
 		tt8 = time.Since(t8)
 		Counter8 = 0
-
 	}
 
 	return a
