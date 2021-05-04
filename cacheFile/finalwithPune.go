@@ -179,7 +179,7 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 		end <- result
 	}
 
-	C.Display()
+	// C.Display()
 	return
 }
 func PostPreorder(id int, quantity int) string {
