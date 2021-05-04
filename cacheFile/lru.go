@@ -164,13 +164,13 @@ func Cache_cons(cap int) Lru_cache {
 
 func (list *Lru_cache) GetCache(id int) string {
 	if node_val, ok := list.Mp[id]; ok {
-		fmt.Println("-----------HIT-----------")
+		// fmt.Println("-----------HIT-----------")
 		cHit++
 		list.Move(node_val)
 		// fmt.Println(val.value)
 		return node_val.value
 	} else {
-		fmt.Println("-----------MISS-----------")
+		// fmt.Println("-----------MISS-----------")
 		cMiss++
 		return ""
 	}
