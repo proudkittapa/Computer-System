@@ -119,14 +119,14 @@ func postPreorder2() string {
 }
 
 func getCacheFile() string {
-	t := time.Now()
+	// t := time.Now()
 
 	if Counter2 == 1 {
 		t2 = time.Now()
 	}
 	Counter2++
 	a := cacheFile.Call_cache("index.html")
-	l = append(l, time.Since(t))
+	// l = append(l, time.Since(t))
 	if Counter2 == user {
 		fmt.Println("------------------------------------")
 		fmt.Println("GetFile():", time.Since(t2))
