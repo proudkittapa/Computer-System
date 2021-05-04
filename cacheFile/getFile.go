@@ -33,10 +33,10 @@ func Call_cache(filename string) string {
 
 	d, err := cacheObject.Check(filename)
 	if err != nil {
-		fmt.Println(err)
+		// fmt.Println(err)
 		a := getFile("/root/go/src/Computer-System/pre-order/" + filename)
 		cacheObject.Add(filename, a)
-		d, _ = cacheObject.Check(filename)
+		// d, _ = cacheObject.Check(filename)
 		// cacheObject.Display()
 		miss_num += 1
 		// fmt.Println("Cache miss: ", miss_num)
