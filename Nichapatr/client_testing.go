@@ -382,7 +382,7 @@ func unpredictcheck(success int) {
 	}
 }
 
-var num_user float64 = 100
+var num_user float64 = 1000
 
 func user_model(wg1 sync.WaitGroup) { /*-------------------- user_model --------------------*/
 	t1 := time.Now()
@@ -392,28 +392,28 @@ func user_model(wg1 sync.WaitGroup) { /*-------------------- user_model --------
 	}
 	wg1.Wait()
 	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
-	// t3 := time.Now()
-	// for i := 0.0; i < (num_user * 1.00); i++ {
-	// 	wg1.Add(1)
-	// 	go client(&wg1, "GET", "/products?limit=5&offset=0", 0)
-	// }
-	// wg1.Wait()
-	// fmt.Printf("\n------> TIME t3: %v\n", time.Since(t3))
+	t3 := time.Now()
+	for i := 0.0; i < (num_user * 1.00); i++ {
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products?limit=5&offset=0", 0)
+	}
+	wg1.Wait()
+	fmt.Printf("\n------> TIME t3: %v\n", time.Since(t3))
 
-	// t5 := time.Now()
-	// for i := 0.0; i < (num_user * 0.4); i++ {
-	// 	wg1.Add(1)
-	// 	go client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
-	// }
-	// wg1.Wait()
-	// fmt.Printf("\n------> TIME t5: %v\n", time.Since(t5))
-	// t7 := time.Now()
-	// for i := 0.0; i < (num_user * 0.15); i++ {
-	// 	wg1.Add(1)
-	// 	go client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
-	// }
-	// wg1.Wait()
-	// fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
+	t5 := time.Now()
+	for i := 0.0; i < (num_user * 0.4); i++ {
+		wg1.Add(1)
+		go client(&wg1, "GET", "/products/"+strconv.Itoa(rand.Intn(967)), 0)
+	}
+	wg1.Wait()
+	fmt.Printf("\n------> TIME t5: %v\n", time.Since(t5))
+	t7 := time.Now()
+	for i := 0.0; i < (num_user * 0.15); i++ {
+		wg1.Add(1)
+		go client(&wg1, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
+	}
+	wg1.Wait()
+	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 
 	clientNoGo("GET", "/timeFunction", 0)
 }
@@ -568,9 +568,9 @@ func main() {
 	fmt.Println("-----------------RUN-----------------")
 	// completed_flow1()
 	// completed_flowN()
-	completed_flow(wg1, 101)
+	// completed_flow(wg1, 101)
 	// onerun2(wg1)
-	// user_model(wg1)
+	user_model(wg1)
 	fmt.Println("-----------------END-----------------")
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
