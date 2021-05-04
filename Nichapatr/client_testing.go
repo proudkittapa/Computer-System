@@ -579,8 +579,8 @@ func main() {
 	tt := float64(t) / 1e6
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f\n", rate)
-	// clientNoGo("GET", "/timeFunction", 0)
-	clientNoGo("GET", "/resetTime", 0)
+	clientNoGo("GET", "/timeFunction", 0)
+	// clientNoGo("GET", "/resetTime", 0)
 	// client("GET", "/hitmiss", 0)
 	// fmt.Println("HIT:", result.Hit)
 	// fmt.Println("Miss:", result.Miss)
