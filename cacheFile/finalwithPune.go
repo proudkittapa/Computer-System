@@ -77,7 +77,7 @@ func GetQuantity(tx *sql.Tx, transactionC chan string, t chan int, id int) {
 	if err != nil {
 		fmt.Println("get quantity fail")
 		transactionC <- "rollback"
-		tx.Rollback()
+		//tx.Rollback()
 		return
 	}
 	x = Data{Name: name, Quantity: quantity, Price: price}
@@ -109,7 +109,7 @@ func Decrement(tx *sql.Tx, t chan int, transactionC chan string, orderQuantity i
 	_, err := tx.ExecContext(ctx, "update products set quantity_in_stock = ? where product_id = ? ", newQuantity, strconv.Itoa(id))
 	if err != nil {
 		fmt.Println("decrement fail")
-		tx.Rollback()
+		//tx.Rollback()
 		transactionC <- "rollback"
 		return
 	}
@@ -147,7 +147,9 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 	result2 := <-transactionC
 	if result2 == "rollback" {
 		//fmt.Println("rollback")
-		Preorder(end, user, productId, orderQuantity)
+		//Preorder(end, user, productId, orderQuantity)
+		result := "error"
+		end <- result
 		return
 	} else if result2 == "not complete" {
 		result := "order more than stock quantity"
@@ -192,6 +194,9 @@ func PostPreorder(id int, quantity int) string {
 	go Preorder(end, strconv.Itoa(1), id, quantity)
 	fmt.Printf("quantityyyy: %d\n", quantity)
 	result := <-end
+	if result == "error" {
+		Preorder(end, strconv.Itoa(1), id, quantity)
+	}
 	fmt.Println("hererreerere")
 	return result
 }
