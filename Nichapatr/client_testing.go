@@ -520,13 +520,13 @@ func completed_flowN() { /*-------------------------------------- baseline No Go
 }
 
 func completed_flow(wg sync.WaitGroup, n int) { /*-------------------------------------- baseline with go -------------------------------*/
-	t1 := time.Now()
-	for i := 0; i < n; i++ {
-		wg.Add(1)
-		go client(&wg, "GET", "/", 0)
-	}
-	wg.Wait()
-	fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
+	// t1 := time.Now()
+	// for i := 0; i < n; i++ {
+	// 	wg.Add(1)
+	// 	go client(&wg, "GET", "/", 0)
+	// }
+	// wg.Wait()
+	// fmt.Printf("\n------> TIME t1: %v\n", time.Since(t1))
 
 	// t3 := time.Now()
 	// for i := 0; i < n; i++ {
@@ -544,15 +544,15 @@ func completed_flow(wg sync.WaitGroup, n int) { /*------------------------------
 	// wg.Wait()
 	// fmt.Printf("\n------> TIME t5: %v\n", time.Since(t5))
 
-	// t7 := time.Now()
-	// for i := 0; i < n; i++ {
-	// 	wg.Add(1)
-	// 	go client(&wg, "POST", "/products/10", 2)
-	// }
-	// wg.Wait()
-	// fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
+	t7 := time.Now()
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go client(&wg, "POST", "/products/10", 2)
+	}
+	wg.Wait()
+	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
 
-	clientNoGo("GET", "/timeFunction", 0)
+	// clientNoGo("GET", "/timeFunction", 0)
 }
 
 func main() {
@@ -568,9 +568,9 @@ func main() {
 	fmt.Println("-----------------RUN-----------------")
 	// completed_flow1()
 	// completed_flowN()
-	// completed_flow(wg1, 101)
+	completed_flow(wg1, 1500)
 	// onerun2(wg1)
-	user_model(wg1)
+	// user_model(wg1)
 	fmt.Println("-----------------END-----------------")
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
@@ -580,7 +580,7 @@ func main() {
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f\n", rate)
 	clientNoGo("GET", "/timeFunction", 0)
-	clientNoGo("GET", "/hitmissFile", 0)
+	// clientNoGo("GET", "/hitmissFile", 0)
 	// clientNoGo("GET", "/resetTime", 0)
 	// client("GET", "/hitmiss", 0)
 	// fmt.Println("HIT:", result.Hit)
