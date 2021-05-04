@@ -10,7 +10,7 @@ import (
 	// "pin2pre/cacheFile"
 )
 
-var user = 100
+var user = 100 + 1
 var quan int = 0
 
 // var cache cacheFile.Lru_cache
@@ -121,7 +121,7 @@ func postPreorder2() string {
 func getCacheFile() string {
 	t := time.Now()
 
-	if Counter2 == 0 {
+	if Counter2 == 1 {
 		t2 = time.Now()
 	}
 	Counter2++
@@ -146,7 +146,7 @@ func hitmissFile() string {
 }
 
 func displayProducts() string {
-	if Counter4 == 0 {
+	if Counter4 == 1 {
 		t4 = time.Now()
 	}
 	// fmt.Println(Kittapa.LF)
