@@ -69,7 +69,7 @@ func productID() string {
 	a := cacheFile.C.ReCache(Kittapa.ID)
 	// t6 = t6 + time.Since(t)
 	Counter6++
-	if Counter6 == 40 {
+	if Counter6 == user {
 		fmt.Println("------------------------------------")
 		fmt.Println("productID():", time.Since(t6))
 		fmt.Println("------------------------------------")
