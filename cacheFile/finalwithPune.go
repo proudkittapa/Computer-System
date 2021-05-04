@@ -202,6 +202,7 @@ func PostPreorder(id int, quantity int) string {
 	}
 	fmt.Println("hererreerere")
 	return result
+	fmt.Println("has returned result")
 }
 
 //fmt.Println("success")
