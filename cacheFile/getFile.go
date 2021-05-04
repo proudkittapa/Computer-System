@@ -29,28 +29,27 @@ var miss_num int
 var hit_num int
 
 func Call_cache(filename string) string {
-	// start := time.Now()
+	start := time.Now()
 
 	d, err := cacheObject.Check(filename)
 	if err != nil {
 		// fmt.Println(err)
 		a := getFile("/root/go/src/Computer-System/pre-order/" + filename)
-		start := time.Now()
+		// start := time.Now()
 		cacheObject.Add(filename, a)
-		fmt.Println("add cache time:", time.Since(start))
 		// d, _ = cacheObject.Check(filename)
 		// cacheObject.Display()
 		miss_num += 1
 		// fmt.Println("Cache miss: ", miss_num)
 		// fmt.Println("Time calling cache miss: ", time.Since(start))
-		return d
 	} else {
 		// cacheObject.Display()
 		hit_num += 1
 		// fmt.Println("Cache hit: ", hit_num)
 		// fmt.Println("Time calling cache hit: ", (time.Since(start)))
-		return d
 	}
+	fmt.Println("Cache file:", time.Since(start))
+	return d
 
 }
 
