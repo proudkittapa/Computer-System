@@ -4,6 +4,7 @@ package cacheFile
 import (
 	"fmt"
 	"os"
+	"time"
 
 	// "pin2pre/milestone2/cacheFile"
 
@@ -34,7 +35,9 @@ func Call_cache(filename string) string {
 	if err != nil {
 		// fmt.Println(err)
 		a := getFile("/root/go/src/Computer-System/pre-order/" + filename)
+		start := time.Now()
 		cacheObject.Add(filename, a)
+		fmt.Println("add cache time:", time.Since(start))
 		// d, _ = cacheObject.Check(filename)
 		// cacheObject.Display()
 		miss_num += 1
