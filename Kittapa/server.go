@@ -13,6 +13,7 @@ import (
 )
 
 var ID int = 0
+var T []time.Duration
 
 type (
 	Server struct {
@@ -118,8 +119,9 @@ func (s *Server) req(conn net.Conn) {
 		r, yes := s.check(method, path)
 		if yes {
 			// fmt.Println("yesssss")
+			start := time.Now()
 			fc = r.Name()
-
+			T = append(T, time.Since(start))
 			send(conn, fc, "application/json")
 		} else {
 			fmt.Println("no")
