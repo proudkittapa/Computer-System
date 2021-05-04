@@ -29,7 +29,7 @@ var miss_num int
 var hit_num int
 
 func Call_cache(filename string) string {
-	start := time.Now()
+	// start := time.Now()
 
 	d, err := cacheObject.Check(filename)
 	if err != nil {
