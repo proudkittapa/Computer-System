@@ -203,7 +203,7 @@ func PostPreorder(id int, quantity int) string {
 	result := <-end
 	if result == "error" {
 		numErr += 1
-		Preorder(end, strconv.Itoa(1), id, quantity)
+		PostPreorder(id, quantity)
 	}
 	fmt.Printf("num Err: %d \n", numErr)
 	fmt.Println("hererreerere")
