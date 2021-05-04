@@ -547,7 +547,7 @@ func completed_flow(wg sync.WaitGroup, n int) { /*------------------------------
 	t7 := time.Now()
 	for i := 0; i < n; i++ {
 		wg.Add(1)
-		go client(&wg, "POST", "/products/10", 2)
+		go client(&wg, "POST", "/products/"+strconv.Itoa(rand.Intn(967)), 2)
 	}
 	wg.Wait()
 	fmt.Printf("\n------> TIME t7: %v\n", time.Since(t7))
@@ -580,7 +580,7 @@ func main() {
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f\n", rate)
 	clientNoGo("GET", "/timeFunction", 0)
-	// clientNoGo("GET", "/hitmissFile", 0)
+	clientNoGo("GET", "/hitmissFile", 0)
 	// clientNoGo("GET", "/resetTime", 0)
 	// client("GET", "/hitmiss", 0)
 	// fmt.Println("HIT:", result.Hit)
