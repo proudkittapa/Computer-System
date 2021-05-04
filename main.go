@@ -57,6 +57,7 @@ func timeFunction() string {
 	fmt.Println("t4 displayProducts(): ", tt4)
 	fmt.Println("t6 productID(): ", tt6)
 	fmt.Println("t8 postPreorder(): ", tt8)
+	fmt.Println("counter cache:", cacheFile.Count)
 	return ""
 }
 
