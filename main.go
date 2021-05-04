@@ -68,7 +68,10 @@ func productID() string {
 	a := cacheFile.C.ReCache(Kittapa.ID)
 	// t6 = t6 + time.Since(t)
 	if Counter6 == 40 {
+		fmt.Println("------------------------------------")
 		fmt.Println("productID():", time.Since(t6))
+		fmt.Println("------------------------------------")
+
 	}
 	Counter6++
 
@@ -94,7 +97,9 @@ func postPreorder2() string {
 	// fmt.Println(Kittapa.Result.Quantity == 200)
 	// t8 = t8 + time.Since(t)
 	if Counter8 == 15 {
+		fmt.Println("------------------------------------")
 		fmt.Println("postPreorder():", time.Since(t8))
+		fmt.Println("------------------------------------")
 	}
 	Counter8++
 	return a
@@ -107,7 +112,9 @@ func getCacheFile() string {
 	}
 	a := cacheFile.Call_cache("index.html")
 	if Counter2 == 100 {
+		fmt.Println("------------------------------------")
 		fmt.Println("GetFile():", time.Since(t2))
+		fmt.Println("------------------------------------")
 	}
 	Counter2++
 
@@ -130,7 +137,9 @@ func displayProducts() string {
 	a := cacheFile.DisplayAllPro(Kittapa.LF.Limit, Kittapa.LF.Offset)
 
 	if Counter4 == 100 {
+		fmt.Println("------------------------------------")
 		fmt.Println("displayProducts():", time.Since(t4))
+		fmt.Println("------------------------------------")
 	}
 	Counter4++
 
