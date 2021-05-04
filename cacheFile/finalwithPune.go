@@ -184,10 +184,11 @@ func Preorder(end chan string, user string, productId int, orderQuantity int) {
 			succ += 1
 			fmt.Printf("num tran successful: %d\n", succ)
 			end <- result
+			return
 		}
 	}
 	// C.Display()
-	return
+	//return
 }
 func PostPreorder(id int, quantity int) string {
 	fmt.Println("postPreorder")
