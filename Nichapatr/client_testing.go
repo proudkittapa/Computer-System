@@ -382,7 +382,7 @@ func unpredictcheck(success int) {
 	}
 }
 
-var num_user float64 = 3000
+var num_user float64 = 1000
 
 func user_model(wg1 sync.WaitGroup) { /*-------------------- user_model --------------------*/
 
@@ -570,9 +570,9 @@ func main() {
 	fmt.Println("-----------------RUN-----------------")
 	// completed_flow1()
 	// completed_flowN()
-	completed_flow(wg1, 1000)
+	// completed_flow(wg1, 1000)
 	// onerun2(wg1)
-	// user_model(wg1)
+	user_model(wg1)
 	fmt.Println("-----------------END-----------------")
 	t := time.Since(start)
 	fmt.Printf("\n \nTotal TIME: %v\n", t)
@@ -582,7 +582,7 @@ func main() {
 	rate := float64(count_Res) / (tt / 1000)
 	fmt.Printf("Rate per Sec: %f\n", rate)
 	clientNoGo("GET", "/timeFunction", 0)
-	clientNoGo("GET", "/hitmissFile", 0)
+	// clientNoGo("GET", "/hitmissFile", 0)
 	// clientNoGo("GET", "/resetTime", 0)
 	// client("GET", "/hitmiss", 0)
 	// fmt.Println("HIT:", result.Hit)
