@@ -192,8 +192,9 @@ func tcheckp(t01 float64, t02 float64, t03 float64) {
 	}
 }
 func test_time_check(wg1 sync.WaitGroup) { /*-------------------- time check --------------------*/
-	/*
-		t1 := time.Now()          //Uye
+
+	fmt.Println("-------------UYE-----------")	
+	t1 := time.Now()          //Uye
 		clientNoGo("GET", "/", 0) //miss1
 		t01 := float64(time.Since(t1)) / 1e6 / 5
 		fmt.Printf("Latency Time:   %v ", t01)
@@ -214,7 +215,7 @@ func test_time_check(wg1 sync.WaitGroup) { /*-------------------- time check ---
 		t03 := float64(time.Since(t3)) / 1e6 / 5
 		fmt.Printf("Latency Time:   %v \n", t03)
 		tchecku(t01, t02, t03)
-	*/
+
 	fmt.Println("-------------PUNE-----------")
 	tp1 := time.Now() //Pune
 	// var tp01 float64
@@ -227,7 +228,7 @@ func test_time_check(wg1 sync.WaitGroup) { /*-------------------- time check ---
 	}
 	tp01 := float64(time.Since(tp1)) / 1e6 / 5.0
 	fmt.Printf("Latency Time MISS:   %v \n", tp01)
-	/*
+	
 		tp2 := time.Now()
 		// var tp02 float64
 		for i := 6; i < 11; i++ {
