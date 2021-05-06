@@ -192,28 +192,29 @@ func tcheckp(t01 float64, t02 float64, t03 float64) {
 	}
 }
 func test_time_check(wg1 sync.WaitGroup) { /*-------------------- time check --------------------*/
-	t1 := time.Now()          //Uye
-	clientNoGo("GET", "/", 0) //miss1
-	t01 := float64(time.Since(t1)) / 1e6 / 5
-	fmt.Printf("Latency Time:   %v ", t01)
+	/*
+		t1 := time.Now()          //Uye
+		clientNoGo("GET", "/", 0) //miss1
+		t01 := float64(time.Since(t1)) / 1e6 / 5
+		fmt.Printf("Latency Time:   %v ", t01)
 
-	t2 := time.Now()
-	for i := 6; i < 11; i++ {
-		wg1.Add(1)
-		go client(&wg1, "GET", "/", 0) //hit5
-	}
-	t02 := float64(time.Since(t2)) / 1e6 / 5
-	fmt.Printf("Latency Time:   %v \n", t02)
+		t2 := time.Now()
+		for i := 6; i < 11; i++ {
+			wg1.Add(1)
+			go client(&wg1, "GET", "/", 0) //hit5
+		}
+		t02 := float64(time.Since(t2)) / 1e6 / 5
+		fmt.Printf("Latency Time:   %v \n", t02)
 
-	t3 := time.Now()
-	for i := 6; i < 11; i++ {
-		wg1.Add(1)
-		go client(&wg1, "GET", "/", 0) //hit5
-	}
-	t03 := float64(time.Since(t3)) / 1e6 / 5
-	fmt.Printf("Latency Time:   %v \n", t03)
-	tchecku(t01, t02, t03)
-
+		t3 := time.Now()
+		for i := 6; i < 11; i++ {
+			wg1.Add(1)
+			go client(&wg1, "GET", "/", 0) //hit5
+		}
+		t03 := float64(time.Since(t3)) / 1e6 / 5
+		fmt.Printf("Latency Time:   %v \n", t03)
+		tchecku(t01, t02, t03)
+	*/
 	fmt.Println("-------------PUNE-----------")
 	tp1 := time.Now() //Pune
 	// var tp01 float64
@@ -226,56 +227,58 @@ func test_time_check(wg1 sync.WaitGroup) { /*-------------------- time check ---
 	}
 	tp01 := float64(time.Since(tp1)) / 1e6 / 5.0
 	fmt.Printf("Latency Time MISS:   %v \n", tp01)
-
-	tp2 := time.Now()
-	// var tp02 float64
-	for i := 6; i < 11; i++ {
-		wg1.Add(1)
-		fmt.Println(i)
+	/*
 		tp2 := time.Now()
-		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
-		tp02 := float64(time.Since(tp2)) / 1e6
-		fmt.Printf("t02 Latency Time MISS:   %v \n", tp02)
-	}
-	tp02 := float64(time.Since(tp2)) / 1e6 / 5.0
-	fmt.Printf("Latency Time MISS:   %v \n", tp02)
+		// var tp02 float64
+		for i := 6; i < 11; i++ {
+			wg1.Add(1)
+			fmt.Println(i)
+			tp2 := time.Now()
+			client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+			tp02 := float64(time.Since(tp2)) / 1e6
+			fmt.Printf("t02 Latency Time MISS:   %v \n", tp02)
+		}
+		tp02 := float64(time.Since(tp2)) / 1e6 / 5.0
+		fmt.Printf("Latency Time MISS:   %v \n", tp02)
 
-	tp3 := time.Now()
-	// var tp03 float64
-	for i := 6; i < 11; i++ {
-		wg1.Add(1)
-		fmt.Println(i)
 		tp3 := time.Now()
-		client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
-		tp03 := float64(time.Since(tp3)) / 1e6
-		fmt.Printf("t03 Latency Time HIT:   %v \n", tp03)
-	}
-	tp03 := float64(time.Since(tp3)) / 1e6 / 5.0
-	fmt.Printf("Latency Time HIT:   %v \n", tp03)
-	tcheckp(tp01, tp02, tp03)
+		// var tp03 float64
+		for i := 6; i < 11; i++ {
+			wg1.Add(1)
+			fmt.Println(i)
+			tp3 := time.Now()
+			client(&wg1, "GET", "/products/"+strconv.Itoa(i), 0)
+			tp03 := float64(time.Since(tp3)) / 1e6
+			fmt.Printf("t03 Latency Time HIT:   %v \n", tp03)
+		}
+		tp03 := float64(time.Since(tp3)) / 1e6 / 5.0
+		fmt.Printf("Latency Time HIT:   %v \n", tp03)
+		tcheckp(tp01, tp02, tp03)
 
-	/*--------------------time check (2)--------------------*/
-	fmt.Println("-------------MIND-----------")
-	t4 := time.Now() //Mind
-	for i := 0; i < 5; i++ {
-		wg1.Add(4)
-		go client(&wg1, "POST", "/products/4", 2)   // stock must = 998
-		go client(&wg1, "POST", "/products/4", 3)   // stock must = 995
-		go client(&wg1, "POST", "/products/4", 5)   // stock must = 990
-		go client(&wg1, "POST", "/products/4", 200) // stock must = 790
-	}
-	t04 := float64(time.Since(t4)) / 1e6
-	fmt.Printf("Time:   %v ", t04)
-	fmt.Printf("Latency Time:   %v ", (t04 / 20.0))
+		/*--------------------time check (2)--------------------*/
+	/*
+		fmt.Println("-------------MIND-----------")
+		t4 := time.Now() //Mind
+		for i := 0; i < 5; i++ {
+			wg1.Add(4)
+			go client(&wg1, "POST", "/products/4", 2)   // stock must = 998
+			go client(&wg1, "POST", "/products/4", 3)   // stock must = 995
+			go client(&wg1, "POST", "/products/4", 5)   // stock must = 990
+			go client(&wg1, "POST", "/products/4", 200) // stock must = 790
+		}
+		t04 := float64(time.Since(t4)) / 1e6
+		fmt.Printf("Time:   %v ", t04)
+		fmt.Printf("Latency Time:   %v ", (t04 / 20.0))
 
-	// t5 := time.Now()
-	// for i := 0; i < 2; i++ {
-	// 	wg1.Add(1)
-	// 	go client(&wg1, "POST", "/products/2", 10000) // stock must = 0
-	// }
-	// t05 := float64(time.Since(t5)) / 1e6 / 2
-	// fmt.Printf("Latency Time:   %v ", t05)
-	wg1.Wait()
+		// t5 := time.Now()
+		// for i := 0; i < 2; i++ {
+		// 	wg1.Add(1)
+		// 	go client(&wg1, "POST", "/products/2", 10000) // stock must = 0
+		// }
+		// t05 := float64(time.Since(t5)) / 1e6 / 2
+		// fmt.Printf("Latency Time:   %v ", t05)
+		wg1.Wait()
+	*/
 }
 func random(x int, y int) int {
 	min := x
